@@ -1,6 +1,8 @@
 export type AuthForm = {
   email: string;
   password: string;
+  name: string;
+  admin: boolean;
 };
 
 export type EditedCoffee = {

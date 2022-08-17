@@ -13,6 +13,7 @@ import {
   Group,
   PasswordInput,
   Alert,
+  Checkbox,
 } from "@mantine/core";
 import { useForm, yupResolver } from "@mantine/form";
 import { Layout } from "../components/Layout";
@@ -35,6 +36,8 @@ const Home: NextPage = () => {
     initialValues: {
       email: "",
       password: "",
+      name: "",
+      admin: false,
     },
   });
 
@@ -44,6 +47,8 @@ const Home: NextPage = () => {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
           email: form.values.email,
           password: form.values.password,
+          name: form.values.name,
+          admin: form.values.admin,
         });
       }
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
@@ -76,18 +81,39 @@ const Home: NextPage = () => {
         <TextInput
           mt="md"
           id="email"
-          label="Email*"
+          label="メールアドレス"
           placeholder="example@gmail.com"
           {...form.getInputProps("email")}
         />
         <PasswordInput
           mt="md"
           id="password"
-          placeholder="password"
-          label="Password*"
+          placeholder="パスワード"
+          label="パスワード"
           description="Must be min 5 char"
           {...form.getInputProps("password")}
         />
+        {isRegister && (
+          <>
+            <TextInput
+              mt="md"
+              id="name"
+              label="名前"
+              placeholder="山田太郎"
+              {...form.getInputProps("name")}
+            />
+
+            {/* <Checkbox
+              label="管理者"
+              tabIndex={-1}
+              size="md"
+              mr="xl"
+              styles={{ input: { cursor: "pointer" } }}
+              {...form.getInputProps("admin")}
+            /> */}
+          </>
+        )}
+
         <Group mt="xl" position="apart">
           <Anchor
             component="button"
