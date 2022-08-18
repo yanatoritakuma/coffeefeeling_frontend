@@ -15,8 +15,10 @@ export const useQueryUser = () => {
     queryKey: ["user"],
     queryFn: getUser,
     onError: (err: any) => {
-      if (err.response.status === 401 || err.response.status === 403)
+      if (err.response.status === 401 || err.response.status === 403) {
+        alert("ログインしていません。");
         router.push("/");
+      }
     },
   });
 };
