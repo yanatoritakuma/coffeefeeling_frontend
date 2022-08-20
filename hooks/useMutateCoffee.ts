@@ -23,7 +23,6 @@ export const useMutateCoffee = () => {
       onSuccess: (res) => {
         const previousTodos = queryClient.getQueryData<Coffee[]>(["coffees"]);
         if (previousTodos) {
-          console.log("res", res);
           queryClient.setQueryData(["coffees"], [res, ...previousTodos]);
         }
         reset();

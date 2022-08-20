@@ -16,7 +16,6 @@ export const useQueryUser = () => {
     queryFn: getUser,
     onError: (err: any) => {
       if (err.response.status === 401 || err.response.status === 403) {
-        alert("ログインしていません。");
         router.push("/");
       }
     },
