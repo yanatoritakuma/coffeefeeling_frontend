@@ -50,6 +50,17 @@ export const CoffeeForm = () => {
         place: coffeeState.place,
       });
     }
+    setCoffeeState({
+      id: 0,
+      name: "",
+      image: "",
+      category: "",
+      bitter: 0,
+      acidity: 0,
+      amount: 0,
+      price: 0,
+      place: "",
+    });
   };
   return (
     <>
