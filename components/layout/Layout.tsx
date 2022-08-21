@@ -72,7 +72,7 @@ export const Layout = memo((props: Props) => {
           </div>
         )}
       </header>
-      <main css={mainBox}>{children}</main>
+      <main>{children}</main>
     </div>
   );
 });
@@ -104,12 +104,6 @@ const headerBox = css`
     width: 10%;
     max-width: 30px;
   }
-`;
-
-const mainBox = css`
-  margin: 0 auto;
-  padding: 12px;
-  max-width: 1200px;
 `;
 
 const linkBox = css`
@@ -145,7 +139,7 @@ const spMenu = css`
   top: 80px;
   left: 0;
   width: 100%;
-  height: 60vh;
+  height: 100vh;
 
   a {
     margin: 12px auto;
