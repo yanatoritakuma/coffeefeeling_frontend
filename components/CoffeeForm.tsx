@@ -73,12 +73,24 @@ export const CoffeeForm = () => {
             setCoffeeState({ ...coffeeState, name: e.target.value })
           }
         />
-        <TextInput
-          mt="md"
+        <Select
+          style={{ zIndex: 2 }}
+          data={[
+            "ブラック",
+            "カフェラテ",
+            "エスプレッソ",
+            "カフェモカ",
+            "カフェオレ",
+            "カプチーノ",
+          ]}
           placeholder="カテゴリー"
-          value={coffeeState.category}
+          label="カテゴリー"
+          value={String(coffeeState.category)}
           onChange={(e) =>
-            setCoffeeState({ ...coffeeState, category: e.target.value })
+            setCoffeeState({
+              ...coffeeState,
+              category: String(e),
+            })
           }
         />
         <Select
@@ -133,12 +145,17 @@ export const CoffeeForm = () => {
             })
           }
         />
-        <TextInput
-          mt="md"
+        <Select
+          style={{ zIndex: 2 }}
+          data={["コンビニ", "店舗"]}
           placeholder="場所"
-          value={coffeeState.place}
+          label="場所"
+          value={String(coffeeState.place)}
           onChange={(e) =>
-            setCoffeeState({ ...coffeeState, place: e.target.value })
+            setCoffeeState({
+              ...coffeeState,
+              place: String(e),
+            })
           }
         />
         <Center mt="lg">
