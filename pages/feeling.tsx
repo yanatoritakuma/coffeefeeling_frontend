@@ -1,17 +1,17 @@
 import React, { useState, FormEvent } from "react";
 import { useQueryCoffees } from "../hooks/useQueryCoffees";
-import { Loader } from "@mantine/core";
+import { Button, Loader } from "@mantine/core";
 import { css } from "@emotion/react";
 import { Select } from "@mantine/core";
+import { useQueryFeelingCoffees } from "../hooks/useQueryFeelingCoffees";
+import { AxiosRequestConfig } from "axios";
 
 const Feeling = () => {
   const { data: coffees, status } = useQueryCoffees();
   // if (status === "loading") return <Loader my="lg" color="cyan" />;
 
-  console.log("coffees", coffees);
-
   const [selectCoffee, setSelectCoffee] = useState({
-    category: "",
+    category: "ブラック",
     bitter: 0,
     acidity: 0,
     amount: 0,
@@ -19,9 +19,17 @@ const Feeling = () => {
     place: "",
   });
 
+  const requestParam: AxiosRequestConfig = {
+    data: {
+      coffee: selectCoffee.category,
+    },
+  };
+
+  const { getFeelingCoffees, feelingData } = useQueryFeelingCoffees();
+
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    getFeelingCoffees(requestParam);
     setSelectCoffee({
       category: "",
       bitter: 0,
@@ -31,6 +39,8 @@ const Feeling = () => {
       place: "",
     });
   };
+
+  console.log("feelingData", feelingData);
 
   return (
     <section css={feelingBox}>
@@ -121,6 +131,9 @@ const Feeling = () => {
             })
           }
         />
+        <Button color="cyan" type="submit">
+          気分で飲む
+        </Button>
       </form>
 
       {coffees?.map((coffee) => (

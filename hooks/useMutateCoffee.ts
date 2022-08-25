@@ -12,7 +12,6 @@ export const useMutateCoffee = () => {
 
   const createCoffeeMutation = useMutation(
     async (coffee: Omit<EditedCoffee, "id">) => {
-      console.log(coffee);
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/coffee`,
         coffee
