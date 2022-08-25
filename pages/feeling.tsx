@@ -21,7 +21,12 @@ const Feeling = () => {
 
   const requestParam: AxiosRequestConfig = {
     data: {
-      coffee: selectCoffee.category,
+      category: selectCoffee.category,
+      bitter: selectCoffee.bitter,
+      acidity: selectCoffee.acidity,
+      amount: selectCoffee.amount,
+      price: selectCoffee.price,
+      place: selectCoffee.place,
     },
   };
 
@@ -31,7 +36,7 @@ const Feeling = () => {
     e.preventDefault();
     getFeelingCoffees(requestParam);
     setSelectCoffee({
-      category: "",
+      category: "ブラック",
       bitter: 0,
       acidity: 0,
       amount: 0,

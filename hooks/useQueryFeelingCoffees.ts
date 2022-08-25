@@ -5,9 +5,10 @@ import { Coffee } from "@prisma/client";
 export const useQueryFeelingCoffees = () => {
   const [feelingData, setFeelingData] = useState([{}]);
   const getFeelingCoffees = async (coffee: AxiosRequestConfig<any>) => {
-    console.log("coffee", coffee.data.coffee);
+    const json = JSON.stringify(coffee.data);
+
     const data = await axios.get<Coffee[]>(
-      `${process.env.NEXT_PUBLIC_API_URL}/coffee/${coffee.data.coffee}`
+      `${process.env.NEXT_PUBLIC_API_URL}/coffee/${json}`
     );
 
     return setFeelingData(data.data);
