@@ -1,23 +1,31 @@
-import React, { useState, FormEvent } from "react";
-import { useQueryCoffees } from "../hooks/useQueryCoffees";
-import { Button, Loader } from "@mantine/core";
+import React, { useState, useEffect, FormEvent } from "react";
+import { Button } from "@mantine/core";
 import { css } from "@emotion/react";
 import { Select } from "@mantine/core";
 import { useQueryFeelingCoffees } from "../hooks/useQueryFeelingCoffees";
 import { AxiosRequestConfig } from "axios";
+import { Coffee } from "@prisma/client";
 
 const Feeling = () => {
-  const { data: coffees, status } = useQueryCoffees();
-  // if (status === "loading") return <Loader my="lg" color="cyan" />;
-
+  // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
     category: "ブラック",
     bitter: 0,
     acidity: 0,
-    amount: 0,
+    amount: 180,
     price: 100,
-    place: "",
+    place: "コンビニ",
   });
+
+  // 苦さの評価にヒットしたコーヒー
+  const [bestBitterCoffeeData, setBestBitterCoffeeData] = useState<Coffee[]>();
+
+  // 酸味の評価にヒットしたコーヒー
+  const [bestAcidityCoffeeData, setBestAcidityCoffeeData] =
+    useState<Coffee[]>();
+
+  // 総合での評価にヒットしたコーヒー
+  const [bestfeelingData, setBestfeelingData] = useState<Coffee[]>();
 
   const requestParam: AxiosRequestConfig = {
     data: {
@@ -35,17 +43,66 @@ const Feeling = () => {
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     getFeelingCoffees(requestParam);
-    setSelectCoffee({
-      category: "ブラック",
-      bitter: 0,
-      acidity: 0,
-      amount: 0,
-      price: 100,
-      place: "",
-    });
   };
 
-  console.log("feelingData", feelingData);
+  useEffect(() => {
+    if (feelingData.length !== 0) {
+      // ユーザーが選択した「カテゴリー、値段、場所」が一致したコーヒーの苦さ数値取得
+      const selectBitter = feelingData.map((coffee: Coffee) => {
+        return Number(coffee.bitter);
+      });
+
+      // ユーザーが選択した苦さの評価にもっとも近い苦さ評価値取得
+      const bestBitter = selectBitter.reduce((prev, curr) => {
+        return Math.abs(curr - selectCoffee.bitter) <
+          Math.abs(prev - selectCoffee.bitter)
+          ? curr
+          : prev;
+      });
+
+      // ユーザーが選択した苦さの評価にもっとも近い商品取得
+      const bestBitterCoffee = feelingData.filter(
+        (coffee) => coffee.bitter === bestBitter
+      );
+
+      setBestBitterCoffeeData(bestBitterCoffee);
+
+      // ユーザーが選択した「カテゴリー、値段、場所」が一致したコーヒーの酸味数値取得
+      const selectAcidity = feelingData.map((coffee: Coffee) => {
+        return Number(coffee.acidity);
+      });
+
+      // ユーザーが選択した苦さの評価にもっとも近い酸味評価値取得
+      const bestAcidity = selectAcidity.reduce((prev, curr) => {
+        return Math.abs(curr - selectCoffee.acidity) <
+          Math.abs(prev - selectCoffee.acidity)
+          ? curr
+          : prev;
+      });
+
+      // ユーザーが選択した酸味の評価にもっとも近い商品取得
+      const bestAcidityCoffee = feelingData.filter(
+        (coffee) => coffee.acidity === bestAcidity
+      );
+
+      setBestAcidityCoffeeData(bestAcidityCoffee);
+
+      const bestArray = [...bestBitterCoffee, ...bestAcidityCoffee];
+
+      const bestfeeling = bestArray.filter(
+        (coffee) =>
+          bestBitterCoffee.includes(coffee) &&
+          bestAcidityCoffee.includes(coffee)
+      );
+
+      const setCoffee = new Set(bestfeeling);
+      const bestCoffees = [...setCoffee];
+
+      setBestfeelingData(bestCoffees);
+    }
+  }, [feelingData]);
+
+  console.log("bestfeelingData", bestfeelingData);
 
   return (
     <section css={feelingBox}>
@@ -99,7 +156,7 @@ const Feeling = () => {
         />
         <Select
           style={{ zIndex: 2 }}
-          data={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
+          data={["180", "350", "470", "590"]}
           placeholder="量"
           label="量"
           value={String(selectCoffee.amount)}
@@ -141,11 +198,28 @@ const Feeling = () => {
         </Button>
       </form>
 
-      {coffees?.map((coffee) => (
-        <div key={coffee.id}>
-          <h2>{coffee.name}</h2>
-        </div>
-      ))}
+      <div>
+        {bestfeelingData?.length !== 0 && <h3>ベストコーヒー</h3>}
+        {bestfeelingData?.map((coffee) => (
+          <div key={coffee.id}>
+            <h4>{coffee.name}</h4>
+          </div>
+        ))}
+
+        {bestBitterCoffeeData !== undefined && <h3>苦味ベストコーヒー</h3>}
+        {bestBitterCoffeeData?.map((coffee) => (
+          <div key={coffee.id}>
+            <h4>{coffee.name}</h4>
+          </div>
+        ))}
+
+        {bestAcidityCoffeeData !== undefined && <h3>酸味ベストコーヒー</h3>}
+        {bestAcidityCoffeeData?.map((coffee) => (
+          <div key={coffee.id}>
+            <h4>{coffee.name}</h4>
+          </div>
+        ))}
+      </div>
     </section>
   );
 };
