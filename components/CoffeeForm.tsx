@@ -13,7 +13,6 @@ export const CoffeeForm = () => {
     category: "",
     bitter: 0,
     acidity: 0,
-    amount: 0,
     price: 0,
     place: "",
   });
@@ -33,7 +32,6 @@ export const CoffeeForm = () => {
         category: coffeeState.category,
         bitter: coffeeState.bitter,
         acidity: coffeeState.acidity,
-        amount: coffeeState.amount,
         price: coffeeState.price,
         place: coffeeState.place,
       });
@@ -45,7 +43,6 @@ export const CoffeeForm = () => {
         category: coffeeState.category,
         bitter: coffeeState.bitter,
         acidity: coffeeState.acidity,
-        amount: coffeeState.amount,
         price: coffeeState.price,
         place: coffeeState.place,
       });
@@ -57,7 +54,6 @@ export const CoffeeForm = () => {
       category: "",
       bitter: 0,
       acidity: 0,
-      amount: 0,
       price: 0,
       place: "",
     });
@@ -116,19 +112,6 @@ export const CoffeeForm = () => {
             setCoffeeState({
               ...coffeeState,
               acidity: Number(e),
-            })
-          }
-        />
-        <Select
-          style={{ zIndex: 2 }}
-          data={["180", "350", "470", "590"]}
-          placeholder="量"
-          label="量"
-          value={String(coffeeState.amount)}
-          onChange={(e) =>
-            setCoffeeState({
-              ...coffeeState,
-              amount: Number(e),
             })
           }
         />

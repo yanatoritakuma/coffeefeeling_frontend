@@ -12,7 +12,6 @@ const Feeling = () => {
     category: "ブラック",
     bitter: 0,
     acidity: 0,
-    amount: 180,
     price: 100,
     place: "コンビニ",
   });
@@ -32,7 +31,6 @@ const Feeling = () => {
       category: selectCoffee.category,
       bitter: selectCoffee.bitter,
       acidity: selectCoffee.acidity,
-      amount: selectCoffee.amount,
       price: selectCoffee.price,
       place: selectCoffee.place,
     },
@@ -151,19 +149,6 @@ const Feeling = () => {
             setSelectCoffee({
               ...selectCoffee,
               acidity: Number(e),
-            })
-          }
-        />
-        <Select
-          style={{ zIndex: 2 }}
-          data={["180", "350", "470", "590"]}
-          placeholder="量"
-          label="量"
-          value={String(selectCoffee.amount)}
-          onChange={(e) =>
-            setSelectCoffee({
-              ...selectCoffee,
-              amount: Number(e),
             })
           }
         />

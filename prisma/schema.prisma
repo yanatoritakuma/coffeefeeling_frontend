@@ -16,11 +16,11 @@ model Coffee {
   category  String?
   bitter    Int?
   acidity   Int?
-  amount    Int?
   price     Int?
   place     String?
   likes     Int[]
   userId    Int
+  comment   String[]
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
