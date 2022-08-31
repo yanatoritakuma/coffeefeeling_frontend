@@ -40,6 +40,9 @@ const Feeling = () => {
 
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setBestBitterCoffeeData([]);
+    setBestAcidityCoffeeData([]);
+    setBestfeelingData([]);
     getFeelingCoffees(requestParam);
   };
 

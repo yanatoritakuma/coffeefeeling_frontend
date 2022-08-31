@@ -69,6 +69,13 @@ export const CoffeeForm = () => {
             setCoffeeState({ ...coffeeState, name: e.target.value })
           }
         />
+        <input
+          type="file"
+          value={coffeeState.image}
+          onChange={(e) =>
+            setCoffeeState({ ...coffeeState, image: e.target.value })
+          }
+        />
         <Select
           style={{ zIndex: 2 }}
           data={[
