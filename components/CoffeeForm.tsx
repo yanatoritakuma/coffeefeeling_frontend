@@ -1,15 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FormEvent } from "react";
 import { TextInput, Button, Center, Select } from "@mantine/core";
 import { IconDatabase } from "@tabler/icons";
 import useStore from "../store";
 import { useMutateCoffee } from "../hooks/useMutateCoffee";
+import Image from "next/image";
+
+type TCoffeeState = {
+  id: number;
+  name: string;
+  image: File | null;
+  category: string;
+  bitter: number;
+  acidity: number;
+  price: number;
+  place: string;
+};
 
 export const CoffeeForm = () => {
-  const [coffeeState, setCoffeeState] = useState({
+  const [coffeeState, setCoffeeState] = useState<TCoffeeState>({
     id: 0,
     name: "",
-    image: "",
+    image: null,
     category: "",
     bitter: 0,
     acidity: 0,
@@ -17,7 +29,7 @@ export const CoffeeForm = () => {
     place: "",
   });
 
-  console.log(coffeeState);
+  console.log("coffeeState", coffeeState);
 
   // const { editedCoffee } = useStore();
   const update = useStore((state) => state.updateEditedCoffee);
@@ -28,7 +40,7 @@ export const CoffeeForm = () => {
     if (coffeeState.id === 0) {
       createCoffeeMutation.mutate({
         name: coffeeState.name,
-        image: coffeeState.image,
+        image: url,
         category: coffeeState.category,
         bitter: coffeeState.bitter,
         acidity: coffeeState.acidity,
@@ -39,7 +51,7 @@ export const CoffeeForm = () => {
       updateCoffeeMutation.mutate({
         id: coffeeState.id,
         name: coffeeState.name,
-        image: coffeeState.image,
+        image: url,
         category: coffeeState.category,
         bitter: coffeeState.bitter,
         acidity: coffeeState.acidity,
@@ -50,7 +62,7 @@ export const CoffeeForm = () => {
     setCoffeeState({
       id: 0,
       name: "",
-      image: "",
+      image: null,
       category: "",
       bitter: 0,
       acidity: 0,
@@ -58,6 +70,41 @@ export const CoffeeForm = () => {
       place: "",
     });
   };
+
+  const [url, setUrl] = useState<string>("");
+  console.log("url", url);
+
+  useEffect(() => {
+    if (!coffeeState.image) {
+      return;
+    }
+
+    let reader: FileReader | null = new FileReader();
+    reader.onloadend = () => {
+      const res = reader!.result;
+      if (res && typeof res === "string") {
+        setUrl(res);
+      }
+    };
+    reader.readAsDataURL(coffeeState.image);
+
+    return () => {
+      reader = null;
+    };
+  }, [coffeeState.image]);
+
+  const changeFileHandler = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.currentTarget?.files && e.currentTarget.files[0]) {
+        setCoffeeState({
+          ...coffeeState,
+          image: e.currentTarget.files[0],
+        });
+      }
+    },
+    []
+  );
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -69,13 +116,11 @@ export const CoffeeForm = () => {
             setCoffeeState({ ...coffeeState, name: e.target.value })
           }
         />
-        <input
-          type="file"
-          value={coffeeState.image}
-          onChange={(e) =>
-            setCoffeeState({ ...coffeeState, image: e.target.value })
-          }
-        />
+        <input type="file" onChange={changeFileHandler} />
+        {coffeeState.image ? (
+          <Image src={url} alt="画像" width={400} height={340} />
+        ) : null}
+
         <Select
           style={{ zIndex: 2 }}
           data={[
