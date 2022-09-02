@@ -5,7 +5,6 @@ import { Select } from "@mantine/core";
 import { useQueryFeelingCoffees } from "../hooks/useQueryFeelingCoffees";
 import { AxiosRequestConfig } from "axios";
 import { Coffee } from "@prisma/client";
-import Image from "next/image";
 
 const Feeling = () => {
   // ユーザー選択
@@ -192,9 +191,7 @@ const Feeling = () => {
         {bestfeelingData?.map((coffee) => (
           <div key={coffee.id}>
             <h4>{coffee.name}</h4>
-            {coffee.image !== null && (
-              <Image src={coffee.image} alt="画像" width={400} height={340} />
-            )}
+            {coffee.image !== null && <img src={coffee.image} alt="画像" />}
           </div>
         ))}
 

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { FormEvent } from "react";
 import { TextInput, Button, Center, Select } from "@mantine/core";
 import { IconDatabase } from "@tabler/icons";
-import useStore from "../store";
 import { useMutateCoffee } from "../hooks/useMutateCoffee";
 import Image from "next/image";
+import firebase, { storage } from "../firebase/initFirebase";
 
 type TCoffeeState = {
   id: number;
@@ -31,16 +30,13 @@ export const CoffeeForm = () => {
 
   console.log("coffeeState", coffeeState);
 
-  // const { editedCoffee } = useStore();
-  const update = useStore((state) => state.updateEditedCoffee);
   const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = (file: any) => {
     if (coffeeState.id === 0) {
       createCoffeeMutation.mutate({
         name: coffeeState.name,
-        image: url,
+        image: file,
         category: coffeeState.category,
         bitter: coffeeState.bitter,
         acidity: coffeeState.acidity,
@@ -51,7 +47,7 @@ export const CoffeeForm = () => {
       updateCoffeeMutation.mutate({
         id: coffeeState.id,
         name: coffeeState.name,
-        image: url,
+        image: file,
         category: coffeeState.category,
         bitter: coffeeState.bitter,
         acidity: coffeeState.acidity,
@@ -71,43 +67,58 @@ export const CoffeeForm = () => {
     });
   };
 
-  const [url, setUrl] = useState<string>("");
-  console.log("url", url);
+  const [photoUrl, setPhotoUrl] = useState<File | null>(null);
+  console.log("photoUrl", photoUrl);
 
-  useEffect(() => {
-    if (!coffeeState.image) {
-      return;
+  const onChangeImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files![0]) {
+      setPhotoUrl(e.target.files![0]);
+      e.target.value = "";
     }
+  };
 
-    let reader: FileReader | null = new FileReader();
-    reader.onloadend = () => {
-      const res = reader!.result;
-      if (res && typeof res === "string") {
-        setUrl(res);
+  const onClickRegistration = (e: React.FormEvent<HTMLFormElement>) => {
+    const ret = window.confirm("この内容で登録しますか？");
+    if (ret) {
+      e.preventDefault();
+      if (photoUrl) {
+        const S =
+          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const N = 16;
+        const randomChar = Array.from(
+          crypto.getRandomValues(new Uint32Array(N))
+        )
+          .map((n) => S[n % S.length])
+          .join("");
+        const fileName = randomChar + "_" + photoUrl.name;
+        const uploadImg = storage.ref(`images/${fileName}`).put(photoUrl);
+        uploadImg.on(
+          firebase.storage.TaskEvent.STATE_CHANGED,
+          () => {},
+          (err) => {
+            alert(err.message);
+          },
+          async () => {
+            await storage
+              .ref("images")
+              .child(fileName)
+              .getDownloadURL()
+              .then((fireBaseUrl) => {
+                handleSubmit(fireBaseUrl);
+              });
+          }
+        );
+      } else {
+        handleSubmit("");
       }
-    };
-    reader.readAsDataURL(coffeeState.image);
-
-    return () => {
-      reader = null;
-    };
-  }, [coffeeState.image]);
-
-  const changeFileHandler = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.currentTarget?.files && e.currentTarget.files[0]) {
-        setCoffeeState({
-          ...coffeeState,
-          image: e.currentTarget.files[0],
-        });
-      }
-    },
-    []
-  );
+      setPhotoUrl(null);
+      alert("登録完了しました。");
+    }
+  };
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onClickRegistration}>
         <TextInput
           mt="md"
           placeholder="商品名"
@@ -116,11 +127,7 @@ export const CoffeeForm = () => {
             setCoffeeState({ ...coffeeState, name: e.target.value })
           }
         />
-        <input type="file" onChange={changeFileHandler} />
-        {coffeeState.image ? (
-          <Image src={url} alt="画像" width={400} height={340} />
-        ) : null}
-
+        <input type="file" onChange={onChangeImageHandler} />
         <Select
           style={{ zIndex: 2 }}
           data={[
@@ -204,6 +211,13 @@ export const CoffeeForm = () => {
           </Button>
         </Center>
       </form>
+      {/* <form onSubmit={onClickRegistration}>
+        <p>testInput</p>
+        <input type="file" onChange={onChangeImageHandler} />
+        <Button color="cyan" type="submit">
+          testImg
+        </Button>
+      </form> */}
     </>
   );
 };
