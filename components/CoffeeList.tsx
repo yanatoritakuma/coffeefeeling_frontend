@@ -29,7 +29,7 @@ export const CoffeeList = () => {
           price={coffee.price}
           place={coffee.place}
           likes={coffee.likes}
-          comment={[]}
+          // comment={[]}
         />
       ))}
     </List>
