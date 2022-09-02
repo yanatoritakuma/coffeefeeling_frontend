@@ -20,7 +20,6 @@ model Coffee {
   place     String?
   likes     Int[]
   userId    Int
-  comment   String[]
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
