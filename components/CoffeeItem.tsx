@@ -7,7 +7,7 @@ import { useMutateCoffee } from "../hooks/useMutateCoffee";
 
 export const CoffeeItem: FC<
   Omit<Coffee, "createdAt" | "updatedAt" | "userId">
-> = ({ id, name, image, category, bitter, acidity, amount, price, place }) => {
+> = ({ id, name, image, category, bitter, acidity, price, place }) => {
   const update = useStore((state) => state.updateEditedCoffee);
   const { deleteCoffeeMutation } = useMutateCoffee();
   return (
@@ -23,7 +23,6 @@ export const CoffeeItem: FC<
               category,
               bitter,
               acidity,
-              amount,
               price,
               place,
             });

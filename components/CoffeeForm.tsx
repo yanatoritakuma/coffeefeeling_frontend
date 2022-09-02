@@ -1,73 +1,206 @@
+import React, { useState, useEffect, useCallback } from "react";
 import { FormEvent } from "react";
-import { TextInput, Button, Center } from "@mantine/core";
+import { TextInput, Button, Center, Select } from "@mantine/core";
 import { IconDatabase } from "@tabler/icons";
 import useStore from "../store";
 import { useMutateCoffee } from "../hooks/useMutateCoffee";
+import Image from "next/image";
+
+type TCoffeeState = {
+  id: number;
+  name: string;
+  image: File | null;
+  category: string;
+  bitter: number;
+  acidity: number;
+  price: number;
+  place: string;
+};
 
 export const CoffeeForm = () => {
-  const { editedCoffee } = useStore();
+  const [coffeeState, setCoffeeState] = useState<TCoffeeState>({
+    id: 0,
+    name: "",
+    image: null,
+    category: "",
+    bitter: 0,
+    acidity: 0,
+    price: 0,
+    place: "",
+  });
+
+  console.log("coffeeState", coffeeState);
+
+  // const { editedCoffee } = useStore();
   const update = useStore((state) => state.updateEditedCoffee);
   const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (editedCoffee.id === 0) {
+    if (coffeeState.id === 0) {
       createCoffeeMutation.mutate({
-        name: editedCoffee.name,
-        image: editedCoffee.image,
-        category: editedCoffee.category,
-        bitter: editedCoffee.bitter,
-        acidity: editedCoffee.acidity,
-        amount: editedCoffee.amount,
-        price: editedCoffee.price,
-        place: editedCoffee.place,
+        name: coffeeState.name,
+        image: url,
+        category: coffeeState.category,
+        bitter: coffeeState.bitter,
+        acidity: coffeeState.acidity,
+        price: coffeeState.price,
+        place: coffeeState.place,
       });
     } else {
       updateCoffeeMutation.mutate({
-        id: editedCoffee.id,
-        name: editedCoffee.name,
-        image: editedCoffee.image,
-        category: editedCoffee.category,
-        bitter: editedCoffee.bitter,
-        acidity: editedCoffee.acidity,
-        amount: editedCoffee.amount,
-        price: editedCoffee.price,
-        place: editedCoffee.place,
+        id: coffeeState.id,
+        name: coffeeState.name,
+        image: url,
+        category: coffeeState.category,
+        bitter: coffeeState.bitter,
+        acidity: coffeeState.acidity,
+        price: coffeeState.price,
+        place: coffeeState.place,
       });
     }
+    setCoffeeState({
+      id: 0,
+      name: "",
+      image: null,
+      category: "",
+      bitter: 0,
+      acidity: 0,
+      price: 0,
+      place: "",
+    });
   };
+
+  const [url, setUrl] = useState<string>("");
+  console.log("url", url);
+
+  useEffect(() => {
+    if (!coffeeState.image) {
+      return;
+    }
+
+    let reader: FileReader | null = new FileReader();
+    reader.onloadend = () => {
+      const res = reader!.result;
+      if (res && typeof res === "string") {
+        setUrl(res);
+      }
+    };
+    reader.readAsDataURL(coffeeState.image);
+
+    return () => {
+      reader = null;
+    };
+  }, [coffeeState.image]);
+
+  const changeFileHandler = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.currentTarget?.files && e.currentTarget.files[0]) {
+        setCoffeeState({
+          ...coffeeState,
+          image: e.currentTarget.files[0],
+        });
+      }
+    },
+    []
+  );
+
   return (
     <>
       <form onSubmit={handleSubmit}>
         <TextInput
           mt="md"
-          placeholder="name"
-          value={editedCoffee.name || ""}
-          onChange={(e) => update({ ...editedCoffee, name: e.target.value })}
-        />
-        <TextInput
-          mt="md"
-          placeholder="category"
-          value={editedCoffee.category || ""}
+          placeholder="商品名"
+          value={coffeeState.name}
           onChange={(e) =>
-            update({ ...editedCoffee, category: e.target.value })
+            setCoffeeState({ ...coffeeState, name: e.target.value })
           }
         />
-        <TextInput
-          mt="md"
-          placeholder="bitter"
-          value={editedCoffee.bitter || 0}
+        <input type="file" onChange={changeFileHandler} />
+        {coffeeState.image ? (
+          <Image src={url} alt="画像" width={400} height={340} />
+        ) : null}
+
+        <Select
+          style={{ zIndex: 2 }}
+          data={[
+            "ブラック",
+            "カフェラテ",
+            "エスプレッソ",
+            "カフェモカ",
+            "カフェオレ",
+            "カプチーノ",
+          ]}
+          placeholder="カテゴリー"
+          label="カテゴリー"
+          value={String(coffeeState.category)}
           onChange={(e) =>
-            update({ ...editedCoffee, bitter: Number(e.target.value) })
+            setCoffeeState({
+              ...coffeeState,
+              category: String(e),
+            })
+          }
+        />
+        <Select
+          style={{ zIndex: 2 }}
+          data={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
+          placeholder="苦さ"
+          label="苦さ"
+          value={String(coffeeState.bitter)}
+          onChange={(e) =>
+            setCoffeeState({
+              ...coffeeState,
+              bitter: Number(e),
+            })
+          }
+        />
+        <Select
+          style={{ zIndex: 2 }}
+          data={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
+          placeholder="酸味"
+          label="酸味"
+          value={String(coffeeState.acidity)}
+          onChange={(e) =>
+            setCoffeeState({
+              ...coffeeState,
+              acidity: Number(e),
+            })
+          }
+        />
+        <Select
+          style={{ zIndex: 2 }}
+          data={["100", "300", "500", "700", "1000"]}
+          placeholder="値段"
+          label="値段"
+          value={String(coffeeState.price)}
+          onChange={(e) =>
+            setCoffeeState({
+              ...coffeeState,
+              price: Number(e),
+            })
+          }
+        />
+        <Select
+          style={{ zIndex: 2 }}
+          data={["コンビニ", "店舗"]}
+          placeholder="場所"
+          label="場所"
+          value={String(coffeeState.place)}
+          onChange={(e) =>
+            setCoffeeState({
+              ...coffeeState,
+              place: String(e),
+            })
           }
         />
         <Center mt="lg">
           <Button
-            disabled={editedCoffee.name === ""}
+            disabled={coffeeState.name === ""}
             leftIcon={<IconDatabase size={14} />}
             color="cyan"
             type="submit"
           >
-            {editedCoffee.id === 0 ? "Create" : "Update"}
+            {coffeeState.id === 0 ? "Create" : "Update"}
           </Button>
         </Center>
       </form>

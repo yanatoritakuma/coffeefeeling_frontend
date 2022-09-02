@@ -1,10 +1,10 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect } from "react";
 import axios from "axios";
+import { Layout } from "../components/layout/Layout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,16 +30,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{
-          colorScheme: "dark",
-          fontFamily: "Verdana, sans-serif",
-        }}
-      >
+      <Layout>
         <Component {...pageProps} />
-      </MantineProvider>
+      </Layout>
       <ReactQueryDevtools />
     </QueryClientProvider>
   );

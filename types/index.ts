@@ -1,6 +1,8 @@
 export type AuthForm = {
   email: string;
   password: string;
+  name: string;
+  admin: boolean;
 };
 
 export type EditedCoffee = {
@@ -10,7 +12,6 @@ export type EditedCoffee = {
   category?: string | null;
   bitter?: number | null;
   acidity?: number | null;
-  amount?: number | null;
   price?: number | null;
   place?: string | null;
 };

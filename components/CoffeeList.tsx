@@ -26,7 +26,6 @@ export const CoffeeList = () => {
           category={coffee.category}
           bitter={coffee.bitter}
           acidity={coffee.acidity}
-          amount={coffee.amount}
           price={coffee.price}
           place={coffee.place}
           likes={coffee.likes}
