@@ -8,7 +8,7 @@ export type AuthForm = {
 export type EditedCoffee = {
   id: number;
   name: string;
-  image?: string | null;
+  image?: File | null;
   category?: string | null;
   bitter?: number | null;
   acidity?: number | null;

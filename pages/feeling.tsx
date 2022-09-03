@@ -191,7 +191,9 @@ const Feeling = () => {
         {bestfeelingData?.map((coffee) => (
           <div key={coffee.id}>
             <h4>{coffee.name}</h4>
-            {coffee.image !== null && <img src={coffee.image} alt="画像" />}
+            {coffee.image !== null && (
+              <img css={imgCoffee} src={coffee.image} alt="画像" />
+            )}
           </div>
         ))}
 
@@ -199,6 +201,9 @@ const Feeling = () => {
         {bestBitterCoffeeData?.map((coffee) => (
           <div key={coffee.id}>
             <h4>{coffee.name}</h4>
+            {coffee.image !== null && (
+              <img css={imgCoffee} src={coffee.image} alt="画像" />
+            )}
           </div>
         ))}
 
@@ -206,6 +211,9 @@ const Feeling = () => {
         {bestAcidityCoffeeData?.map((coffee) => (
           <div key={coffee.id}>
             <h4>{coffee.name}</h4>
+            {coffee.image !== null && (
+              <img css={imgCoffee} src={coffee.image} alt="画像" />
+            )}
           </div>
         ))}
       </div>
@@ -224,4 +232,9 @@ const feelingBox = css`
   h2 {
     text-align: center;
   }
+`;
+
+const imgCoffee = css`
+  width: 50%;
+  max-width: 500px;
 `;

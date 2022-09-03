@@ -17,6 +17,8 @@ type TCoffeeState = {
 };
 
 export const CoffeeForm = () => {
+  const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
+  // 登録state
   const [coffeeState, setCoffeeState] = useState<TCoffeeState>({
     id: 0,
     name: "",
@@ -28,11 +30,14 @@ export const CoffeeForm = () => {
     place: "",
   });
 
-  console.log("coffeeState", coffeeState);
+  // アップロード画像state
+  const [photoUrl, setPhotoUrl] = useState<File | null>(null);
 
-  const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
+  // 画像プレビュー用のstate
+  const [previewUrl, setPreviewUrl] = useState<string>("");
 
-  const handleSubmit = (file: any) => {
+  // db登録処理
+  const handleSubmit = (file: File | null) => {
     if (coffeeState.id === 0) {
       createCoffeeMutation.mutate({
         name: coffeeState.name,
@@ -67,9 +72,6 @@ export const CoffeeForm = () => {
     });
   };
 
-  const [photoUrl, setPhotoUrl] = useState<File | null>(null);
-  console.log("photoUrl", photoUrl);
-
   const onChangeImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files![0]) {
       setPhotoUrl(e.target.files![0]);
@@ -77,6 +79,27 @@ export const CoffeeForm = () => {
     }
   };
 
+  // プレビューの画像処理
+  useEffect(() => {
+    if (!photoUrl) {
+      return;
+    }
+
+    let reader: FileReader | null = new FileReader();
+    reader.onloadend = () => {
+      const res = reader!.result;
+      if (res && typeof res === "string") {
+        setPreviewUrl(res);
+      }
+    };
+    reader.readAsDataURL(photoUrl);
+
+    return () => {
+      reader = null;
+    };
+  }, [photoUrl]);
+
+  // 登録処理
   const onClickRegistration = (e: React.FormEvent<HTMLFormElement>) => {
     const ret = window.confirm("この内容で登録しますか？");
     if (ret) {
@@ -109,9 +132,10 @@ export const CoffeeForm = () => {
           }
         );
       } else {
-        handleSubmit("");
+        handleSubmit(null);
       }
       setPhotoUrl(null);
+      setPreviewUrl("");
       alert("登録完了しました。");
     }
   };
@@ -128,6 +152,10 @@ export const CoffeeForm = () => {
           }
         />
         <input type="file" onChange={onChangeImageHandler} />
+        {previewUrl ? (
+          <Image src={previewUrl} alt="画像" width={400} height={340} />
+        ) : null}
+
         <Select
           style={{ zIndex: 2 }}
           data={[
