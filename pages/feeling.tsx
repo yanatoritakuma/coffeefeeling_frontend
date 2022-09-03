@@ -5,7 +5,6 @@ import { Select } from "@mantine/core";
 import { useQueryFeelingCoffees } from "../hooks/useQueryFeelingCoffees";
 import { AxiosRequestConfig } from "axios";
 import { Coffee } from "@prisma/client";
-import Image from "next/image";
 
 const Feeling = () => {
   // ユーザー選択
@@ -193,7 +192,7 @@ const Feeling = () => {
           <div key={coffee.id}>
             <h4>{coffee.name}</h4>
             {coffee.image !== null && (
-              <Image src={coffee.image} alt="画像" width={400} height={340} />
+              <img css={imgCoffee} src={coffee.image} alt="画像" />
             )}
           </div>
         ))}
@@ -202,6 +201,9 @@ const Feeling = () => {
         {bestBitterCoffeeData?.map((coffee) => (
           <div key={coffee.id}>
             <h4>{coffee.name}</h4>
+            {coffee.image !== null && (
+              <img css={imgCoffee} src={coffee.image} alt="画像" />
+            )}
           </div>
         ))}
 
@@ -209,6 +211,9 @@ const Feeling = () => {
         {bestAcidityCoffeeData?.map((coffee) => (
           <div key={coffee.id}>
             <h4>{coffee.name}</h4>
+            {coffee.image !== null && (
+              <img css={imgCoffee} src={coffee.image} alt="画像" />
+            )}
           </div>
         ))}
       </div>
@@ -227,4 +232,9 @@ const feelingBox = css`
   h2 {
     text-align: center;
   }
+`;
+
+const imgCoffee = css`
+  width: 50%;
+  max-width: 500px;
 `;
