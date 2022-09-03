@@ -37,7 +37,8 @@ export const CoffeeForm = () => {
   const [previewUrl, setPreviewUrl] = useState<string>("");
 
   // db登録処理
-  const handleSubmit = (file: File | null) => {
+  // file: File | nullに戻す
+  const handleSubmit = (file: any) => {
     if (coffeeState.id === 0) {
       createCoffeeMutation.mutate({
         name: coffeeState.name,

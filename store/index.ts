@@ -11,7 +11,7 @@ const useStore = create<State>((set) => ({
   editedCoffee: {
     id: 0,
     name: "",
-    image: "",
+    image: null,
     category: "",
     bitter: 0,
     acidity: 0,
@@ -36,7 +36,7 @@ const useStore = create<State>((set) => ({
       editedCoffee: {
         id: 0,
         name: "",
-        image: "",
+        image: null,
         category: "",
         bitter: 0,
         acidity: 0,
