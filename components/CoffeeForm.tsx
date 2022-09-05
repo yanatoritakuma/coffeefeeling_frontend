@@ -156,7 +156,6 @@ export const CoffeeForm = () => {
         {previewUrl ? (
           <Image src={previewUrl} alt="画像" width={400} height={340} />
         ) : null}
-
         <Select
           style={{ zIndex: 2 }}
           data={[
@@ -240,13 +239,6 @@ export const CoffeeForm = () => {
           </Button>
         </Center>
       </form>
-      {/* <form onSubmit={onClickRegistration}>
-        <p>testInput</p>
-        <input type="file" onChange={onChangeImageHandler} />
-        <Button color="cyan" type="submit">
-          testImg
-        </Button>
-      </form> */}
     </>
   );
 };

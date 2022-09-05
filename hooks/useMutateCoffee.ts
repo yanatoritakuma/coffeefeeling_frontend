@@ -2,13 +2,11 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Coffee } from "@prisma/client";
-import useStore from "../store";
 import { EditedCoffee } from "../types";
 
 export const useMutateCoffee = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const reset = useStore((state) => state.resetEditedCoffee);
 
   const createCoffeeMutation = useMutation(
     async (coffee: Omit<EditedCoffee, "id">) => {
@@ -24,10 +22,8 @@ export const useMutateCoffee = () => {
         if (previousTodos) {
           queryClient.setQueryData(["coffees"], [res, ...previousTodos]);
         }
-        reset();
       },
       onError: (err: any) => {
-        reset();
         if (err.response.status === 401 || err.response.status === 403) {
           router.push("/");
         }
@@ -52,10 +48,8 @@ export const useMutateCoffee = () => {
             previousTodos.map((task) => (task.id === res.id ? res : task))
           );
         }
-        reset();
       },
       onError: (err: any) => {
-        reset();
         if (err.response.status === 401 || err.response.status === 403) {
           router.push("/");
         }
@@ -76,10 +70,8 @@ export const useMutateCoffee = () => {
             previousTodos.filter((task) => task.id !== variables)
           );
         }
-        reset();
       },
       onError: (err: any) => {
-        reset();
         if (err.response.status === 401 || err.response.status === 403) {
           router.push("/");
         }
