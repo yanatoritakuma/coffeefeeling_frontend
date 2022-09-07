@@ -5,8 +5,12 @@ import { Select } from "@mantine/core";
 import { useQueryFeelingCoffees } from "../hooks/useQueryFeelingCoffees";
 import { AxiosRequestConfig } from "axios";
 import { Coffee } from "@prisma/client";
+import Image from "next/image";
+import FormImg from "../public/feeling.jpg";
+import { CoffeeDialog } from "../components/common/CoffeeDialog";
 
 const Feeling = () => {
+  const { getFeelingCoffees, feelingData } = useQueryFeelingCoffees();
   // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
     category: "ブラック",
@@ -26,6 +30,9 @@ const Feeling = () => {
   // 総合での評価にヒットしたコーヒー
   const [bestfeelingData, setBestfeelingData] = useState<Coffee[]>();
 
+  // 検索して結果ダイアログ
+  const [open, setOpen] = useState(false);
+
   const requestParam: AxiosRequestConfig = {
     data: {
       category: selectCoffee.category,
@@ -36,14 +43,13 @@ const Feeling = () => {
     },
   };
 
-  const { getFeelingCoffees, feelingData } = useQueryFeelingCoffees();
-
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setBestBitterCoffeeData([]);
     setBestAcidityCoffeeData([]);
     setBestfeelingData([]);
     getFeelingCoffees(requestParam);
+    setOpen(true);
   };
 
   useEffect(() => {
@@ -103,10 +109,9 @@ const Feeling = () => {
     }
   }, [feelingData]);
 
-  console.log("bestfeelingData", bestfeelingData);
-
   return (
     <section css={feelingBox}>
+      <Image src={FormImg} layout="fill" css={feelingImg} alt="feelingImg" />
       <h2>今の気分で選ぼう</h2>
       <form onSubmit={onClickSearch}>
         <Select
@@ -186,37 +191,13 @@ const Feeling = () => {
         </Button>
       </form>
 
-      <div>
-        {bestfeelingData?.length !== 0 && <h3>ベストコーヒー</h3>}
-        {bestfeelingData?.map((coffee) => (
-          <div key={coffee.id}>
-            <h4>{coffee.name}</h4>
-            {coffee.image !== null && (
-              <img css={imgCoffee} src={coffee.image} alt="画像" />
-            )}
-          </div>
-        ))}
-
-        {bestBitterCoffeeData !== undefined && <h3>苦味ベストコーヒー</h3>}
-        {bestBitterCoffeeData?.map((coffee) => (
-          <div key={coffee.id}>
-            <h4>{coffee.name}</h4>
-            {coffee.image !== null && (
-              <img css={imgCoffee} src={coffee.image} alt="画像" />
-            )}
-          </div>
-        ))}
-
-        {bestAcidityCoffeeData !== undefined && <h3>酸味ベストコーヒー</h3>}
-        {bestAcidityCoffeeData?.map((coffee) => (
-          <div key={coffee.id}>
-            <h4>{coffee.name}</h4>
-            {coffee.image !== null && (
-              <img css={imgCoffee} src={coffee.image} alt="画像" />
-            )}
-          </div>
-        ))}
-      </div>
+      <CoffeeDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        bestBitterCoffeeData={bestBitterCoffeeData}
+        bestAcidityCoffeeData={bestAcidityCoffeeData}
+        bestfeelingData={bestfeelingData}
+      />
     </section>
   );
 };
@@ -226,15 +207,21 @@ export default Feeling;
 const feelingBox = css`
   margin: 0 auto;
   padding: 20px;
+  width: 100%;
+  height: 100vh;
   max-width: 1200px;
   border: 1px solid #aaa;
+  position: relative;
 
   h2 {
     text-align: center;
   }
 `;
 
-const imgCoffee = css`
-  width: 50%;
-  max-width: 500px;
+const feelingImg = css`
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  object-fit: cover;
 `;
