@@ -29,7 +29,6 @@ export const CoffeeDialog = (props: Props) => {
     bestAcidityCoffeeData,
     bestfeelingData,
   } = props;
-  console.log(bestfeelingData);
 
   const handleClose = () => {
     onClose();
@@ -223,6 +222,7 @@ const dialogBox = css`
       width: 38px;
       height: 38px;
       color: #333;
+      cursor: pointer;
 
       @media screen and (max-width: 425px) {
         width: 28px;

@@ -61,8 +61,8 @@ export const Layout = memo((props: Props) => {
             )}
             {user?.id && (
               <>
-                <div css={linkIconBox}>
-                  <LogoutIcon onClick={logout} className="logout" />
+                <div css={linkIconBox} onClick={logout}>
+                  <LogoutIcon className="logout" />
                   ログアウト
                 </div>
               </>
