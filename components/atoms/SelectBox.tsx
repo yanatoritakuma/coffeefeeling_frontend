@@ -7,7 +7,9 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 type Props = {
   value: string;
-  onChange: (value: any) => void;
+  onChange:
+    | ((event: SelectChangeEvent<string>, child: React.ReactNode) => void)
+    | undefined;
   label: string;
   menuItems: string[];
 };
@@ -21,7 +23,7 @@ export const SelectBox = memo((props: Props) => {
       <Select
         value={value}
         label={label}
-        onChange={(e) => onChange(e)}
+        onChange={onChange}
         style={{ backgroundColor: "#fff", width: "100%" }}
       >
         {menuItems.map((menuItem, index) => (

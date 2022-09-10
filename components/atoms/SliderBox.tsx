@@ -14,7 +14,7 @@ export const SliderBox = memo((props: Props) => {
     <>
       <Slider
         value={value}
-        onChange={(e) => onChange(e)}
+        onChange={onChange}
         defaultValue={50}
         aria-label="Default"
         valueLabelDisplay="auto"
