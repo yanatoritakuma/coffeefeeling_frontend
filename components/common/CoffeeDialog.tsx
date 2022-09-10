@@ -205,6 +205,9 @@ const dialogBox = css`
     font-weight: bold;
     color: #7b5544;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     @media screen and (max-width: 1024px) {
       font-size: 24px;
@@ -213,6 +216,13 @@ const dialogBox = css`
     .coffeeIcon {
       margin-left: 6px;
       color: #7b5544;
+      width: 38px;
+      height: 38px;
+
+      @media screen and (max-width: 768px) {
+        width: 28px;
+        height: 28px;
+      }
     }
 
     .closeBtn {
