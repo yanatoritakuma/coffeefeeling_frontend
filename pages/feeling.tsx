@@ -247,7 +247,6 @@ const sliderBox = (color: string) => css`
   min-width: 280px;
   background-color: #fff;
   border-radius: 10px;
-  color: #9fc24d;
 
   span {
     color: ${color};

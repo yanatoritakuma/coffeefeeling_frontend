@@ -1,8 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { TextInput, Button, Center, Select } from "@mantine/core";
-import { IconDatabase } from "@tabler/icons";
+import React, { useState, useEffect } from "react";
+import { css } from "@emotion/react";
+import { TextBox } from "../components/atoms/TextBox";
+import { SelectBox } from "../components/atoms/SelectBox";
+import { SelectChangeEvent } from "@mui/material/Select";
+import { ButtonBox } from "../components/atoms/ButtonBox";
+import { SliderBox } from "../components/atoms/SliderBox";
 import { useMutateCoffee } from "../hooks/useMutateCoffee";
 import Image from "next/image";
+import FormImg from "../public/form.jpg";
 import firebase, { storage } from "../firebase/initFirebase";
 
 type TCoffeeState = {
@@ -24,9 +29,9 @@ export const CoffeeForm = () => {
     name: "",
     image: null,
     category: "",
-    bitter: 0,
-    acidity: 0,
-    price: 0,
+    bitter: 1,
+    acidity: 1,
+    price: 100,
     place: "",
   });
 
@@ -66,9 +71,9 @@ export const CoffeeForm = () => {
       name: "",
       image: null,
       category: "",
-      bitter: 0,
-      acidity: 0,
-      price: 0,
+      bitter: 1,
+      acidity: 1,
+      price: 100,
       place: "",
     });
   };
@@ -103,6 +108,16 @@ export const CoffeeForm = () => {
   // 登録処理
   const onClickRegistration = (e: React.FormEvent<HTMLFormElement>) => {
     const ret = window.confirm("この内容で登録しますか？");
+
+    // バリデーション
+    if (
+      coffeeState.name === "" ||
+      coffeeState.category === "" ||
+      coffeeState.place === ""
+    ) {
+      return alert("名前、カテゴリー、場所は必須です。");
+    }
+
     if (ret) {
       e.preventDefault();
       if (photoUrl) {
@@ -142,103 +157,179 @@ export const CoffeeForm = () => {
   };
 
   return (
-    <>
-      <form onSubmit={onClickRegistration}>
-        <TextInput
-          mt="md"
-          placeholder="商品名"
-          value={coffeeState.name}
-          onChange={(e) =>
-            setCoffeeState({ ...coffeeState, name: e.target.value })
-          }
-        />
-        <input type="file" onChange={onChangeImageHandler} />
-        {previewUrl ? (
-          <Image src={previewUrl} alt="画像" width={400} height={340} />
-        ) : null}
-        <Select
-          style={{ zIndex: 2 }}
-          data={[
-            "ブラック",
-            "カフェラテ",
-            "エスプレッソ",
-            "カフェモカ",
-            "カフェオレ",
-            "カプチーノ",
-          ]}
-          placeholder="カテゴリー"
-          label="カテゴリー"
-          value={String(coffeeState.category)}
-          onChange={(e) =>
-            setCoffeeState({
-              ...coffeeState,
-              category: String(e),
-            })
-          }
-        />
-        <Select
-          style={{ zIndex: 2 }}
-          data={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
-          placeholder="苦さ"
-          label="苦さ"
-          value={String(coffeeState.bitter)}
-          onChange={(e) =>
-            setCoffeeState({
-              ...coffeeState,
-              bitter: Number(e),
-            })
-          }
-        />
-        <Select
-          style={{ zIndex: 2 }}
-          data={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
-          placeholder="酸味"
-          label="酸味"
-          value={String(coffeeState.acidity)}
-          onChange={(e) =>
-            setCoffeeState({
-              ...coffeeState,
-              acidity: Number(e),
-            })
-          }
-        />
-        <Select
-          style={{ zIndex: 2 }}
-          data={["100", "300", "500", "700", "1000"]}
-          placeholder="値段"
-          label="値段"
-          value={String(coffeeState.price)}
-          onChange={(e) =>
-            setCoffeeState({
-              ...coffeeState,
-              price: Number(e),
-            })
-          }
-        />
-        <Select
-          style={{ zIndex: 2 }}
-          data={["コンビニ", "店舗"]}
-          placeholder="場所"
-          label="場所"
-          value={String(coffeeState.place)}
-          onChange={(e) =>
-            setCoffeeState({
-              ...coffeeState,
-              place: String(e),
-            })
-          }
-        />
-        <Center mt="lg">
-          <Button
-            disabled={coffeeState.name === ""}
-            leftIcon={<IconDatabase size={14} />}
-            color="cyan"
-            type="submit"
-          >
-            {coffeeState.id === 0 ? "Create" : "Update"}
-          </Button>
-        </Center>
-      </form>
-    </>
+    <section css={coffeeFormMainBox}>
+      <Image src={FormImg} layout="fill" css={formImg} alt="backgImage" />
+      <div css={coffeeFormBox}>
+        <h3>投稿画面</h3>
+        <div css={textBox}>
+          <TextBox
+            value={coffeeState.name}
+            onChange={(e) =>
+              setCoffeeState({ ...coffeeState, name: e.target.value })
+            }
+            label="商品名"
+          />
+        </div>
+        <div css={formStateBox}>
+          <ButtonBox upload onChange={onChangeImageHandler} />
+        </div>
+        <div style={{ textAlign: "center" }}>
+          {previewUrl ? (
+            <Image src={previewUrl} alt="画像" width={400} height={340} />
+          ) : null}
+        </div>
+
+        <div css={formStateBox}>
+          <SelectBox
+            value={coffeeState.category}
+            onChange={(e: SelectChangeEvent) =>
+              setCoffeeState({
+                ...coffeeState,
+                category: e.target.value,
+              })
+            }
+            label="カテゴリー"
+            menuItems={[
+              "ブラック",
+              "カフェラテ",
+              "エスプレッソ",
+              "カフェモカ",
+              "カフェオレ",
+              "カプチーノ",
+            ]}
+          />
+        </div>
+
+        <div css={sliderBox("#24140e")}>
+          <span>苦さ{coffeeState.bitter}</span>
+          <SliderBox
+            value={coffeeState.bitter}
+            onChange={(e) =>
+              setCoffeeState({
+                ...coffeeState,
+                bitter: e.target.value,
+              })
+            }
+            max={10}
+            min={1}
+          />
+        </div>
+
+        <div css={sliderBox("#9fc24d")}>
+          <span>酸味{coffeeState.acidity}</span>
+          <SliderBox
+            value={coffeeState.acidity}
+            onChange={(e) =>
+              setCoffeeState({
+                ...coffeeState,
+                acidity: e.target.value,
+              })
+            }
+            max={10}
+            min={1}
+          />
+        </div>
+
+        <div css={formStateBox}>
+          <SelectBox
+            value={String(coffeeState.price)}
+            onChange={(e: SelectChangeEvent) =>
+              setCoffeeState({
+                ...coffeeState,
+                price: Number(e.target.value),
+              })
+            }
+            label="値段"
+            menuItems={["100", "300", "500", "700", "1000"]}
+          />
+        </div>
+        <div css={formStateBox}>
+          <SelectBox
+            value={coffeeState.place}
+            onChange={(e: SelectChangeEvent) =>
+              setCoffeeState({
+                ...coffeeState,
+                place: e.target.value,
+              })
+            }
+            label="場所"
+            menuItems={["コンビニ", "店舗"]}
+          />
+        </div>
+        <div css={btnBox}>
+          <ButtonBox onClick={(e) => onClickRegistration(e)}>
+            投稿する
+          </ButtonBox>
+        </div>
+      </div>
+    </section>
   );
 };
+
+const coffeeFormMainBox = css`
+  width: 100%;
+  height: 100vh;
+  position: relative;
+`;
+
+const coffeeFormBox = css`
+  margin: 0 auto;
+  padding: 60px 20px 20px 20px;
+  width: 50%;
+  min-width: 300px;
+  max-width: 1200px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow-y: auto;
+  height: 90%;
+
+  h3 {
+    text-align: center;
+    font-size: 26px;
+  }
+`;
+
+const formImg = css`
+  object-fit: cover;
+`;
+
+const textBox = css`
+  margin: 20px 0;
+
+  .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+    width: 100%;
+    background-color: #fff;
+  }
+`;
+
+const sliderBox = (color: string) => css`
+  margin: 10px 0;
+  padding: 12px;
+  width: 30%;
+  min-width: 260px;
+  border-radius: 10px;
+
+  span {
+    color: ${color};
+  }
+`;
+
+const formStateBox = css`
+  margin: 26px 0;
+`;
+
+const btnBox = css`
+  text-align: center;
+  button {
+    padding: 12px;
+    width: 80%;
+    font-size: 16px;
+  }
+`;
