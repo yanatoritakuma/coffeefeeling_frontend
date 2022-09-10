@@ -1,20 +1,27 @@
 import React, { useState, useEffect, FormEvent } from "react";
-import { Button } from "@mantine/core";
 import { css } from "@emotion/react";
-import { Select } from "@mantine/core";
 import { useQueryFeelingCoffees } from "../hooks/useQueryFeelingCoffees";
 import { AxiosRequestConfig } from "axios";
 import { Coffee } from "@prisma/client";
+import Image from "next/image";
+import FormImg from "../public/feeling.jpg";
+import { CoffeeDialog } from "../components/common/CoffeeDialog";
+import { SelectBox } from "../components/atoms/SelectBox";
+import { SelectChangeEvent } from "@mui/material/Select";
+import { SliderBox } from "../components/atoms/SliderBox";
+import { ButtonBox } from "../components/atoms/ButtonBox";
 
 const Feeling = () => {
+  const { getFeelingCoffees, feelingData } = useQueryFeelingCoffees();
   // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
     category: "ブラック",
-    bitter: 0,
-    acidity: 0,
+    bitter: 1,
+    acidity: 1,
     price: 100,
     place: "コンビニ",
   });
+  console.log("selectCoffee", selectCoffee);
 
   // 苦さの評価にヒットしたコーヒー
   const [bestBitterCoffeeData, setBestBitterCoffeeData] = useState<Coffee[]>();
@@ -26,6 +33,9 @@ const Feeling = () => {
   // 総合での評価にヒットしたコーヒー
   const [bestfeelingData, setBestfeelingData] = useState<Coffee[]>();
 
+  // 検索して結果ダイアログ
+  const [open, setOpen] = useState(false);
+
   const requestParam: AxiosRequestConfig = {
     data: {
       category: selectCoffee.category,
@@ -36,14 +46,13 @@ const Feeling = () => {
     },
   };
 
-  const { getFeelingCoffees, feelingData } = useQueryFeelingCoffees();
-
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setBestBitterCoffeeData([]);
     setBestAcidityCoffeeData([]);
     setBestfeelingData([]);
     getFeelingCoffees(requestParam);
+    setOpen(true);
   };
 
   useEffect(() => {
@@ -103,15 +112,21 @@ const Feeling = () => {
     }
   }, [feelingData]);
 
-  console.log("bestfeelingData", bestfeelingData);
-
   return (
     <section css={feelingBox}>
+      <Image src={FormImg} layout="fill" css={feelingImg} alt="feelingImg" />
       <h2>今の気分で選ぼう</h2>
-      <form onSubmit={onClickSearch}>
-        <Select
-          style={{ zIndex: 2 }}
-          data={[
+      <div css={selectBox}>
+        <SelectBox
+          value={selectCoffee.category}
+          onChange={(e: SelectChangeEvent) =>
+            setSelectCoffee({
+              ...selectCoffee,
+              category: e.target.value,
+            })
+          }
+          label="カテゴリー"
+          menuItems={[
             "ブラック",
             "カフェラテ",
             "エスプレッソ",
@@ -119,104 +134,76 @@ const Feeling = () => {
             "カフェオレ",
             "カプチーノ",
           ]}
-          placeholder="カテゴリー"
-          label="カテゴリー"
-          value={String(selectCoffee.category)}
-          onChange={(e) =>
-            setSelectCoffee({
-              ...selectCoffee,
-              category: String(e),
-            })
-          }
         />
-        <Select
-          style={{ zIndex: 2 }}
-          data={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
-          placeholder="苦さ"
-          label="苦さ"
-          value={String(selectCoffee.bitter)}
-          onChange={(e) =>
-            setSelectCoffee({
-              ...selectCoffee,
-              bitter: Number(e),
-            })
-          }
-        />
-        <Select
-          style={{ zIndex: 2 }}
-          data={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
-          placeholder="酸味"
-          label="酸味"
-          value={String(selectCoffee.acidity)}
-          onChange={(e) =>
-            setSelectCoffee({
-              ...selectCoffee,
-              acidity: Number(e),
-            })
-          }
-        />
-        <Select
-          style={{ zIndex: 2 }}
-          data={["100", "300", "500", "700", "1000"]}
-          placeholder="値段"
-          label="値段"
-          value={String(selectCoffee.price)}
-          onChange={(e) =>
-            setSelectCoffee({
-              ...selectCoffee,
-              price: Number(e),
-            })
-          }
-        />
-        <Select
-          style={{ zIndex: 2 }}
-          data={["コンビニ", "店舗"]}
-          placeholder="場所"
-          label="場所"
-          value={String(selectCoffee.place)}
-          onChange={(e) =>
-            setSelectCoffee({
-              ...selectCoffee,
-              place: String(e),
-            })
-          }
-        />
-        <Button color="cyan" type="submit">
-          気分で飲む
-        </Button>
-      </form>
-
-      <div>
-        {bestfeelingData?.length !== 0 && <h3>ベストコーヒー</h3>}
-        {bestfeelingData?.map((coffee) => (
-          <div key={coffee.id}>
-            <h4>{coffee.name}</h4>
-            {coffee.image !== null && (
-              <img css={imgCoffee} src={coffee.image} alt="画像" />
-            )}
-          </div>
-        ))}
-
-        {bestBitterCoffeeData !== undefined && <h3>苦味ベストコーヒー</h3>}
-        {bestBitterCoffeeData?.map((coffee) => (
-          <div key={coffee.id}>
-            <h4>{coffee.name}</h4>
-            {coffee.image !== null && (
-              <img css={imgCoffee} src={coffee.image} alt="画像" />
-            )}
-          </div>
-        ))}
-
-        {bestAcidityCoffeeData !== undefined && <h3>酸味ベストコーヒー</h3>}
-        {bestAcidityCoffeeData?.map((coffee) => (
-          <div key={coffee.id}>
-            <h4>{coffee.name}</h4>
-            {coffee.image !== null && (
-              <img css={imgCoffee} src={coffee.image} alt="画像" />
-            )}
-          </div>
-        ))}
       </div>
+      <div css={sliderBox("#24140e")}>
+        <span>苦さ{selectCoffee.bitter}</span>
+        <SliderBox
+          value={selectCoffee.bitter}
+          onChange={(e) =>
+            setSelectCoffee({
+              ...selectCoffee,
+              bitter: e.target.value,
+            })
+          }
+          max={10}
+          min={1}
+        />
+      </div>
+      <div css={sliderBox("#9fc24d")}>
+        <span>酸味{selectCoffee.acidity}</span>
+        <SliderBox
+          value={selectCoffee.acidity}
+          onChange={(e) =>
+            setSelectCoffee({
+              ...selectCoffee,
+              acidity: e.target.value,
+            })
+          }
+          max={10}
+          min={1}
+        />
+      </div>
+
+      <div css={selectBox}>
+        <SelectBox
+          value={String(selectCoffee.price)}
+          onChange={(e: SelectChangeEvent) =>
+            setSelectCoffee({
+              ...selectCoffee,
+              price: Number(e.target.value),
+            })
+          }
+          label="値段"
+          menuItems={["100", "300", "500", "700", "1000"]}
+        />
+      </div>
+
+      <div css={selectBox}>
+        <SelectBox
+          value={selectCoffee.place}
+          onChange={(e: SelectChangeEvent) =>
+            setSelectCoffee({
+              ...selectCoffee,
+              place: e.target.value,
+            })
+          }
+          label="場所"
+          menuItems={["コンビニ", "店舗"]}
+        />
+      </div>
+
+      <div css={btnBox}>
+        <ButtonBox onClick={(e) => onClickSearch(e)}>気分で飲む</ButtonBox>
+      </div>
+
+      <CoffeeDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        bestBitterCoffeeData={bestBitterCoffeeData}
+        bestAcidityCoffeeData={bestAcidityCoffeeData}
+        bestfeelingData={bestfeelingData}
+      />
     </section>
   );
 };
@@ -226,15 +213,51 @@ export default Feeling;
 const feelingBox = css`
   margin: 0 auto;
   padding: 20px;
+  width: 100%;
+  height: 100vh;
   max-width: 1200px;
   border: 1px solid #aaa;
+  position: relative;
 
   h2 {
     text-align: center;
   }
 `;
 
-const imgCoffee = css`
-  width: 50%;
-  max-width: 500px;
+const feelingImg = css`
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  object-fit: cover;
+`;
+
+const selectBox = css`
+  margin: 10px 0;
+  padding: 12px;
+  background-color: #fff;
+  border-radius: 10px;
+  min-width: 280px;
+`;
+
+const sliderBox = (color: string) => css`
+  margin: 10px 0;
+  padding: 12px;
+  width: 30%;
+  min-width: 280px;
+  background-color: #fff;
+  border-radius: 10px;
+
+  span {
+    color: ${color};
+  }
+`;
+
+const btnBox = css`
+  margin: 24px 0;
+  text-align: center;
+  button {
+    width: 50%;
+    font-size: 18px;
+  }
 `;

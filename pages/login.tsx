@@ -2,59 +2,43 @@ import { css } from "@emotion/react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import * as Yup from "yup";
-import { IconDatabase } from "@tabler/icons";
-import { ShieldCheckIcon } from "@heroicons/react/solid";
-import { ExclamationCircleIcon } from "@heroicons/react/outline";
-import {
-  Anchor,
-  TextInput,
-  Button,
-  Group,
-  PasswordInput,
-  Alert,
-  Checkbox,
-} from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
-import { AuthForm } from "../types";
-
-const schema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("No email provided"),
-  password: Yup.string()
-    .required("No password provided")
-    .min(5, "Password should be min 5 chars"),
-});
+import { TextBox } from "../components/atoms/TextBox";
+import { ButtonBox } from "../components/atoms/ButtonBox";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 
 const Login = () => {
   const router = useRouter();
+  const [auth, setAuth] = useState({
+    email: "",
+    password: "",
+    name: "",
+    admin: false,
+  });
+
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState("");
-
-  const form = useForm<AuthForm>({
-    validate: yupResolver(schema),
-    initialValues: {
-      email: "",
-      password: "",
-      name: "",
-      admin: false,
-    },
-  });
 
   const handleSubmit = async () => {
     try {
       if (isRegister) {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
-          email: form.values.email,
-          password: form.values.password,
-          name: form.values.name,
-          admin: form.values.admin,
+          email: auth.email,
+          password: auth.password,
+          name: auth.name,
+          admin: auth.admin,
         });
       }
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        email: form.values.email,
-        password: form.values.password,
+        email: auth.email,
+        password: auth.password,
       });
-      form.reset();
+      setAuth({
+        email: "",
+        password: "",
+        name: "",
+        admin: false,
+      });
       router.push("/myPage");
     } catch (e: any) {
       setError(e.response.data.message);
@@ -62,87 +46,123 @@ const Login = () => {
   };
 
   return (
-    <section>
-      <ShieldCheckIcon className="h-16 w-16 text-blue-500" />
-      {error && (
-        <Alert
-          my="md"
-          variant="filled"
-          icon={<ExclamationCircleIcon />}
-          title="Authorization Error"
-          color="red"
-          radius="md"
-        >
-          {error}
-        </Alert>
-      )}
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <TextInput
-          mt="md"
-          id="email"
-          label="メールアドレス"
-          placeholder="example@gmail.com"
-          {...form.getInputProps("email")}
-        />
-        <PasswordInput
-          mt="md"
-          id="password"
-          placeholder="パスワード"
-          label="パスワード"
-          description="Must be min 5 char"
-          {...form.getInputProps("password")}
-        />
-        {isRegister && (
-          <>
-            <TextInput
-              mt="md"
-              id="name"
-              label="名前"
-              placeholder="山田太郎"
-              {...form.getInputProps("name")}
-            />
+    <section css={loginMainBox}>
+      <div css={loginBox}>
+        <h2>{isRegister ? "アカウント作成" : "ログイン"}</h2>
+        {error && (
+          <Stack sx={{ width: "50%" }} spacing={2}>
+            <Alert severity="error">{error}</Alert>
+          </Stack>
+        )}
+        <div css={textBox}>
+          <TextBox
+            value={auth.email}
+            onChange={(e) =>
+              setAuth({
+                ...auth,
+                email: e.target.value,
+              })
+            }
+            label="メールアドレス"
+          />
+        </div>
+        <div css={textBox}>
+          <TextBox
+            value={auth.password}
+            onChange={(e) =>
+              setAuth({
+                ...auth,
+                password: e.target.value,
+              })
+            }
+            label="パスワード"
+            type
+          />
+        </div>
 
-            {/* <Checkbox
-              label="管理者"
-              tabIndex={-1}
-              size="md"
-              mr="xl"
-              styles={{ input: { cursor: "pointer" } }}
-              {...form.getInputProps("admin")}
-            /> */}
-          </>
+        {isRegister && (
+          <div css={textBox}>
+            <TextBox
+              value={auth.name}
+              onChange={(e) =>
+                setAuth({
+                  ...auth,
+                  name: e.target.value,
+                })
+              }
+              label="名前"
+            />
+          </div>
         )}
 
-        <Group mt="xl" position="apart">
-          <Anchor
-            component="button"
-            type="button"
-            size="xs"
-            className="text-gray-300"
-            onClick={() => {
-              setIsRegister(!isRegister);
-              setError("");
-            }}
-          >
-            {isRegister
-              ? "Have an account? Login"
-              : "Don't have an account? Register"}
-          </Anchor>
-          <Button
-            leftIcon={<IconDatabase size={14} />}
-            color="cyan"
-            type="submit"
-          >
-            {isRegister ? "Register" : "Login"}
-          </Button>
-        </Group>
-      </form>
+        <div css={registerTextBox}>
+          {isRegister ? (
+            <p onClick={() => setIsRegister(false)}>
+              アカウントをお持ちの場合はこちら
+            </p>
+          ) : (
+            <p onClick={() => setIsRegister(true)}>
+              アカウントをお持ちでない場合はこちら
+            </p>
+          )}
+        </div>
+
+        <div css={btnBox}>
+          <ButtonBox onClick={() => handleSubmit()}>
+            {isRegister ? "登録" : "ログイン"}
+          </ButtonBox>
+        </div>
+      </div>
     </section>
   );
 };
 
 export default Login;
 
+const loginMainBox = css`
+  background-color: #f7f6f5;
+  width: 100%;
+  height: 100vh;
+`;
+
 const loginBox = css`
-  background-color: skyblue;
+  margin: 0 auto;
+  padding: 60px 20px 20px 20px;
+  width: 50%;
+  min-width: 300px;
+  max-width: 1200px;
+`;
+
+const textBox = css`
+  margin: 20px 0;
+
+  .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+    width: 100%;
+    background-color: #fff;
+  }
+
+  .css-1nrlq1o-MuiFormControl-root {
+    width: 100%;
+    background-color: #fff;
+  }
+`;
+
+const registerTextBox = css`
+  p {
+    margin: 20px 0;
+    display: inline-block;
+    cursor: pointer;
+
+    @media screen and (max-width: 768px) {
+      font-size: 14px;
+    }
+  }
+`;
+
+const btnBox = css`
+  margin: 20px 0;
+  text-align: center;
+  button {
+    width: 80%;
+  }
 `;
