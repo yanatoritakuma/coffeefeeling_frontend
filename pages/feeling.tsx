@@ -113,111 +113,116 @@ const Feeling = () => {
   }, [feelingData]);
 
   return (
-    <section css={feelingBox}>
-      <Image src={FormImg} layout="fill" css={feelingImg} alt="feelingImg" />
-      <h2>今の気分で選ぼう</h2>
-      <div css={selectBox}>
-        <SelectBox
-          value={selectCoffee.category}
-          onChange={(e: SelectChangeEvent) =>
-            setSelectCoffee({
-              ...selectCoffee,
-              category: e.target.value,
-            })
-          }
-          label="カテゴリー"
-          menuItems={[
-            "ブラック",
-            "カフェラテ",
-            "エスプレッソ",
-            "カフェモカ",
-            "カフェオレ",
-            "カプチーノ",
-          ]}
-        />
-      </div>
-      <div css={sliderBox("#24140e")}>
-        <span>苦さ{selectCoffee.bitter}</span>
-        <SliderBox
-          value={selectCoffee.bitter}
-          onChange={(e) =>
-            setSelectCoffee({
-              ...selectCoffee,
-              bitter: e.target.value,
-            })
-          }
-          max={10}
-          min={1}
-        />
-      </div>
-      <div css={sliderBox("#9fc24d")}>
-        <span>酸味{selectCoffee.acidity}</span>
-        <SliderBox
-          value={selectCoffee.acidity}
-          onChange={(e) =>
-            setSelectCoffee({
-              ...selectCoffee,
-              acidity: e.target.value,
-            })
-          }
-          max={10}
-          min={1}
-        />
-      </div>
+    <section css={feelingMainBox}>
+      <div css={feelingBox}>
+        <Image src={FormImg} layout="fill" css={feelingImg} alt="feelingImg" />
+        <h2>今の気分で選ぼう</h2>
+        <div css={selectBox}>
+          <SelectBox
+            value={selectCoffee.category}
+            onChange={(e: SelectChangeEvent) =>
+              setSelectCoffee({
+                ...selectCoffee,
+                category: e.target.value,
+              })
+            }
+            label="カテゴリー"
+            menuItems={[
+              "ブラック",
+              "カフェラテ",
+              "エスプレッソ",
+              "カフェモカ",
+              "カフェオレ",
+              "カプチーノ",
+            ]}
+          />
+        </div>
+        <div css={sliderBox("#24140e")}>
+          <span>苦さ{selectCoffee.bitter}</span>
+          <SliderBox
+            value={selectCoffee.bitter}
+            onChange={(e) =>
+              setSelectCoffee({
+                ...selectCoffee,
+                bitter: e.target.value,
+              })
+            }
+            max={10}
+            min={1}
+          />
+        </div>
+        <div css={sliderBox("#9fc24d")}>
+          <span>酸味{selectCoffee.acidity}</span>
+          <SliderBox
+            value={selectCoffee.acidity}
+            onChange={(e) =>
+              setSelectCoffee({
+                ...selectCoffee,
+                acidity: e.target.value,
+              })
+            }
+            max={10}
+            min={1}
+          />
+        </div>
 
-      <div css={selectBox}>
-        <SelectBox
-          value={String(selectCoffee.price)}
-          onChange={(e: SelectChangeEvent) =>
-            setSelectCoffee({
-              ...selectCoffee,
-              price: Number(e.target.value),
-            })
-          }
-          label="値段"
-          menuItems={["100", "300", "500", "700", "1000"]}
+        <div css={selectBox}>
+          <SelectBox
+            value={String(selectCoffee.price)}
+            onChange={(e: SelectChangeEvent) =>
+              setSelectCoffee({
+                ...selectCoffee,
+                price: Number(e.target.value),
+              })
+            }
+            label="値段"
+            menuItems={["100", "300", "500", "700", "1000"]}
+          />
+        </div>
+
+        <div css={selectBox}>
+          <SelectBox
+            value={selectCoffee.place}
+            onChange={(e: SelectChangeEvent) =>
+              setSelectCoffee({
+                ...selectCoffee,
+                place: e.target.value,
+              })
+            }
+            label="場所"
+            menuItems={["コンビニ", "店舗"]}
+          />
+        </div>
+
+        <div css={btnBox}>
+          <ButtonBox onClick={(e) => onClickSearch(e)}>気分で飲む</ButtonBox>
+        </div>
+
+        <CoffeeDialog
+          open={open}
+          onClose={() => setOpen(false)}
+          bestBitterCoffeeData={bestBitterCoffeeData}
+          bestAcidityCoffeeData={bestAcidityCoffeeData}
+          bestfeelingData={bestfeelingData}
         />
       </div>
-
-      <div css={selectBox}>
-        <SelectBox
-          value={selectCoffee.place}
-          onChange={(e: SelectChangeEvent) =>
-            setSelectCoffee({
-              ...selectCoffee,
-              place: e.target.value,
-            })
-          }
-          label="場所"
-          menuItems={["コンビニ", "店舗"]}
-        />
-      </div>
-
-      <div css={btnBox}>
-        <ButtonBox onClick={(e) => onClickSearch(e)}>気分で飲む</ButtonBox>
-      </div>
-
-      <CoffeeDialog
-        open={open}
-        onClose={() => setOpen(false)}
-        bestBitterCoffeeData={bestBitterCoffeeData}
-        bestAcidityCoffeeData={bestAcidityCoffeeData}
-        bestfeelingData={bestfeelingData}
-      />
     </section>
   );
 };
 
 export default Feeling;
 
+const feelingMainBox = css`
+  width: 100%;
+  height: 100vh;
+  position: relative;
+`;
+
 const feelingBox = css`
   margin: 0 auto;
   padding: 20px;
   width: 100%;
-  height: 100vh;
   max-width: 1200px;
-  border: 1px solid #aaa;
-  position: relative;
 
   h2 {
     text-align: center;
