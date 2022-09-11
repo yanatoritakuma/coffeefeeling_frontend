@@ -18,7 +18,6 @@ model Coffee {
   acidity   Int?
   price     Int?
   place     String?
-  likes     Int[]
   userId    Int
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -34,4 +33,12 @@ model User {
   likes          Int[]
   admin          Boolean?
   Coffee         Coffee[]
+}
+
+model Likes {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  userId    Int
+  coffeeId  Int
 }
