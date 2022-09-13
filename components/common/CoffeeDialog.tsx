@@ -83,8 +83,7 @@ export const CoffeeDialog = (props: Props) => {
                   {coffee.acidity}
                 </div>
                 <div css={evaluationBox}>
-                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />
-                  {coffee.likes.length}
+                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />0
                 </div>
               </div>
             </div>
@@ -129,8 +128,7 @@ export const CoffeeDialog = (props: Props) => {
                   {coffee.acidity}
                 </div>
                 <div css={evaluationBox}>
-                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />
-                  {coffee.likes.length}
+                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />0
                 </div>
               </div>
             </div>
@@ -175,8 +173,7 @@ export const CoffeeDialog = (props: Props) => {
                   {coffee.acidity}
                 </div>
                 <div css={evaluationBox}>
-                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />
-                  {coffee.likes.length}
+                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />0
                 </div>
               </div>
             </div>

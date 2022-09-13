@@ -9,6 +9,8 @@ import { useMutateCoffee } from "../hooks/useMutateCoffee";
 import Image from "next/image";
 import FormImg from "../public/form.jpg";
 import firebase, { storage } from "../firebase/initFirebase";
+import { useMutateLike } from "../hooks/useMutateLike";
+import { useQueryCoffees } from "../hooks/useQueryCoffees";
 
 type TCoffeeState = {
   id: number;
@@ -23,6 +25,10 @@ type TCoffeeState = {
 
 export const CoffeeForm = () => {
   const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
+  const { createLikeMutation } = useMutateLike();
+
+  const { data: coffees } = useQueryCoffees();
+
   // 登録state
   const [coffeeState, setCoffeeState] = useState<TCoffeeState>({
     id: 0,
@@ -155,6 +161,15 @@ export const CoffeeForm = () => {
       alert("登録完了しました。");
     }
   };
+
+  // createlikeAPI実行
+  useEffect(() => {
+    if (coffees) {
+      createLikeMutation.mutate({
+        coffeeId: coffees[0].id,
+      });
+    }
+  }, [coffees?.length]);
 
   return (
     <section css={coffeeFormMainBox}>
