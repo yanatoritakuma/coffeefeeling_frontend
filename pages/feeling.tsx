@@ -11,12 +11,14 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import { SliderBox } from "../components/atoms/SliderBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
 import { useQueryLikes } from "../hooks/useQueryLikes";
+import { useQueryUser } from "../hooks/useQueryUser";
 
 const Feeling = () => {
   const { getFeelingCoffees, feelingData } = useQueryFeelingCoffees();
 
   const { data: likes } = useQueryLikes();
-  console.log("likes", likes);
+  // ログインしないと入れなくなった
+  const { data: user } = useQueryUser();
 
   // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
@@ -208,6 +210,8 @@ const Feeling = () => {
           bestBitterCoffeeData={bestBitterCoffeeData}
           bestAcidityCoffeeData={bestAcidityCoffeeData}
           bestfeelingData={bestfeelingData}
+          likes={likes}
+          loginUser={user}
         />
       </div>
     </section>

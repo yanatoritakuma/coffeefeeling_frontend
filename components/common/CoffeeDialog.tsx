@@ -5,13 +5,14 @@ import Dialog from "@mui/material/Dialog";
 import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
-import { Coffee } from "@prisma/client";
+import { Coffee, Likes, User } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMugSaucer } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
+import { useMutateLike } from "../../hooks/useMutateLike";
 
 type Props = {
   open: boolean;
@@ -19,6 +20,8 @@ type Props = {
   bestBitterCoffeeData: Coffee[] | undefined;
   bestAcidityCoffeeData: Coffee[] | undefined;
   bestfeelingData: Coffee[] | undefined;
+  likes: Likes[] | undefined;
+  loginUser: Omit<User, "hashedPassword"> | undefined;
 };
 
 export const CoffeeDialog = (props: Props) => {
@@ -28,10 +31,35 @@ export const CoffeeDialog = (props: Props) => {
     bestBitterCoffeeData,
     bestAcidityCoffeeData,
     bestfeelingData,
+    likes,
+    loginUser,
   } = props;
+
+  const { createLikeMutation } = useMutateLike();
 
   const handleClose = () => {
     onClose();
+  };
+
+  const likeUser = likes?.filter((like) => like.userId === loginUser?.id);
+
+  const likeCount = (coffeeId: number) => {
+    const likeNum = likes?.filter((like) => like.coffeeId === coffeeId);
+    return likeNum;
+  };
+
+  const onClickAddLike = (coffeeId: number) => {
+    if (likeUser !== undefined) {
+      if (likeUser.length > 0) {
+        alert("いいね削除");
+      } else {
+        createLikeMutation.mutate({
+          coffeeId: coffeeId,
+        });
+      }
+    } else {
+      alert("ログインしているユーザーしかいいねはできません");
+    }
   };
 
   return (
@@ -83,7 +111,12 @@ export const CoffeeDialog = (props: Props) => {
                   {coffee.acidity}
                 </div>
                 <div css={evaluationBox}>
-                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />0
+                  <FontAwesomeIcon
+                    icon={faHeart}
+                    className="heartIcon"
+                    onClick={() => onClickAddLike(coffee.id)}
+                  />
+                  {likeCount(coffee.id)?.length}
                 </div>
               </div>
             </div>
@@ -128,7 +161,8 @@ export const CoffeeDialog = (props: Props) => {
                   {coffee.acidity}
                 </div>
                 <div css={evaluationBox}>
-                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />0
+                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />
+                  {likeCount(coffee.id)?.length}
                 </div>
               </div>
             </div>
@@ -173,7 +207,8 @@ export const CoffeeDialog = (props: Props) => {
                   {coffee.acidity}
                 </div>
                 <div css={evaluationBox}>
-                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />0
+                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />
+                  {likeCount(coffee.id)?.length}
                 </div>
               </div>
             </div>
