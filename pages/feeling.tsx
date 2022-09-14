@@ -17,8 +17,8 @@ const Feeling = () => {
   const { getFeelingCoffees, feelingData } = useQueryFeelingCoffees();
 
   const { data: likes } = useQueryLikes();
-  // ログインしないと入れなくなった
-  const { data: user } = useQueryUser();
+  // // ログインしないと入れなくなった
+  // const { data: user } = useQueryUser();
 
   // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
@@ -211,7 +211,6 @@ const Feeling = () => {
           bestAcidityCoffeeData={bestAcidityCoffeeData}
           bestfeelingData={bestfeelingData}
           likes={likes}
-          loginUser={user}
         />
       </div>
     </section>

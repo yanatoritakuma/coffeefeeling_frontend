@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { css } from "@emotion/react";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
@@ -13,6 +13,7 @@ import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useMutateLike } from "../../hooks/useMutateLike";
+import { UserContext } from "../../providers/Userprovider";
 
 type Props = {
   open: boolean;
@@ -21,7 +22,6 @@ type Props = {
   bestAcidityCoffeeData: Coffee[] | undefined;
   bestfeelingData: Coffee[] | undefined;
   likes: Likes[] | undefined;
-  loginUser: Omit<User, "hashedPassword"> | undefined;
 };
 
 export const CoffeeDialog = (props: Props) => {
@@ -32,8 +32,9 @@ export const CoffeeDialog = (props: Props) => {
     bestAcidityCoffeeData,
     bestfeelingData,
     likes,
-    loginUser,
   } = props;
+
+  const context: any = useContext(UserContext);
 
   const { createLikeMutation } = useMutateLike();
 
@@ -41,24 +42,34 @@ export const CoffeeDialog = (props: Props) => {
     onClose();
   };
 
-  const likeUser = likes?.filter((like) => like.userId === loginUser?.id);
+  const likeUser = likes?.filter((like) => like.userId === context.user?.id);
+
+  const likeCoffees = (coffeeId: number) => {
+    return likeUser?.filter((like) => like.coffeeId === coffeeId);
+  };
 
   const likeCount = (coffeeId: number) => {
     const likeNum = likes?.filter((like) => like.coffeeId === coffeeId);
+
     return likeNum;
   };
 
   const onClickAddLike = (coffeeId: number) => {
-    if (likeUser !== undefined) {
-      if (likeUser.length > 0) {
+    const likedUser = likeCoffees(coffeeId)?.filter(
+      (liked) => liked.userId === context.user?.id
+    );
+
+    if (context.user?.id === undefined) {
+      return alert("ログインしているユーザーしかいいねはできません");
+    }
+    if (likedUser !== undefined) {
+      if (likedUser.length > 0) {
         alert("いいね削除");
       } else {
         createLikeMutation.mutate({
           coffeeId: coffeeId,
         });
       }
-    } else {
-      alert("ログインしているユーザーしかいいねはできません");
     }
   };
 
@@ -161,7 +172,11 @@ export const CoffeeDialog = (props: Props) => {
                   {coffee.acidity}
                 </div>
                 <div css={evaluationBox}>
-                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />
+                  <FontAwesomeIcon
+                    icon={faHeart}
+                    className="heartIcon"
+                    onClick={() => onClickAddLike(coffee.id)}
+                  />
                   {likeCount(coffee.id)?.length}
                 </div>
               </div>
@@ -207,7 +222,11 @@ export const CoffeeDialog = (props: Props) => {
                   {coffee.acidity}
                 </div>
                 <div css={evaluationBox}>
-                  <FontAwesomeIcon icon={faHeart} className="heartIcon" />
+                  <FontAwesomeIcon
+                    icon={faHeart}
+                    className="heartIcon"
+                    onClick={() => onClickAddLike(coffee.id)}
+                  />
                   {likeCount(coffee.id)?.length}
                 </div>
               </div>
