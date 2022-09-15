@@ -2,6 +2,8 @@ import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Likes } from "@prisma/client";
 import { useRouter } from "next/router";
+import { useContext } from "react";
+import { UserContext } from "../providers/Userprovider";
 
 type Req = {
   coffeeId: number;
@@ -10,6 +12,7 @@ type Req = {
 export const useMutateLike = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const context: any = useContext(UserContext);
 
   const createLikeMutation = useMutation(
     async (Req: Req) => {
@@ -34,5 +37,34 @@ export const useMutateLike = () => {
     }
   );
 
-  return { createLikeMutation };
+  const deleteLikeMutation = useMutation(
+    async (coffeeId: number) => {
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/likes/${coffeeId}`
+      );
+    },
+    {
+      onSuccess: (_, variables) => {
+        console.log("variables", variables);
+        const previousLikes = queryClient.getQueryData<Likes[]>(["likes"]);
+        console.log("previousLikes", previousLikes);
+        if (previousLikes) {
+          queryClient.setQueryData(
+            ["likes"],
+            previousLikes.filter(
+              (like) =>
+                like.coffeeId !== variables || like.userId !== context.user?.id
+            )
+          );
+        }
+      },
+      onError: (err: any) => {
+        if (err.response.status === 401 || err.response.status === 403) {
+          router.push("/");
+        }
+      },
+    }
+  );
+
+  return { createLikeMutation, deleteLikeMutation };
 };

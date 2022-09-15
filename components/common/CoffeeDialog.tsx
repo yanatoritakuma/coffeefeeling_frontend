@@ -36,7 +36,7 @@ export const CoffeeDialog = (props: Props) => {
 
   const context: any = useContext(UserContext);
 
-  const { createLikeMutation } = useMutateLike();
+  const { createLikeMutation, deleteLikeMutation } = useMutateLike();
 
   const handleClose = () => {
     onClose();
@@ -54,7 +54,7 @@ export const CoffeeDialog = (props: Props) => {
     return likeNum;
   };
 
-  const onClickAddLike = (coffeeId: number) => {
+  const onClickLike = (coffeeId: number) => {
     const likedUser = likeCoffees(coffeeId)?.filter(
       (liked) => liked.userId === context.user?.id
     );
@@ -64,11 +64,13 @@ export const CoffeeDialog = (props: Props) => {
     }
     if (likedUser !== undefined) {
       if (likedUser.length > 0) {
-        alert("いいね削除");
+        deleteLikeMutation.mutate(coffeeId);
+        console.log("削除");
       } else {
         createLikeMutation.mutate({
           coffeeId: coffeeId,
         });
+        console.log("作成");
       }
     }
   };
@@ -125,7 +127,7 @@ export const CoffeeDialog = (props: Props) => {
                   <FontAwesomeIcon
                     icon={faHeart}
                     className="heartIcon"
-                    onClick={() => onClickAddLike(coffee.id)}
+                    onClick={() => onClickLike(coffee.id)}
                   />
                   {likeCount(coffee.id)?.length}
                 </div>
@@ -175,7 +177,7 @@ export const CoffeeDialog = (props: Props) => {
                   <FontAwesomeIcon
                     icon={faHeart}
                     className="heartIcon"
-                    onClick={() => onClickAddLike(coffee.id)}
+                    onClick={() => onClickLike(coffee.id)}
                   />
                   {likeCount(coffee.id)?.length}
                 </div>
@@ -225,7 +227,7 @@ export const CoffeeDialog = (props: Props) => {
                   <FontAwesomeIcon
                     icon={faHeart}
                     className="heartIcon"
-                    onClick={() => onClickAddLike(coffee.id)}
+                    onClick={() => onClickLike(coffee.id)}
                   />
                   {likeCount(coffee.id)?.length}
                 </div>
