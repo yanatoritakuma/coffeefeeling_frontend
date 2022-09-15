@@ -10,9 +10,16 @@ import { SelectBox } from "../components/atoms/SelectBox";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { SliderBox } from "../components/atoms/SliderBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
+import { useQueryLikes } from "../hooks/useQueryLikes";
+import { useQueryUser } from "../hooks/useQueryUser";
 
 const Feeling = () => {
   const { getFeelingCoffees, feelingData } = useQueryFeelingCoffees();
+
+  const { data: likes } = useQueryLikes();
+  // // ログインしないと入れなくなった
+  // const { data: user } = useQueryUser();
+
   // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
     category: "ブラック",
@@ -21,7 +28,6 @@ const Feeling = () => {
     price: 100,
     place: "コンビニ",
   });
-  console.log("selectCoffee", selectCoffee);
 
   // 苦さの評価にヒットしたコーヒー
   const [bestBitterCoffeeData, setBestBitterCoffeeData] = useState<Coffee[]>();
@@ -204,6 +210,7 @@ const Feeling = () => {
           bestBitterCoffeeData={bestBitterCoffeeData}
           bestAcidityCoffeeData={bestAcidityCoffeeData}
           bestfeelingData={bestfeelingData}
+          likes={likes}
         />
       </div>
     </section>

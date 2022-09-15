@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect } from "react";
 import axios from "axios";
 import { Layout } from "../components/layout/Layout";
+import { Userprovider } from "../providers/Userprovider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,9 +31,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <Userprovider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </Userprovider>
       <ReactQueryDevtools />
     </QueryClientProvider>
   );

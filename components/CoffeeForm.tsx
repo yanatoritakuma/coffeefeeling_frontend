@@ -23,6 +23,7 @@ type TCoffeeState = {
 
 export const CoffeeForm = () => {
   const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
+
   // 登録state
   const [coffeeState, setCoffeeState] = useState<TCoffeeState>({
     id: 0,
