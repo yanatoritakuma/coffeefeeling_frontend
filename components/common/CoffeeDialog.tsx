@@ -5,13 +5,13 @@ import Dialog from "@mui/material/Dialog";
 import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
-import { Coffee, Likes, User } from "@prisma/client";
+import { Coffee, Likes } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMugSaucer } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
-import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { useMutateLike } from "../../hooks/useMutateLike";
 import { UserContext } from "../../providers/Userprovider";
 
@@ -54,6 +54,7 @@ export const CoffeeDialog = (props: Props) => {
     return likeNum;
   };
 
+  // いいねクリックの処理
   const onClickLike = (coffeeId: number) => {
     const likedUser = likeCoffees(coffeeId)?.filter(
       (liked) => liked.userId === context.user?.id
@@ -65,14 +66,21 @@ export const CoffeeDialog = (props: Props) => {
     if (likedUser !== undefined) {
       if (likedUser.length > 0) {
         deleteLikeMutation.mutate(coffeeId);
-        console.log("削除");
       } else {
         createLikeMutation.mutate({
           coffeeId: coffeeId,
         });
-        console.log("作成");
       }
     }
+  };
+
+  const likeColor = (coffeeId: number) => {
+    const likeFlag =
+      likeUser !== undefined &&
+      likeUser?.filter((like) => like.coffeeId === coffeeId).length > 0
+        ? true
+        : false;
+    return likeFlag;
   };
 
   return (
@@ -128,6 +136,11 @@ export const CoffeeDialog = (props: Props) => {
                     icon={faHeart}
                     className="heartIcon"
                     onClick={() => onClickLike(coffee.id)}
+                    style={
+                      likeColor(coffee.id)
+                        ? { color: "#e73562" }
+                        : { color: "#bcc7d7" }
+                    }
                   />
                   {likeCount(coffee.id)?.length}
                 </div>
@@ -178,6 +191,11 @@ export const CoffeeDialog = (props: Props) => {
                     icon={faHeart}
                     className="heartIcon"
                     onClick={() => onClickLike(coffee.id)}
+                    style={
+                      likeColor(coffee.id)
+                        ? { color: "#e73562" }
+                        : { color: "#bcc7d7" }
+                    }
                   />
                   {likeCount(coffee.id)?.length}
                 </div>
@@ -228,6 +246,11 @@ export const CoffeeDialog = (props: Props) => {
                     icon={faHeart}
                     className="heartIcon"
                     onClick={() => onClickLike(coffee.id)}
+                    style={
+                      likeColor(coffee.id)
+                        ? { color: "#e73562" }
+                        : { color: "#bcc7d7" }
+                    }
                   />
                   {likeCount(coffee.id)?.length}
                 </div>

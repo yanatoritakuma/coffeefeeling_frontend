@@ -45,9 +45,7 @@ export const useMutateLike = () => {
     },
     {
       onSuccess: (_, variables) => {
-        console.log("variables", variables);
         const previousLikes = queryClient.getQueryData<Likes[]>(["likes"]);
-        console.log("previousLikes", previousLikes);
         if (previousLikes) {
           queryClient.setQueryData(
             ["likes"],
