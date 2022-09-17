@@ -14,6 +14,8 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { useMutateLike } from "../../hooks/useMutateLike";
 import { UserContext } from "../../providers/Userprovider";
+import { ButtonBox } from "../atoms/ButtonBox";
+import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 
 type Props = {
   open: boolean;
@@ -37,6 +39,7 @@ export const CoffeeDialog = (props: Props) => {
   const context: any = useContext(UserContext);
 
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
+  const { deleteCoffeeMutation } = useMutateCoffee();
 
   const handleClose = () => {
     onClose();
@@ -81,6 +84,15 @@ export const CoffeeDialog = (props: Props) => {
         ? true
         : false;
     return likeFlag;
+  };
+
+  // 投稿Coffee削除
+  const onClickDelete = (coffeeId: number) => {
+    const ret = window.confirm("削除しますか？");
+    if (ret) {
+      deleteCoffeeMutation.mutate(coffeeId);
+      alert("削除しました。");
+    }
   };
 
   return (
@@ -145,6 +157,14 @@ export const CoffeeDialog = (props: Props) => {
                   {likeCount(coffee.id)?.length}
                 </div>
               </div>
+              {coffee.userId === context.user?.id && (
+                <div css={btnBox}>
+                  <ButtonBox>編集</ButtonBox>
+                  <ButtonBox onClick={() => onClickDelete(coffee.id)}>
+                    削除
+                  </ButtonBox>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -454,4 +474,14 @@ const evaluationBox = css`
       height: 18px;
     }
   }
+`;
+
+const btnBox = css`
+  margin-top: 20px;
+  margin-left: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50%;
+  min-width: 140px;
 `;

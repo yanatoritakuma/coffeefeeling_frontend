@@ -18,9 +18,9 @@ export const useMutateCoffee = () => {
     },
     {
       onSuccess: (res) => {
-        const previousTodos = queryClient.getQueryData<Coffee[]>(["coffees"]);
-        if (previousTodos) {
-          queryClient.setQueryData(["coffees"], [res, ...previousTodos]);
+        const previousCoffees = queryClient.getQueryData<Coffee[]>(["coffees"]);
+        if (previousCoffees) {
+          queryClient.setQueryData(["coffees"], [res, ...previousCoffees]);
         }
       },
       onError: (err: any) => {
@@ -41,11 +41,13 @@ export const useMutateCoffee = () => {
     },
     {
       onSuccess: (res, variables) => {
-        const previousTodos = queryClient.getQueryData<Coffee[]>(["coffees"]);
-        if (previousTodos) {
+        const previousCoffees = queryClient.getQueryData<Coffee[]>(["coffees"]);
+        if (previousCoffees) {
           queryClient.setQueryData(
             ["coffees"],
-            previousTodos.map((task) => (task.id === res.id ? res : task))
+            previousCoffees.map((coffee) =>
+              coffee.id === res.id ? res : coffee
+            )
           );
         }
       },
@@ -63,11 +65,11 @@ export const useMutateCoffee = () => {
     },
     {
       onSuccess: (_, variables) => {
-        const previousTodos = queryClient.getQueryData<Coffee[]>(["coffees"]);
-        if (previousTodos) {
+        const previousCoffees = queryClient.getQueryData<Coffee[]>(["coffees"]);
+        if (previousCoffees) {
           queryClient.setQueryData(
             ["coffees"],
-            previousTodos.filter((task) => task.id !== variables)
+            previousCoffees.filter((coffee) => coffee.id !== variables)
           );
         }
       },
