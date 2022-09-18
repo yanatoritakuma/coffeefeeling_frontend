@@ -38,7 +38,6 @@ export const CoffeeDialog = (props: Props) => {
   } = props;
 
   const context: any = useContext(UserContext);
-  console.log(context.user.admin);
 
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
   const { deleteCoffeeMutation } = useMutateCoffee();
@@ -90,6 +89,7 @@ export const CoffeeDialog = (props: Props) => {
   };
 
   // 投稿Coffee削除
+  // カスタムフックにしたい
   const onClickDelete = (coffeeId: number, coffeeImage: string | null) => {
     const ret = window.confirm("削除しますか？");
 
@@ -107,15 +107,14 @@ export const CoffeeDialog = (props: Props) => {
         desertRef
           .delete()
           .then(() => {
-            // File deleted successfully
             console.log("削除");
           })
           .catch((error) => {
-            // Uh-oh, an error occurred!
             console.log(error);
           });
       }
       deleteCoffeeMutation.mutate(coffeeId);
+      handleClose();
       alert("削除しました。");
     }
   };
@@ -183,7 +182,7 @@ export const CoffeeDialog = (props: Props) => {
                 </div>
               </div>
               {(() => {
-                if (context.user.admin || coffee.userId === context.user?.id) {
+                if (context.user?.admin || coffee.userId === context.user?.id) {
                   return (
                     <div css={btnBox}>
                       <ButtonBox>編集</ButtonBox>
@@ -252,7 +251,7 @@ export const CoffeeDialog = (props: Props) => {
                 </div>
               </div>
               {(() => {
-                if (context.user.admin || coffee.userId === context.user?.id) {
+                if (context.user?.admin || coffee.userId === context.user?.id) {
                   return (
                     <div css={btnBox}>
                       <ButtonBox>編集</ButtonBox>
@@ -321,7 +320,7 @@ export const CoffeeDialog = (props: Props) => {
                 </div>
               </div>
               {(() => {
-                if (context.user.admin || coffee.userId === context.user?.id) {
+                if (context.user?.admin || coffee.userId === context.user?.id) {
                   return (
                     <div css={btnBox}>
                       <ButtonBox>編集</ButtonBox>
