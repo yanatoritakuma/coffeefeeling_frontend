@@ -16,6 +16,7 @@ import { useMutateLike } from "../../hooks/useMutateLike";
 import { UserContext } from "../../providers/Userprovider";
 import { ButtonBox } from "../atoms/ButtonBox";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
+import { storage } from "../../firebase/initFirebase";
 
 type Props = {
   open: boolean;
@@ -37,6 +38,7 @@ export const CoffeeDialog = (props: Props) => {
   } = props;
 
   const context: any = useContext(UserContext);
+  console.log(context.user.admin);
 
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
   const { deleteCoffeeMutation } = useMutateCoffee();
@@ -77,6 +79,7 @@ export const CoffeeDialog = (props: Props) => {
     }
   };
 
+  // いいね済みの商品の色変更処理
   const likeColor = (coffeeId: number) => {
     const likeFlag =
       likeUser !== undefined &&
@@ -87,9 +90,31 @@ export const CoffeeDialog = (props: Props) => {
   };
 
   // 投稿Coffee削除
-  const onClickDelete = (coffeeId: number) => {
+  const onClickDelete = (coffeeId: number, coffeeImage: string | null) => {
     const ret = window.confirm("削除しますか？");
+
     if (ret) {
+      // 画像が設定してある場合firebaseStorageから画像も削除
+      if (coffeeImage !== null) {
+        const imgUrlStart = coffeeImage.indexOf("coffeeImages%2F");
+        const imgUrlEnd = coffeeImage.indexOf("?alt");
+        const deleteUrl = coffeeImage
+          .substring(imgUrlStart, imgUrlEnd)
+          .replace("coffeeImages%2F", "");
+
+        const desertRef = storage.ref(`coffeeImages/${deleteUrl}`);
+
+        desertRef
+          .delete()
+          .then(() => {
+            // File deleted successfully
+            console.log("削除");
+          })
+          .catch((error) => {
+            // Uh-oh, an error occurred!
+            console.log(error);
+          });
+      }
       deleteCoffeeMutation.mutate(coffeeId);
       alert("削除しました。");
     }
@@ -157,14 +182,20 @@ export const CoffeeDialog = (props: Props) => {
                   {likeCount(coffee.id)?.length}
                 </div>
               </div>
-              {coffee.userId === context.user?.id && (
-                <div css={btnBox}>
-                  <ButtonBox>編集</ButtonBox>
-                  <ButtonBox onClick={() => onClickDelete(coffee.id)}>
-                    削除
-                  </ButtonBox>
-                </div>
-              )}
+              {(() => {
+                if (context.user.admin || coffee.userId === context.user?.id) {
+                  return (
+                    <div css={btnBox}>
+                      <ButtonBox>編集</ButtonBox>
+                      <ButtonBox
+                        onClick={() => onClickDelete(coffee.id, coffee.image)}
+                      >
+                        削除
+                      </ButtonBox>
+                    </div>
+                  );
+                }
+              })()}
             </div>
           ))}
         </div>
@@ -220,6 +251,20 @@ export const CoffeeDialog = (props: Props) => {
                   {likeCount(coffee.id)?.length}
                 </div>
               </div>
+              {(() => {
+                if (context.user.admin || coffee.userId === context.user?.id) {
+                  return (
+                    <div css={btnBox}>
+                      <ButtonBox>編集</ButtonBox>
+                      <ButtonBox
+                        onClick={() => onClickDelete(coffee.id, coffee.image)}
+                      >
+                        削除
+                      </ButtonBox>
+                    </div>
+                  );
+                }
+              })()}
             </div>
           ))}
         </div>
@@ -275,6 +320,20 @@ export const CoffeeDialog = (props: Props) => {
                   {likeCount(coffee.id)?.length}
                 </div>
               </div>
+              {(() => {
+                if (context.user.admin || coffee.userId === context.user?.id) {
+                  return (
+                    <div css={btnBox}>
+                      <ButtonBox>編集</ButtonBox>
+                      <ButtonBox
+                        onClick={() => onClickDelete(coffee.id, coffee.image)}
+                      >
+                        削除
+                      </ButtonBox>
+                    </div>
+                  );
+                }
+              })()}
             </div>
           ))}
         </div>

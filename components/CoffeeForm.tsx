@@ -131,7 +131,7 @@ export const CoffeeForm = () => {
           .map((n) => S[n % S.length])
           .join("");
         const fileName = randomChar + "_" + photoUrl.name;
-        const uploadImg = storage.ref(`images/${fileName}`).put(photoUrl);
+        const uploadImg = storage.ref(`coffeeImages/${fileName}`).put(photoUrl);
         uploadImg.on(
           firebase.storage.TaskEvent.STATE_CHANGED,
           () => {},
@@ -140,7 +140,7 @@ export const CoffeeForm = () => {
           },
           async () => {
             await storage
-              .ref("images")
+              .ref("coffeeImages")
               .child(fileName)
               .getDownloadURL()
               .then((fireBaseUrl) => {
