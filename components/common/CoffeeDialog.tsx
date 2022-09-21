@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { css } from "@emotion/react";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
@@ -17,6 +17,7 @@ import { UserContext } from "../../providers/Userprovider";
 import { ButtonBox } from "../atoms/ButtonBox";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import { storage } from "../../firebase/initFirebase";
+import CoffeeEditDialog from "./CoffeeEditDialog";
 
 type Props = {
   open: boolean;
@@ -41,6 +42,10 @@ export const CoffeeDialog = (props: Props) => {
 
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
   const { deleteCoffeeMutation } = useMutateCoffee();
+
+  const [editFlag, setEditFlag] = useState(false);
+
+  const [editId, setEditId] = useState(0);
 
   const handleClose = () => {
     onClose();
@@ -185,7 +190,14 @@ export const CoffeeDialog = (props: Props) => {
                 if (context.user?.admin || coffee.userId === context.user?.id) {
                   return (
                     <div css={btnBox}>
-                      <ButtonBox>編集</ButtonBox>
+                      <ButtonBox
+                        onClick={() => {
+                          setEditFlag(true);
+                          setEditId(coffee.id);
+                        }}
+                      >
+                        編集
+                      </ButtonBox>
                       <ButtonBox
                         onClick={() => onClickDelete(coffee.id, coffee.image)}
                       >
@@ -254,7 +266,14 @@ export const CoffeeDialog = (props: Props) => {
                 if (context.user?.admin || coffee.userId === context.user?.id) {
                   return (
                     <div css={btnBox}>
-                      <ButtonBox>編集</ButtonBox>
+                      <ButtonBox
+                        onClick={() => {
+                          setEditFlag(true);
+                          setEditId(coffee.id);
+                        }}
+                      >
+                        編集
+                      </ButtonBox>
                       <ButtonBox
                         onClick={() => onClickDelete(coffee.id, coffee.image)}
                       >
@@ -323,7 +342,14 @@ export const CoffeeDialog = (props: Props) => {
                 if (context.user?.admin || coffee.userId === context.user?.id) {
                   return (
                     <div css={btnBox}>
-                      <ButtonBox>編集</ButtonBox>
+                      <ButtonBox
+                        onClick={() => {
+                          setEditFlag(true);
+                          setEditId(coffee.id);
+                        }}
+                      >
+                        編集
+                      </ButtonBox>
                       <ButtonBox
                         onClick={() => onClickDelete(coffee.id, coffee.image)}
                       >
@@ -337,6 +363,7 @@ export const CoffeeDialog = (props: Props) => {
           ))}
         </div>
       </div>
+      <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
     </Dialog>
   );
 };

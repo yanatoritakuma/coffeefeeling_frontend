@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { css } from "@emotion/react";
 import { TextBox } from "../components/atoms/TextBox";
 import { SelectBox } from "../components/atoms/SelectBox";
@@ -7,8 +7,13 @@ import { ButtonBox } from "../components/atoms/ButtonBox";
 import { SliderBox } from "../components/atoms/SliderBox";
 import { useMutateCoffee } from "../hooks/useMutateCoffee";
 import Image from "next/image";
-import FormImg from "../public/form.jpg";
 import firebase, { storage } from "../firebase/initFirebase";
+
+type Props = {
+  fromWidth?: string;
+  editType?: boolean;
+  coffeeEditId?: number;
+};
 
 type TCoffeeState = {
   id: number;
@@ -21,7 +26,9 @@ type TCoffeeState = {
   place: string;
 };
 
-export const CoffeeForm = () => {
+export const CoffeeForm = memo((props: Props) => {
+  const { fromWidth, editType, coffeeEditId } = props;
+
   const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
 
   // 登録state
@@ -35,6 +42,16 @@ export const CoffeeForm = () => {
     price: 100,
     place: "",
   });
+
+  console.log("coffeeState", coffeeState);
+
+  useEffect(() => {
+    if (coffeeEditId !== undefined)
+      setCoffeeState({
+        ...coffeeState,
+        id: coffeeEditId,
+      });
+  }, [coffeeEditId]);
 
   // アップロード画像state
   const [photoUrl, setPhotoUrl] = useState<File | null>(null);
@@ -159,9 +176,8 @@ export const CoffeeForm = () => {
 
   return (
     <section css={coffeeFormMainBox}>
-      <Image src={FormImg} layout="fill" css={formImg} alt="backgImage" />
-      <div css={coffeeFormBox}>
-        <h3>投稿画面</h3>
+      <div css={coffeeFormBox(fromWidth === undefined ? "50%" : fromWidth)}>
+        <h3>{!editType ? "投稿画面" : "編集画面"}</h3>
         <div css={textBox}>
           <TextBox
             value={coffeeState.name}
@@ -259,13 +275,13 @@ export const CoffeeForm = () => {
         </div>
         <div css={btnBox}>
           <ButtonBox onClick={(e) => onClickRegistration(e)}>
-            投稿する
+            {!editType ? "投稿する" : "更新する"}
           </ButtonBox>
         </div>
       </div>
     </section>
   );
-};
+});
 
 const coffeeFormMainBox = css`
   width: 100%;
@@ -273,10 +289,10 @@ const coffeeFormMainBox = css`
   position: relative;
 `;
 
-const coffeeFormBox = css`
+const coffeeFormBox = (width: string) => css`
   margin: 0 auto;
   padding: 60px 20px 20px 20px;
-  width: 50%;
+  width: ${width};
   min-width: 300px;
   max-width: 1200px;
   position: absolute;
@@ -295,10 +311,6 @@ const coffeeFormBox = css`
     text-align: center;
     font-size: 26px;
   }
-`;
-
-const formImg = css`
-  object-fit: cover;
 `;
 
 const textBox = css`

@@ -19,7 +19,7 @@ type Props = {
 export const TextBox = memo((props: Props) => {
   const { value, onChange, label, type } = props;
 
-  const [values, setValues] = React.useState<any>({
+  const [values, setValues] = useState<any>({
     amount: "",
     password: "",
     weight: "",
