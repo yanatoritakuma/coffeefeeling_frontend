@@ -5,7 +5,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect } from "react";
 import axios from "axios";
 import { Layout } from "../components/layout/Layout";
-import { Userprovider } from "../providers/Userprovider";
+import { Provider } from "react-redux";
+import { store } from "../redux/store";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,11 +32,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Userprovider>
+      <Provider store={store}>
         <Layout>
           <Component {...pageProps} />
         </Layout>
-      </Userprovider>
+      </Provider>
       <ReactQueryDevtools />
     </QueryClientProvider>
   );

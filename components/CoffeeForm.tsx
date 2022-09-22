@@ -8,11 +8,13 @@ import { SliderBox } from "../components/atoms/SliderBox";
 import { useMutateCoffee } from "../hooks/useMutateCoffee";
 import Image from "next/image";
 import firebase, { storage } from "../firebase/initFirebase";
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
+import NoImage from "../public/noimage.png";
 
 type Props = {
   fromWidth?: string;
   editType?: boolean;
-  coffeeEditId?: number;
 };
 
 type TCoffeeState = {
@@ -27,9 +29,13 @@ type TCoffeeState = {
 };
 
 export const CoffeeForm = memo((props: Props) => {
-  const { fromWidth, editType, coffeeEditId } = props;
+  const { fromWidth, editType } = props;
 
   const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
+
+  const editCoffeeStore = useSelector(
+    (state: RootState) => state.editCoffee.editCoffee
+  );
 
   // 登録state
   const [coffeeState, setCoffeeState] = useState<TCoffeeState>({
@@ -43,15 +49,20 @@ export const CoffeeForm = memo((props: Props) => {
     place: "",
   });
 
-  console.log("coffeeState", coffeeState);
-
   useEffect(() => {
-    if (coffeeEditId !== undefined)
+    if (editType) {
       setCoffeeState({
         ...coffeeState,
-        id: coffeeEditId,
+        id: editCoffeeStore.id,
+        name: editCoffeeStore.name,
+        category: editCoffeeStore.category,
+        bitter: editCoffeeStore.bitter,
+        acidity: editCoffeeStore.acidity,
+        price: editCoffeeStore.price,
+        place: editCoffeeStore.place,
       });
-  }, [coffeeEditId]);
+    }
+  }, []);
 
   // アップロード画像state
   const [photoUrl, setPhotoUrl] = useState<File | null>(null);
@@ -60,9 +71,9 @@ export const CoffeeForm = memo((props: Props) => {
   const [previewUrl, setPreviewUrl] = useState<string>("");
 
   // db登録処理
-  // file: File | nullに戻す
   const handleSubmit = (file: any) => {
     if (coffeeState.id === 0) {
+      // 新規登録
       createCoffeeMutation.mutate({
         name: coffeeState.name,
         image: file,
@@ -73,16 +84,30 @@ export const CoffeeForm = memo((props: Props) => {
         place: coffeeState.place,
       });
     } else {
-      updateCoffeeMutation.mutate({
-        id: coffeeState.id,
-        name: coffeeState.name,
-        image: file,
-        category: coffeeState.category,
-        bitter: coffeeState.bitter,
-        acidity: coffeeState.acidity,
-        price: coffeeState.price,
-        place: coffeeState.place,
-      });
+      // 画像が変更されていない場合の更新処理
+      if (file === null) {
+        updateCoffeeMutation.mutate({
+          id: coffeeState.id,
+          name: coffeeState.name,
+          category: coffeeState.category,
+          bitter: coffeeState.bitter,
+          acidity: coffeeState.acidity,
+          price: coffeeState.price,
+          place: coffeeState.place,
+        });
+      } else {
+        // 画像が変更されている場合の更新処理
+        updateCoffeeMutation.mutate({
+          id: coffeeState.id,
+          name: coffeeState.name,
+          image: file,
+          category: coffeeState.category,
+          bitter: coffeeState.bitter,
+          acidity: coffeeState.acidity,
+          price: coffeeState.price,
+          place: coffeeState.place,
+        });
+      }
     }
     setCoffeeState({
       id: 0,
@@ -190,11 +215,26 @@ export const CoffeeForm = memo((props: Props) => {
         <div css={formStateBox}>
           <ButtonBox upload onChange={onChangeImageHandler} />
         </div>
-        <div style={{ textAlign: "center" }}>
-          {previewUrl ? (
-            <Image src={previewUrl} alt="画像" width={400} height={340} />
-          ) : null}
-        </div>
+        {previewUrl !== "" ? (
+          <div style={{ textAlign: "center" }}>
+            {previewUrl ? (
+              <Image src={previewUrl} alt="画像" width={400} height={340} />
+            ) : null}
+          </div>
+        ) : (
+          <div style={{ textAlign: "center" }}>
+            {editCoffeeStore.image ? (
+              <Image
+                src={editCoffeeStore.image}
+                alt="画像"
+                width={400}
+                height={340}
+              />
+            ) : (
+              <Image src={NoImage} alt="画像なし" width={400} height={340} />
+            )}
+          </div>
+        )}
 
         <div css={formStateBox}>
           <SelectBox

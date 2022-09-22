@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { memo, ReactNode, useState } from "react";
+import { memo, ReactNode, useEffect, useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import logo from "../../public/logo.png";
@@ -10,6 +10,9 @@ import { LogoutIcon } from "@heroicons/react/solid";
 import { LoginIcon } from "@heroicons/react/solid";
 import { MenuIcon } from "@heroicons/react/solid";
 import { XIcon } from "@heroicons/react/solid";
+import { AppDispatch } from "../../redux/store";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/loginUserSlice";
 
 type Props = {
   children: ReactNode;
@@ -19,6 +22,12 @@ export const Layout = memo((props: Props) => {
   const { children } = props;
   const { data: user } = useQueryUser();
   const { logout } = useLogout();
+
+  const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setUser(user));
+  }, [user]);
 
   const [hamFlag, setHamFlag] = useState(false);
 

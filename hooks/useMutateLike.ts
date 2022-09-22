@@ -2,8 +2,8 @@ import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Likes } from "@prisma/client";
 import { useRouter } from "next/router";
-import { useContext } from "react";
-import { UserContext } from "../providers/Userprovider";
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
 
 type Req = {
   coffeeId: number;
@@ -12,7 +12,10 @@ type Req = {
 export const useMutateLike = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const context: any = useContext(UserContext);
+
+  const loginUserStore = useSelector(
+    (state: RootState) => state.loginUser.user
+  );
 
   const createLikeMutation = useMutation(
     async (Req: Req) => {
@@ -51,7 +54,8 @@ export const useMutateLike = () => {
             ["likes"],
             previousLikes.filter(
               (like) =>
-                like.coffeeId !== variables || like.userId !== context.user?.id
+                like.coffeeId !== variables ||
+                like.userId !== loginUserStore?.id
             )
           );
         }

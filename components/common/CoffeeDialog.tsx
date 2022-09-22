@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { css } from "@emotion/react";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
@@ -13,11 +13,13 @@ import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { useMutateLike } from "../../hooks/useMutateLike";
-import { UserContext } from "../../providers/Userprovider";
 import { ButtonBox } from "../atoms/ButtonBox";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import { storage } from "../../firebase/initFirebase";
 import CoffeeEditDialog from "./CoffeeEditDialog";
+import { RootState, AppDispatch } from "../../redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import { setEditCoffee } from "../../redux/editCoffeeSlice";
 
 type Props = {
   open: boolean;
@@ -38,20 +40,22 @@ export const CoffeeDialog = (props: Props) => {
     likes,
   } = props;
 
-  const context: any = useContext(UserContext);
+  const dispatch: AppDispatch = useDispatch();
+
+  const loginUserStore = useSelector(
+    (state: RootState) => state.loginUser.user
+  );
 
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
   const [editFlag, setEditFlag] = useState(false);
 
-  const [editId, setEditId] = useState(0);
-
   const handleClose = () => {
     onClose();
   };
 
-  const likeUser = likes?.filter((like) => like.userId === context.user?.id);
+  const likeUser = likes?.filter((like) => like.userId === loginUserStore?.id);
 
   const likeCoffees = (coffeeId: number) => {
     return likeUser?.filter((like) => like.coffeeId === coffeeId);
@@ -66,10 +70,10 @@ export const CoffeeDialog = (props: Props) => {
   // いいねクリックの処理
   const onClickLike = (coffeeId: number) => {
     const likedUser = likeCoffees(coffeeId)?.filter(
-      (liked) => liked.userId === context.user?.id
+      (liked) => liked.userId === loginUserStore.id
     );
 
-    if (context.user?.id === undefined) {
+    if (loginUserStore?.id === undefined) {
       return alert("ログインしているユーザーしかいいねはできません");
     }
     if (likedUser !== undefined) {
@@ -187,13 +191,16 @@ export const CoffeeDialog = (props: Props) => {
                 </div>
               </div>
               {(() => {
-                if (context.user?.admin || coffee.userId === context.user?.id) {
+                if (
+                  loginUserStore?.admin ||
+                  coffee.userId === loginUserStore?.id
+                ) {
                   return (
                     <div css={btnBox}>
                       <ButtonBox
                         onClick={() => {
                           setEditFlag(true);
-                          setEditId(coffee.id);
+                          dispatch(setEditCoffee(coffee));
                         }}
                       >
                         編集
@@ -263,13 +270,16 @@ export const CoffeeDialog = (props: Props) => {
                 </div>
               </div>
               {(() => {
-                if (context.user?.admin || coffee.userId === context.user?.id) {
+                if (
+                  loginUserStore?.admin ||
+                  coffee.userId === loginUserStore?.id
+                ) {
                   return (
                     <div css={btnBox}>
                       <ButtonBox
                         onClick={() => {
                           setEditFlag(true);
-                          setEditId(coffee.id);
+                          dispatch(setEditCoffee(coffee));
                         }}
                       >
                         編集
@@ -339,13 +349,16 @@ export const CoffeeDialog = (props: Props) => {
                 </div>
               </div>
               {(() => {
-                if (context.user?.admin || coffee.userId === context.user?.id) {
+                if (
+                  loginUserStore?.admin ||
+                  coffee.userId === loginUserStore?.id
+                ) {
                   return (
                     <div css={btnBox}>
                       <ButtonBox
                         onClick={() => {
                           setEditFlag(true);
-                          setEditId(coffee.id);
+                          dispatch(setEditCoffee(coffee));
                         }}
                       >
                         編集
