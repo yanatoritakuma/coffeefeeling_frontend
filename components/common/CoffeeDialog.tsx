@@ -20,6 +20,7 @@ import CoffeeEditDialog from "./CoffeeEditDialog";
 import { RootState, AppDispatch } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { setEditCoffee } from "../../redux/editCoffeeSlice";
+import { deleteImgStorage } from "../../utils/deleteImgStorage";
 
 type Props = {
   open: boolean;
@@ -48,6 +49,7 @@ export const CoffeeDialog = (props: Props) => {
 
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
   const { deleteCoffeeMutation } = useMutateCoffee();
+  const { deleteImg } = deleteImgStorage();
 
   const [editFlag, setEditFlag] = useState(false);
 
@@ -98,30 +100,12 @@ export const CoffeeDialog = (props: Props) => {
   };
 
   // 投稿Coffee削除
-  // カスタムフックにしたい
   const onClickDelete = (coffeeId: number, coffeeImage: string | null) => {
     const ret = window.confirm("削除しますか？");
 
     if (ret) {
       // 画像が設定してある場合firebaseStorageから画像も削除
-      if (coffeeImage !== null) {
-        const imgUrlStart = coffeeImage.indexOf("coffeeImages%2F");
-        const imgUrlEnd = coffeeImage.indexOf("?alt");
-        const deleteUrl = coffeeImage
-          .substring(imgUrlStart, imgUrlEnd)
-          .replace("coffeeImages%2F", "");
-
-        const desertRef = storage.ref(`coffeeImages/${deleteUrl}`);
-
-        desertRef
-          .delete()
-          .then(() => {
-            console.log("削除");
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
+      deleteImg(coffeeImage);
       deleteCoffeeMutation.mutate(coffeeId);
       handleClose();
       alert("削除しました。");

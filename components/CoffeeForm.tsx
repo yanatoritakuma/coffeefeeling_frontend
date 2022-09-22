@@ -11,6 +11,7 @@ import firebase, { storage } from "../firebase/initFirebase";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import NoImage from "../public/noimage.png";
+import { deleteImgStorage } from "../utils/deleteImgStorage";
 
 type Props = {
   fromWidth?: string;
@@ -36,6 +37,8 @@ export const CoffeeForm = memo((props: Props) => {
   const editCoffeeStore = useSelector(
     (state: RootState) => state.editCoffee.editCoffee
   );
+
+  const { deleteImg } = deleteImgStorage();
 
   // 登録state
   const [coffeeState, setCoffeeState] = useState<TCoffeeState>({
@@ -107,6 +110,7 @@ export const CoffeeForm = memo((props: Props) => {
           price: coffeeState.price,
           place: coffeeState.place,
         });
+        deleteImg(editCoffeeStore.image);
       }
     }
     setCoffeeState({
@@ -215,7 +219,7 @@ export const CoffeeForm = memo((props: Props) => {
         <div css={formStateBox}>
           <ButtonBox upload onChange={onChangeImageHandler} />
         </div>
-        {previewUrl !== "" ? (
+        {previewUrl !== "" || !editType ? (
           <div style={{ textAlign: "center" }}>
             {previewUrl ? (
               <Image src={previewUrl} alt="画像" width={400} height={340} />
