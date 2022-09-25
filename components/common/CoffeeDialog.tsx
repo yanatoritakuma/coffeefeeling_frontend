@@ -376,7 +376,7 @@ export const CoffeeDialog = (props: Props) => {
 };
 
 const dialogBox = css`
-  .css-2rbg70-MuiPaper-root-MuiDialog-paper {
+  .MuiPaper-root {
     padding: 20px;
     width: 100%;
     min-width: 290px;
@@ -441,7 +441,7 @@ const bestBox = css`
   display: flex;
   justify-content: space-between;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     display: block;
   }
 
@@ -476,7 +476,7 @@ const contentsBox = css`
   box-shadow: 4px 4px 2px #dddcd6;
   overflow-wrap: break-word;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     margin: 30px auto;
     width: 100%;
   }
