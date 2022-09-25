@@ -1,5 +1,6 @@
 import React, { useState, memo } from "react";
 import { css } from "@emotion/react";
+import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -14,10 +15,11 @@ type Props = {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   label: string;
   type?: boolean;
+  fullWidth?: boolean;
 };
 
 export const TextBox = memo((props: Props) => {
-  const { value, onChange, label, type } = props;
+  const { value, onChange, label, type, fullWidth } = props;
 
   const [values, setValues] = useState<any>({
     amount: "",
@@ -38,32 +40,52 @@ export const TextBox = memo((props: Props) => {
   return (
     <div css={textBox}>
       {!type ? (
-        <TextField
-          value={value}
-          onChange={onChange}
-          label={label}
-          variant="outlined"
-        />
-      ) : (
-        <FormControl variant="outlined">
-          <InputLabel>{label}</InputLabel>
-          <OutlinedInput
-            type={displayPs ? "text" : "password"}
+        <Box
+          sx={{
+            maxWidth: "100%",
+          }}
+        >
+          <TextField
             value={value}
             onChange={onChange}
             label={label}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => setDisplayPs(!displayPs)}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
+            variant="outlined"
+            fullWidth={fullWidth}
           />
+        </Box>
+      ) : (
+        <FormControl
+          variant="outlined"
+          sx={{
+            maxWidth: "100%",
+            width: "100%",
+          }}
+        >
+          <InputLabel>{label}</InputLabel>
+          <Box
+            sx={{
+              maxWidth: "100%",
+            }}
+          >
+            <OutlinedInput
+              type={displayPs ? "text" : "password"}
+              value={value}
+              onChange={onChange}
+              label={label}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setDisplayPs(!displayPs)}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              fullWidth={fullWidth}
+            />
+          </Box>
         </FormControl>
       )}
     </div>
