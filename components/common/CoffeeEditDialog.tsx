@@ -1,10 +1,12 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { CoffeeForm } from "../CoffeeForm";
+import { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
 
 type Props = {
   open: boolean;
@@ -14,9 +16,17 @@ type Props = {
 const CoffeeEditDialog = memo((props: Props) => {
   const { open, onClose } = props;
 
+  const editCoffeeStore = useSelector(
+    (state: RootState) => state.editCoffee.updateFlag
+  );
+
   const handleClose = () => {
     onClose();
   };
+
+  useEffect(() => {
+    handleClose();
+  }, [editCoffeeStore]);
 
   return (
     <Dialog onClose={handleClose} open={open} maxWidth="xl" css={dialogBox}>

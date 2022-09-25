@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
@@ -15,11 +15,10 @@ import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { useMutateLike } from "../../hooks/useMutateLike";
 import { ButtonBox } from "../atoms/ButtonBox";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
-import { storage } from "../../firebase/initFirebase";
 import CoffeeEditDialog from "./CoffeeEditDialog";
 import { RootState, AppDispatch } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { setEditCoffee } from "../../redux/editCoffeeSlice";
+import { setEditCoffee, setUpdateFlag } from "../../redux/editCoffeeSlice";
 import { deleteImgStorage } from "../../utils/deleteImgStorage";
 
 type Props = {
@@ -47,6 +46,10 @@ export const CoffeeDialog = (props: Props) => {
     (state: RootState) => state.loginUser.user
   );
 
+  const editCoffeeStore = useSelector(
+    (state: RootState) => state.editCoffee.updateFlag
+  );
+
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
   const { deleteCoffeeMutation } = useMutateCoffee();
   const { deleteImg } = deleteImgStorage();
@@ -56,6 +59,13 @@ export const CoffeeDialog = (props: Props) => {
   const handleClose = () => {
     onClose();
   };
+
+  useEffect(() => {
+    handleClose();
+    if (editCoffeeStore) {
+      dispatch(setUpdateFlag(false));
+    }
+  }, [editCoffeeStore]);
 
   const likeUser = likes?.filter((like) => like.userId === loginUserStore?.id);
 

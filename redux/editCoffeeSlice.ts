@@ -14,6 +14,7 @@ type InitialState = {
     price: number;
     place: string;
   };
+  updateFlag: boolean;
 };
 
 const initialState: InitialState = {
@@ -30,6 +31,7 @@ const initialState: InitialState = {
     price: 0,
     place: "",
   },
+  updateFlag: false,
 };
 
 export const editCoffeeSlice = createSlice({
@@ -39,9 +41,12 @@ export const editCoffeeSlice = createSlice({
     setEditCoffee: (state, action) => {
       state.editCoffee = action.payload;
     },
+    setUpdateFlag: (state, action) => {
+      state.updateFlag = action.payload;
+    },
   },
 });
 
-export const { setEditCoffee } = editCoffeeSlice.actions;
+export const { setEditCoffee, setUpdateFlag } = editCoffeeSlice.actions;
 
 export default editCoffeeSlice.reducer;

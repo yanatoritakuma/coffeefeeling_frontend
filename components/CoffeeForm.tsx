@@ -12,6 +12,9 @@ import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import NoImage from "../public/noimage.png";
 import { deleteImgStorage } from "../utils/deleteImgStorage";
+import { AppDispatch } from "../redux/store";
+import { useDispatch } from "react-redux";
+import { setUpdateFlag } from "../redux/editCoffeeSlice";
 
 type Props = {
   fromWidth?: string;
@@ -33,6 +36,7 @@ export const CoffeeForm = memo((props: Props) => {
   const { fromWidth, editType } = props;
 
   const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
+  const dispatch: AppDispatch = useDispatch();
 
   const editCoffeeStore = useSelector(
     (state: RootState) => state.editCoffee.editCoffee
@@ -200,6 +204,7 @@ export const CoffeeForm = memo((props: Props) => {
       setPhotoUrl(null);
       setPreviewUrl("");
       alert("登録完了しました。");
+      dispatch(setUpdateFlag(true));
     }
   };
 
