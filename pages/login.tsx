@@ -64,6 +64,7 @@ const Login = () => {
               })
             }
             label="メールアドレス"
+            fullWidth
           />
         </div>
         <div css={textBox}>
@@ -77,6 +78,7 @@ const Login = () => {
             }
             label="パスワード"
             type
+            fullWidth
           />
         </div>
 
@@ -91,6 +93,7 @@ const Login = () => {
                 })
               }
               label="名前"
+              fullWidth
             />
           </div>
         )}
@@ -135,16 +138,6 @@ const loginBox = css`
 
 const textBox = css`
   margin: 20px 0;
-
-  .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
-    width: 100%;
-    background-color: #fff;
-  }
-
-  .css-1nrlq1o-MuiFormControl-root {
-    width: 100%;
-    background-color: #fff;
-  }
 `;
 
 const registerTextBox = css`

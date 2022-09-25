@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { css } from "@emotion/react";
 import { TextBox } from "../components/atoms/TextBox";
 import { SelectBox } from "../components/atoms/SelectBox";
@@ -7,8 +7,19 @@ import { ButtonBox } from "../components/atoms/ButtonBox";
 import { SliderBox } from "../components/atoms/SliderBox";
 import { useMutateCoffee } from "../hooks/useMutateCoffee";
 import Image from "next/image";
-import FormImg from "../public/form.jpg";
 import firebase, { storage } from "../firebase/initFirebase";
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
+import NoImage from "../public/noimage.png";
+import { deleteImgStorage } from "../utils/deleteImgStorage";
+import { AppDispatch } from "../redux/store";
+import { useDispatch } from "react-redux";
+import { setUpdateFlag } from "../redux/editCoffeeSlice";
+
+type Props = {
+  fromWidth?: string;
+  editType?: boolean;
+};
 
 type TCoffeeState = {
   id: number;
@@ -21,8 +32,17 @@ type TCoffeeState = {
   place: string;
 };
 
-export const CoffeeForm = () => {
+export const CoffeeForm = memo((props: Props) => {
+  const { fromWidth, editType } = props;
+
   const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
+  const dispatch: AppDispatch = useDispatch();
+
+  const editCoffeeStore = useSelector(
+    (state: RootState) => state.editCoffee.editCoffee
+  );
+
+  const { deleteImg } = deleteImgStorage();
 
   // 登録state
   const [coffeeState, setCoffeeState] = useState<TCoffeeState>({
@@ -36,6 +56,21 @@ export const CoffeeForm = () => {
     place: "",
   });
 
+  useEffect(() => {
+    if (editType) {
+      setCoffeeState({
+        ...coffeeState,
+        id: editCoffeeStore.id,
+        name: editCoffeeStore.name,
+        category: editCoffeeStore.category,
+        bitter: editCoffeeStore.bitter,
+        acidity: editCoffeeStore.acidity,
+        price: editCoffeeStore.price,
+        place: editCoffeeStore.place,
+      });
+    }
+  }, []);
+
   // アップロード画像state
   const [photoUrl, setPhotoUrl] = useState<File | null>(null);
 
@@ -43,9 +78,9 @@ export const CoffeeForm = () => {
   const [previewUrl, setPreviewUrl] = useState<string>("");
 
   // db登録処理
-  // file: File | nullに戻す
   const handleSubmit = (file: any) => {
     if (coffeeState.id === 0) {
+      // 新規登録
       createCoffeeMutation.mutate({
         name: coffeeState.name,
         image: file,
@@ -56,16 +91,31 @@ export const CoffeeForm = () => {
         place: coffeeState.place,
       });
     } else {
-      updateCoffeeMutation.mutate({
-        id: coffeeState.id,
-        name: coffeeState.name,
-        image: file,
-        category: coffeeState.category,
-        bitter: coffeeState.bitter,
-        acidity: coffeeState.acidity,
-        price: coffeeState.price,
-        place: coffeeState.place,
-      });
+      // 画像が変更されていない場合の更新処理
+      if (file === null) {
+        updateCoffeeMutation.mutate({
+          id: coffeeState.id,
+          name: coffeeState.name,
+          category: coffeeState.category,
+          bitter: coffeeState.bitter,
+          acidity: coffeeState.acidity,
+          price: coffeeState.price,
+          place: coffeeState.place,
+        });
+      } else {
+        // 画像が変更されている場合の更新処理
+        updateCoffeeMutation.mutate({
+          id: coffeeState.id,
+          name: coffeeState.name,
+          image: file,
+          category: coffeeState.category,
+          bitter: coffeeState.bitter,
+          acidity: coffeeState.acidity,
+          price: coffeeState.price,
+          place: coffeeState.place,
+        });
+        deleteImg(editCoffeeStore.image);
+      }
     }
     setCoffeeState({
       id: 0,
@@ -131,7 +181,7 @@ export const CoffeeForm = () => {
           .map((n) => S[n % S.length])
           .join("");
         const fileName = randomChar + "_" + photoUrl.name;
-        const uploadImg = storage.ref(`images/${fileName}`).put(photoUrl);
+        const uploadImg = storage.ref(`coffeeImages/${fileName}`).put(photoUrl);
         uploadImg.on(
           firebase.storage.TaskEvent.STATE_CHANGED,
           () => {},
@@ -140,7 +190,7 @@ export const CoffeeForm = () => {
           },
           async () => {
             await storage
-              .ref("images")
+              .ref("coffeeImages")
               .child(fileName)
               .getDownloadURL()
               .then((fireBaseUrl) => {
@@ -154,14 +204,14 @@ export const CoffeeForm = () => {
       setPhotoUrl(null);
       setPreviewUrl("");
       alert("登録完了しました。");
+      dispatch(setUpdateFlag(true));
     }
   };
 
   return (
     <section css={coffeeFormMainBox}>
-      <Image src={FormImg} layout="fill" css={formImg} alt="backgImage" />
-      <div css={coffeeFormBox}>
-        <h3>投稿画面</h3>
+      <div css={coffeeFormBox(fromWidth === undefined ? "50%" : fromWidth)}>
+        <h3>{!editType ? "投稿画面" : "編集画面"}</h3>
         <div css={textBox}>
           <TextBox
             value={coffeeState.name}
@@ -174,11 +224,26 @@ export const CoffeeForm = () => {
         <div css={formStateBox}>
           <ButtonBox upload onChange={onChangeImageHandler} />
         </div>
-        <div style={{ textAlign: "center" }}>
-          {previewUrl ? (
-            <Image src={previewUrl} alt="画像" width={400} height={340} />
-          ) : null}
-        </div>
+        {previewUrl !== "" || !editType ? (
+          <div style={{ textAlign: "center" }}>
+            {previewUrl ? (
+              <Image src={previewUrl} alt="画像" width={400} height={340} />
+            ) : null}
+          </div>
+        ) : (
+          <div style={{ textAlign: "center" }}>
+            {editCoffeeStore.image ? (
+              <Image
+                src={editCoffeeStore.image}
+                alt="画像"
+                width={400}
+                height={340}
+              />
+            ) : (
+              <Image src={NoImage} alt="画像なし" width={400} height={340} />
+            )}
+          </div>
+        )}
 
         <div css={formStateBox}>
           <SelectBox
@@ -259,13 +324,13 @@ export const CoffeeForm = () => {
         </div>
         <div css={btnBox}>
           <ButtonBox onClick={(e) => onClickRegistration(e)}>
-            投稿する
+            {!editType ? "投稿する" : "更新する"}
           </ButtonBox>
         </div>
       </div>
     </section>
   );
-};
+});
 
 const coffeeFormMainBox = css`
   width: 100%;
@@ -273,10 +338,10 @@ const coffeeFormMainBox = css`
   position: relative;
 `;
 
-const coffeeFormBox = css`
+const coffeeFormBox = (width: string) => css`
   margin: 0 auto;
   padding: 60px 20px 20px 20px;
-  width: 50%;
+  width: ${width};
   min-width: 300px;
   max-width: 1200px;
   position: absolute;
@@ -295,10 +360,6 @@ const coffeeFormBox = css`
     text-align: center;
     font-size: 26px;
   }
-`;
-
-const formImg = css`
-  object-fit: cover;
 `;
 
 const textBox = css`

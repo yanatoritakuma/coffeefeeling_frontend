@@ -11,14 +11,11 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import { SliderBox } from "../components/atoms/SliderBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
 import { useQueryLikes } from "../hooks/useQueryLikes";
-import { useQueryUser } from "../hooks/useQueryUser";
 
 const Feeling = () => {
   const { getFeelingCoffees, feelingData } = useQueryFeelingCoffees();
 
   const { data: likes } = useQueryLikes();
-  // // ログインしないと入れなくなった
-  // const { data: user } = useQueryUser();
 
   // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
@@ -121,7 +118,13 @@ const Feeling = () => {
   return (
     <section css={feelingMainBox}>
       <div css={feelingBox}>
-        <Image src={FormImg} layout="fill" css={feelingImg} alt="feelingImg" />
+        <Image
+          src={FormImg}
+          priority
+          layout="fill"
+          css={feelingImg}
+          alt="feelingImg"
+        />
         <h2>今の気分で選ぼう</h2>
         <div css={selectBox}>
           <SelectBox

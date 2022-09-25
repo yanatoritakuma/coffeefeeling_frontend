@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
@@ -13,7 +13,13 @@ import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { useMutateLike } from "../../hooks/useMutateLike";
-import { UserContext } from "../../providers/Userprovider";
+import { ButtonBox } from "../atoms/ButtonBox";
+import { useMutateCoffee } from "../../hooks/useMutateCoffee";
+import CoffeeEditDialog from "./CoffeeEditDialog";
+import { RootState, AppDispatch } from "../../redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import { setEditCoffee, setUpdateFlag } from "../../redux/editCoffeeSlice";
+import { deleteImgStorage } from "../../utils/deleteImgStorage";
 
 type Props = {
   open: boolean;
@@ -34,15 +40,34 @@ export const CoffeeDialog = (props: Props) => {
     likes,
   } = props;
 
-  const context: any = useContext(UserContext);
+  const dispatch: AppDispatch = useDispatch();
+
+  const loginUserStore = useSelector(
+    (state: RootState) => state.loginUser.user
+  );
+
+  const editCoffeeStore = useSelector(
+    (state: RootState) => state.editCoffee.updateFlag
+  );
 
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
+  const { deleteCoffeeMutation } = useMutateCoffee();
+  const { deleteImg } = deleteImgStorage();
+
+  const [editFlag, setEditFlag] = useState(false);
 
   const handleClose = () => {
     onClose();
   };
 
-  const likeUser = likes?.filter((like) => like.userId === context.user?.id);
+  useEffect(() => {
+    handleClose();
+    if (editCoffeeStore) {
+      dispatch(setUpdateFlag(false));
+    }
+  }, [editCoffeeStore]);
+
+  const likeUser = likes?.filter((like) => like.userId === loginUserStore?.id);
 
   const likeCoffees = (coffeeId: number) => {
     return likeUser?.filter((like) => like.coffeeId === coffeeId);
@@ -57,10 +82,10 @@ export const CoffeeDialog = (props: Props) => {
   // いいねクリックの処理
   const onClickLike = (coffeeId: number) => {
     const likedUser = likeCoffees(coffeeId)?.filter(
-      (liked) => liked.userId === context.user?.id
+      (liked) => liked.userId === loginUserStore.id
     );
 
-    if (context.user?.id === undefined) {
+    if (loginUserStore?.id === undefined) {
       return alert("ログインしているユーザーしかいいねはできません");
     }
     if (likedUser !== undefined) {
@@ -74,6 +99,7 @@ export const CoffeeDialog = (props: Props) => {
     }
   };
 
+  // いいね済みの商品の色変更処理
   const likeColor = (coffeeId: number) => {
     const likeFlag =
       likeUser !== undefined &&
@@ -81,6 +107,19 @@ export const CoffeeDialog = (props: Props) => {
         ? true
         : false;
     return likeFlag;
+  };
+
+  // 投稿Coffee削除
+  const onClickDelete = (coffeeId: number, coffeeImage: string | null) => {
+    const ret = window.confirm("削除しますか？");
+
+    if (ret) {
+      // 画像が設定してある場合firebaseStorageから画像も削除
+      deleteImg(coffeeImage);
+      deleteCoffeeMutation.mutate(coffeeId);
+      handleClose();
+      alert("削除しました。");
+    }
   };
 
   return (
@@ -145,6 +184,30 @@ export const CoffeeDialog = (props: Props) => {
                   {likeCount(coffee.id)?.length}
                 </div>
               </div>
+              {(() => {
+                if (
+                  loginUserStore?.admin ||
+                  coffee.userId === loginUserStore?.id
+                ) {
+                  return (
+                    <div css={btnBox}>
+                      <ButtonBox
+                        onClick={() => {
+                          setEditFlag(true);
+                          dispatch(setEditCoffee(coffee));
+                        }}
+                      >
+                        編集
+                      </ButtonBox>
+                      <ButtonBox
+                        onClick={() => onClickDelete(coffee.id, coffee.image)}
+                      >
+                        削除
+                      </ButtonBox>
+                    </div>
+                  );
+                }
+              })()}
             </div>
           ))}
         </div>
@@ -200,6 +263,30 @@ export const CoffeeDialog = (props: Props) => {
                   {likeCount(coffee.id)?.length}
                 </div>
               </div>
+              {(() => {
+                if (
+                  loginUserStore?.admin ||
+                  coffee.userId === loginUserStore?.id
+                ) {
+                  return (
+                    <div css={btnBox}>
+                      <ButtonBox
+                        onClick={() => {
+                          setEditFlag(true);
+                          dispatch(setEditCoffee(coffee));
+                        }}
+                      >
+                        編集
+                      </ButtonBox>
+                      <ButtonBox
+                        onClick={() => onClickDelete(coffee.id, coffee.image)}
+                      >
+                        削除
+                      </ButtonBox>
+                    </div>
+                  );
+                }
+              })()}
             </div>
           ))}
         </div>
@@ -255,16 +342,41 @@ export const CoffeeDialog = (props: Props) => {
                   {likeCount(coffee.id)?.length}
                 </div>
               </div>
+              {(() => {
+                if (
+                  loginUserStore?.admin ||
+                  coffee.userId === loginUserStore?.id
+                ) {
+                  return (
+                    <div css={btnBox}>
+                      <ButtonBox
+                        onClick={() => {
+                          setEditFlag(true);
+                          dispatch(setEditCoffee(coffee));
+                        }}
+                      >
+                        編集
+                      </ButtonBox>
+                      <ButtonBox
+                        onClick={() => onClickDelete(coffee.id, coffee.image)}
+                      >
+                        削除
+                      </ButtonBox>
+                    </div>
+                  );
+                }
+              })()}
             </div>
           ))}
         </div>
       </div>
+      <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
     </Dialog>
   );
 };
 
 const dialogBox = css`
-  .css-2rbg70-MuiPaper-root-MuiDialog-paper {
+  .MuiPaper-root {
     padding: 20px;
     width: 100%;
     min-width: 290px;
@@ -329,7 +441,7 @@ const bestBox = css`
   display: flex;
   justify-content: space-between;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     display: block;
   }
 
@@ -364,7 +476,7 @@ const contentsBox = css`
   box-shadow: 4px 4px 2px #dddcd6;
   overflow-wrap: break-word;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1024px) {
     margin: 30px auto;
     width: 100%;
   }
@@ -454,4 +566,14 @@ const evaluationBox = css`
       height: 18px;
     }
   }
+`;
+
+const btnBox = css`
+  margin-top: 20px;
+  margin-left: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50%;
+  min-width: 140px;
 `;

@@ -20,6 +20,7 @@ model Coffee {
   place     String?
   userId    Int
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Likes     Likes[]
 }
 
 model User {
@@ -41,4 +42,5 @@ model Likes {
   updatedAt DateTime
   userId    Int
   coffeeId  Int
+  Coffee    Coffee   @relation(fields: [coffeeId], references: [id], onDelete: Cascade)
 }
