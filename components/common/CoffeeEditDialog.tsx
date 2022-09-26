@@ -45,7 +45,7 @@ const CoffeeEditDialog = memo((props: Props) => {
 export default CoffeeEditDialog;
 
 const dialogBox = css`
-  .css-2rbg70-MuiPaper-root-MuiDialog-paper {
+  .MuiPaper-root {
     padding: 20px;
     width: 60%;
     height: 100vh;
