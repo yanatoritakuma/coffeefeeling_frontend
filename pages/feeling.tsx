@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import { css } from "@emotion/react";
-import { useQueryFeelingCoffees } from "../hooks/useQueryFeelingCoffees";
+import { useFeelingCoffees } from "../hooks/useFeelingCoffees";
 import { AxiosRequestConfig } from "axios";
 import { Coffee } from "@prisma/client";
 import Image from "next/image";
@@ -13,7 +13,7 @@ import { ButtonBox } from "../components/atoms/ButtonBox";
 import { useQueryLikes } from "../hooks/useQueryLikes";
 
 const Feeling = () => {
-  const { getFeelingCoffees, feelingData } = useQueryFeelingCoffees();
+  const { getFeelingCoffees, feelingData } = useFeelingCoffees();
 
   const { data: likes } = useQueryLikes();
 

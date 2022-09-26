@@ -4,7 +4,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
-import { CoffeeForm } from "../CoffeeForm";
+import { CoffeeForm } from "./CoffeeForm";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 

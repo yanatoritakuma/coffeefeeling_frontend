@@ -1,20 +1,20 @@
 import React, { useState, useEffect, memo } from "react";
 import { css } from "@emotion/react";
-import { TextBox } from "../components/atoms/TextBox";
-import { SelectBox } from "../components/atoms/SelectBox";
+import { TextBox } from "../atoms/TextBox";
+import { SelectBox } from "../atoms/SelectBox";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { ButtonBox } from "../components/atoms/ButtonBox";
-import { SliderBox } from "../components/atoms/SliderBox";
-import { useMutateCoffee } from "../hooks/useMutateCoffee";
+import { ButtonBox } from "../atoms/ButtonBox";
+import { SliderBox } from "../atoms/SliderBox";
+import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import Image from "next/image";
-import firebase, { storage } from "../firebase/initFirebase";
-import { RootState } from "../redux/store";
+import firebase, { storage } from "../../firebase/initFirebase";
+import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
-import NoImage from "../public/noimage.png";
-import { deleteImgStorage } from "../utils/deleteImgStorage";
-import { AppDispatch } from "../redux/store";
+import NoImage from "../../public/noimage.png";
+import { deleteImgStorage } from "../../utils/deleteImgStorage";
+import { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
-import { setUpdateFlag } from "../redux/editCoffeeSlice";
+import { setUpdateFlag } from "../../redux/editCoffeeSlice";
 
 type Props = {
   fromWidth?: string;

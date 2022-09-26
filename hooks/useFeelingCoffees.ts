@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios, { AxiosRequestConfig } from "axios";
 import { Coffee } from "@prisma/client";
 
-export const useQueryFeelingCoffees = () => {
+export const useFeelingCoffees = () => {
   const [feelingData, setFeelingData] = useState<Coffee[]>([]);
   const getFeelingCoffees = async (coffee: AxiosRequestConfig<any>) => {
     const json = JSON.stringify(coffee.data);

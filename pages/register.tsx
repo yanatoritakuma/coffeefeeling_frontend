@@ -1,6 +1,6 @@
 import React from "react";
 import { css } from "@emotion/react";
-import { CoffeeForm } from "../components/CoffeeForm";
+import { CoffeeForm } from "../components/common/CoffeeForm";
 import Image from "next/image";
 import FormImg from "../public/form.jpg";
 
