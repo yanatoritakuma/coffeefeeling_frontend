@@ -1,18 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { css } from "@emotion/react";
 import { useQueryUser } from "../hooks/useQueryUser";
 import Image from "next/image";
 import UserImg from "../public/user.png";
 import { useQueryGetUserCoffee } from "../hooks/useQueryGetUserCoffee";
-import { TabBox } from "../components/organisms/tabBox";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faMugSaucer } from "@fortawesome/free-solid-svg-icons";
+import CoffeeDetail from "../components/common/CoffeeDetail";
 
 const MyPage = () => {
   const { data: user } = useQueryUser();
   console.log("user", user);
 
   const { data: userCoffees } = useQueryGetUserCoffee();
-
   console.log("userCoffees", userCoffees);
+
+  const [tabValue, setTabValue] = useState("post");
 
   return (
     <section css={myPageMainBox}>
@@ -32,8 +36,38 @@ const MyPage = () => {
           </div>
         </div>
         <h3>{user?.name}</h3>
-        <div>
-          <TabBox />
+        <div css={tabBox}>
+          <div css={tabListBox}>
+            <span onClick={() => setTabValue("post")}>
+              <FontAwesomeIcon
+                icon={faMugSaucer}
+                style={
+                  tabValue === "post"
+                    ? { color: "#7b5544" }
+                    : { color: "#bcc7d7" }
+                }
+              />
+            </span>
+            <span onClick={() => setTabValue("like")}>
+              <FontAwesomeIcon
+                icon={faHeart}
+                style={
+                  tabValue === "like"
+                    ? { color: "#e73562" }
+                    : { color: "#bcc7d7" }
+                }
+              />
+            </span>
+          </div>
+          <div css={contentsBox}>
+            {tabValue === "post" && (
+              <div>
+                <h4 className="contetsTitle">投稿記事</h4>
+                <CoffeeDetail coffees={userCoffees} />
+              </div>
+            )}
+            {tabValue === "like" && <div>like</div>}
+          </div>
         </div>
       </div>
     </section>
@@ -45,7 +79,7 @@ export default MyPage;
 const myPageMainBox = css`
   padding: 30px 10px;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   background-color: #ebf6f7;
 
   h2 {
@@ -84,5 +118,37 @@ const imgRightBox = css`
   span {
     margin: 6px 0;
     display: block;
+  }
+`;
+
+const tabBox = css``;
+
+const tabListBox = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  span {
+    padding: 12px;
+    width: 46%;
+    display: block;
+    text-align: center;
+    border: 1px solid #333;
+    border-bottom: none;
+  }
+
+  svg {
+    width: 30px;
+    height: 30px;
+  }
+`;
+
+const contentsBox = css`
+  padding: 20px;
+  border: 1px solid #333;
+
+  .contetsTitle {
+    text-align: center;
+    font-size: 21px;
   }
 `;

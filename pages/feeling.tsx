@@ -10,12 +10,9 @@ import { SelectBox } from "../components/atoms/SelectBox";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { SliderBox } from "../components/atoms/SliderBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
-import { useQueryLikes } from "../hooks/useQueryLikes";
 
 const Feeling = () => {
   const { getFeelingCoffees, feelingData } = useFeelingCoffees();
-
-  const { data: likes } = useQueryLikes();
 
   // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
@@ -213,7 +210,6 @@ const Feeling = () => {
           bestBitterCoffeeData={bestBitterCoffeeData}
           bestAcidityCoffeeData={bestAcidityCoffeeData}
           bestfeelingData={bestfeelingData}
-          likes={likes}
         />
       </div>
     </section>
