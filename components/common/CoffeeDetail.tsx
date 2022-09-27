@@ -100,7 +100,12 @@ const CoffeeDetail = memo((props: Props) => {
           {coffee.image !== null ? (
             <img css={imgCoffee} src={coffee.image} alt="画像" />
           ) : (
-            <Image src={NoImage} alt="画像なし" />
+            <Image
+              src={NoImage}
+              css={noImg}
+              layout="responsive"
+              alt="画像なし"
+            />
           )}
           <div className="productNameBox">
             <span>商品名</span>
@@ -194,6 +199,13 @@ const productBox = css`
 `;
 
 const imgCoffee = css`
+  margin: 0 auto;
+  display: block;
+  width: 100%;
+  max-width: 600px;
+`;
+
+const noImg = css`
   margin: 0 auto;
   display: block;
   width: 100%;
