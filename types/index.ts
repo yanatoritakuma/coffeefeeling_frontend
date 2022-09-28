@@ -15,3 +15,8 @@ export type EditedCoffee = {
   price?: number | null;
   place?: string | null;
 };
+
+export type EditedUser = {
+  name: string;
+  image?: string | null;
+};

@@ -2,24 +2,14 @@ import React, { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
-import Tooltip from "@mui/material/Tooltip";
-import Image from "next/image";
-import NoImage from "../../public/noimage.png";
-import { Coffee, Likes } from "@prisma/client";
+import { Coffee } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMugSaucer } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
-import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
-import { useMutateLike } from "../../hooks/useMutateLike";
-import { ButtonBox } from "../atoms/ButtonBox";
-import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import CoffeeEditDialog from "./CoffeeEditDialog";
 import { RootState, AppDispatch } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { setEditCoffee, setUpdateFlag } from "../../redux/editCoffeeSlice";
-import { deleteImgStorage } from "../../utils/deleteImgStorage";
+import { setUpdateFlag } from "../../redux/editCoffeeSlice";
 import CoffeeDetail from "./CoffeeDetail";
 
 type Props = {
@@ -40,10 +30,6 @@ export const CoffeeDialog = (props: Props) => {
   } = props;
 
   const dispatch: AppDispatch = useDispatch();
-
-  const loginUserStore = useSelector(
-    (state: RootState) => state.loginUser.user
-  );
 
   const editCoffeeStore = useSelector(
     (state: RootState) => state.editCoffee.updateFlag

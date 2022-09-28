@@ -114,6 +114,7 @@ export const CoffeeForm = memo((props: Props) => {
           price: coffeeState.price,
           place: coffeeState.place,
         });
+        // 既に登録済みの画像を削除
         deleteImg(editCoffeeStore.image);
       }
     }

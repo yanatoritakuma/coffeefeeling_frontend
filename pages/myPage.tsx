@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { useQueryUser } from "../hooks/useQueryUser";
 import Image from "next/image";
@@ -7,9 +7,12 @@ import { useQueryGetUserCoffee } from "../hooks/useQueryGetUserCoffee";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faMugSaucer } from "@fortawesome/free-solid-svg-icons";
+import { faGear } from "@fortawesome/free-solid-svg-icons";
 import CoffeeDetail from "../components/common/CoffeeDetail";
 import { useQueryLikes } from "../hooks/useQueryLikes";
 import { useQueryCoffees } from "../hooks/useQueryCoffees";
+import { MenuBox } from "../components/common/MenuBox";
+import { ProfileChange } from "../components/common/ProfileChange";
 
 const MyPage = () => {
   const { data: user } = useQueryUser();
@@ -32,13 +35,35 @@ const MyPage = () => {
     (coffee) => likeUserCoffeeId?.indexOf(coffee.id) !== -1
   );
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const onClickMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const [selectMenu, setSelectMenu] = useState(-1);
+
+  const [profileFlag, setProfileFlag] = useState(false);
+
+  useEffect(() => {
+    selectMenu === 0 && setProfileFlag(true);
+  }, [selectMenu]);
+
+  useEffect(() => {
+    setSelectMenu(-1);
+  }, [profileFlag]);
+
   return (
     <section css={myPageMainBox}>
       <h2>マイページ</h2>
       <div css={myPageBox}>
         <div css={imgBox}>
           <div css={userImgBox}>
-            <Image src={UserImg} width={100} height={100} alt="userImg" />
+            {user?.image ? (
+              <Image src={user?.image} width={100} height={100} alt="userImg" />
+            ) : (
+              <Image src={UserImg} width={100} height={100} alt="userImg" />
+            )}
           </div>
           <div css={imgRightBox}>
             <span>{userCoffees?.length}</span>
@@ -87,6 +112,21 @@ const MyPage = () => {
             )}
           </div>
         </div>
+        <FontAwesomeIcon
+          icon={faGear}
+          css={settingIcon}
+          onClick={(e: any) => onClickMenu(e)}
+        />
+        <MenuBox
+          anchorEl={anchorEl}
+          setAnchorEl={setAnchorEl}
+          menuItemArray={["プロフィール変更", "アカウント削除"]}
+          setSelectMenu={setSelectMenu}
+        />
+        <ProfileChange
+          open={profileFlag}
+          onClose={() => setProfileFlag(false)}
+        />
       </div>
     </section>
   );
@@ -112,17 +152,36 @@ const myPageBox = css`
   max-width: 1000px;
   background-color: #fff;
   border-radius: 10px;
+  position: relative;
+
+  h3 {
+    margin: 12px auto;
+    width: 96%;
+  }
+`;
+
+const settingIcon = css`
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 30px;
+  height: 30px;
+
+  @media screen and (max-width: 425px) {
+    width: 24px;
+    height: 24px;
+    top: 16px;
+    right: 16px;
+  }
 `;
 
 const imgBox = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 400px;
-
-  @media screen and (max-width: 425px) {
-    width: 260px;
-  }
+  width: 70%;
+  max-width: 360px;
+  min-width: 220px;
 `;
 
 const userImgBox = css`
