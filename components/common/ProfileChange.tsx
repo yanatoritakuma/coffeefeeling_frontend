@@ -11,6 +11,7 @@ import firebase, { storage } from "../../firebase/initFirebase";
 import { useMutateUser } from "../../hooks/useMutateUser";
 import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { useQueryUser } from "../../hooks/useQueryUser";
+import UserImg from "../../public/user.png";
 
 type Props = {
   open: boolean;
@@ -30,9 +31,24 @@ export const ProfileChange = memo((props: Props) => {
     image: null,
   });
 
+  useEffect(() => {
+    if (user !== undefined && user.name !== null) {
+      setProfile({
+        ...profile,
+        name: user.name,
+      });
+    }
+  }, [user]);
+
   const [photoUrl, setPhotoUrl] = useState<File | null>(null);
 
   const [previewUrl, setPreviewUrl] = useState<string>("");
+
+  useEffect(() => {
+    if (user !== undefined && user.image !== null) {
+      setPreviewUrl(user?.image);
+    }
+  }, [user]);
 
   const handleClose = () => {
     onClose();
@@ -153,14 +169,36 @@ export const ProfileChange = memo((props: Props) => {
             name: e.target.value,
           })
         }
-        label="新しい名前"
+        label="名前"
         fullWidth
       />
-      <ButtonBox upload onChange={onChangeImageHandler} />
+      <div css={uploadBox}>
+        <ButtonBox upload onChange={onChangeImageHandler} />
+      </div>
       {previewUrl ? (
-        <Image src={previewUrl} alt="画像" width={400} height={340} />
-      ) : null}
-      <ButtonBox onClick={(e) => onClickChange(e)}>変更</ButtonBox>
+        <div css={imageBox}>
+          <Image
+            src={previewUrl}
+            alt="画像"
+            layout="responsive"
+            width={400}
+            height={340}
+          />
+        </div>
+      ) : (
+        <div css={imageBox}>
+          <Image
+            src={UserImg}
+            alt="画像"
+            layout="responsive"
+            width={400}
+            height={340}
+          />
+        </div>
+      )}
+      <div css={btnBox}>
+        <ButtonBox onClick={(e) => onClickChange(e)}>変更</ButtonBox>
+      </div>
     </Dialog>
   );
 });
@@ -218,5 +256,30 @@ const dialogBox = css`
         height: 28px;
       }
     }
+  }
+`;
+
+const imageBox = css`
+  margin: 0 auto;
+  width: 50%;
+
+  img {
+    border-radius: 50%;
+  }
+`;
+
+const uploadBox = css`
+  margin: 20px 0;
+  svg {
+    font-size: 36px;
+  }
+`;
+
+const btnBox = css`
+  margin: 20px 0;
+  text-align: center;
+
+  button {
+    width: 60%;
   }
 `;

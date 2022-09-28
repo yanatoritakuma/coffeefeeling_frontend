@@ -70,7 +70,7 @@ const MyPage = () => {
             <span>投稿</span>
           </div>
           <div css={imgRightBox}>
-            <span>0</span>
+            <span>{coffeeLikes?.length}</span>
             <span>いいね</span>
           </div>
         </div>
@@ -166,6 +166,7 @@ const settingIcon = css`
   right: 30px;
   width: 30px;
   height: 30px;
+  cursor: pointer;
 
   @media screen and (max-width: 425px) {
     width: 24px;
@@ -185,6 +186,9 @@ const imgBox = css`
 `;
 
 const userImgBox = css`
+  img {
+    border-radius: 50%;
+  }
   @media screen and (max-width: 425px) {
     max-width: 80px;
   }
