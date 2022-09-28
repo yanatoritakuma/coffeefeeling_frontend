@@ -78,7 +78,7 @@ export const ProfileChange = memo((props: Props) => {
         image: file,
       });
       // 既に登録済みの画像を削除
-      // deleteImg(user?.image);
+      user?.image !== undefined && deleteImg(user.image, "userImages");
     }
 
     setProfile({
