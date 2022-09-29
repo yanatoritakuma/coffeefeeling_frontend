@@ -101,7 +101,6 @@ const MyPage = () => {
           <div css={contentsBox}>
             {tabValue === "post" && (
               <div>
-                <h4 className="contetsTitle">投稿記事</h4>
                 <CoffeeDetail coffees={userCoffees} />
               </div>
             )}
@@ -227,9 +226,4 @@ const tabListBox = css`
 const contentsBox = css`
   padding: 20px;
   border: 1px solid #333;
-
-  .contetsTitle {
-    text-align: center;
-    font-size: 21px;
-  }
 `;

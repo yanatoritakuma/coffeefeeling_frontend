@@ -1,11 +1,13 @@
+import { useState, useEffect } from "react";
 import { css } from "@emotion/react";
-import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
+import Image from "next/image";
 import { TextBox } from "../components/atoms/TextBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
+import firebase, { storage } from "../firebase/initFirebase";
 
 const Login = () => {
   const router = useRouter();
@@ -13,22 +15,44 @@ const Login = () => {
     email: "",
     password: "",
     name: "",
+    img: null,
     admin: false,
   });
 
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async () => {
-    try {
-      if (isRegister) {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
-          email: auth.email,
-          password: auth.password,
-          name: auth.name,
-          admin: auth.admin,
-        });
+  const [photoUrl, setPhotoUrl] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+
+  const onChangeImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files![0]) {
+      setPhotoUrl(e.target.files![0]);
+      e.target.value = "";
+    }
+  };
+
+  useEffect(() => {
+    if (!photoUrl) {
+      return;
+    }
+
+    let reader: FileReader | null = new FileReader();
+    reader.onloadend = () => {
+      const res = reader!.result;
+      if (res && typeof res === "string") {
+        setPreviewUrl(res);
       }
+    };
+    reader.readAsDataURL(photoUrl);
+
+    return () => {
+      reader = null;
+    };
+  }, [photoUrl]);
+
+  const onClickLogin = async () => {
+    try {
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         email: auth.email,
         password: auth.password,
@@ -37,11 +61,83 @@ const Login = () => {
         email: "",
         password: "",
         name: "",
+        img: null,
         admin: false,
       });
       router.push("/myPage");
     } catch (e: any) {
       setError(e.response.data.message);
+    }
+  };
+
+  const createAccount = async (file: any) => {
+    try {
+      if (isRegister) {
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
+          email: auth.email,
+          password: auth.password,
+          name: auth.name,
+          image: file,
+          admin: auth.admin,
+        });
+      }
+      await onClickLogin();
+      router.push("/myPage");
+    } catch (e: any) {
+      setError(e.response.data.message);
+    }
+  };
+
+  // 登録処理
+  const onClickRegister = (e: React.FormEvent<HTMLFormElement>) => {
+    const ret = window.confirm("この内容で登録しますか？");
+
+    // バリデーション
+    if (auth.name === "") {
+      return alert("名前は必須です。");
+    }
+
+    if (ret) {
+      e.preventDefault();
+      if (photoUrl) {
+        const S =
+          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const N = 16;
+        const randomChar = Array.from(
+          crypto.getRandomValues(new Uint32Array(N))
+        )
+          .map((n) => S[n % S.length])
+          .join("");
+        const fileName = randomChar + "_" + photoUrl.name;
+        const uploadImg = storage.ref(`userImages/${fileName}`).put(photoUrl);
+        uploadImg.on(
+          firebase.storage.TaskEvent.STATE_CHANGED,
+          () => {},
+          (err) => {
+            alert(err.message);
+          },
+          async () => {
+            await storage
+              .ref("userImages")
+              .child(fileName)
+              .getDownloadURL()
+              .then((fireBaseUrl) => {
+                createAccount(fireBaseUrl);
+              });
+          }
+        );
+      } else {
+        createAccount(null);
+      }
+      setPhotoUrl(null);
+      setPreviewUrl("");
+      setAuth({
+        email: "",
+        password: "",
+        name: "",
+        img: null,
+        admin: false,
+      });
     }
   };
 
@@ -83,17 +179,32 @@ const Login = () => {
         </div>
 
         {isRegister && (
-          <div css={textBox}>
-            <TextBox
-              value={auth.name}
-              onChange={(e) =>
-                setAuth({
-                  ...auth,
-                  name: e.target.value,
-                })
-              }
-              label="名前"
-              fullWidth
+          <>
+            <div css={textBox}>
+              <TextBox
+                value={auth.name}
+                onChange={(e) =>
+                  setAuth({
+                    ...auth,
+                    name: e.target.value,
+                  })
+                }
+                label="名前"
+                fullWidth
+              />
+            </div>
+            <ButtonBox upload onChange={onChangeImageHandler} />
+          </>
+        )}
+
+        {previewUrl !== "" && (
+          <div css={imageBox}>
+            <Image
+              src={previewUrl}
+              alt="画像"
+              layout="responsive"
+              width={400}
+              height={340}
             />
           </div>
         )}
@@ -111,7 +222,11 @@ const Login = () => {
         </div>
 
         <div css={btnBox}>
-          <ButtonBox onClick={() => handleSubmit()}>
+          <ButtonBox
+            onClick={(e) => {
+              isRegister ? onClickRegister(e) : onClickLogin();
+            }}
+          >
             {isRegister ? "登録" : "ログイン"}
           </ButtonBox>
         </div>
@@ -157,5 +272,14 @@ const btnBox = css`
   text-align: center;
   button {
     width: 80%;
+  }
+`;
+
+const imageBox = css`
+  margin: 0 auto;
+  width: 50%;
+
+  img {
+    border-radius: 50%;
   }
 `;
