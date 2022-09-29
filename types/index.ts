@@ -20,3 +20,8 @@ export type EditedUser = {
   name: string;
   image?: string | null;
 };
+
+export type DeleteUser = {
+  id: number;
+  image: string | null;
+};

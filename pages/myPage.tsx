@@ -13,6 +13,7 @@ import { useQueryLikes } from "../hooks/useQueryLikes";
 import { useQueryCoffees } from "../hooks/useQueryCoffees";
 import { MenuBox } from "../components/common/MenuBox";
 import { ProfileChange } from "../components/common/ProfileChange";
+import AccountDelete from "../components/common/AccountDelete";
 
 const MyPage = () => {
   const { data: user } = useQueryUser();
@@ -43,15 +44,28 @@ const MyPage = () => {
 
   const [selectMenu, setSelectMenu] = useState(-1);
 
-  const [profileFlag, setProfileFlag] = useState(false);
+  const [settingFlag, setSettingFlag] = useState({
+    profile: false,
+    accountDelete: false,
+  });
 
   useEffect(() => {
-    selectMenu === 0 && setProfileFlag(true);
+    if (selectMenu === 0) {
+      setSettingFlag({
+        ...settingFlag,
+        profile: true,
+      });
+    } else if (selectMenu === 1) {
+      setSettingFlag({
+        ...settingFlag,
+        accountDelete: true,
+      });
+    }
   }, [selectMenu]);
 
   useEffect(() => {
     setSelectMenu(-1);
-  }, [profileFlag]);
+  }, [settingFlag]);
 
   return (
     <section css={myPageMainBox}>
@@ -123,8 +137,22 @@ const MyPage = () => {
           setSelectMenu={setSelectMenu}
         />
         <ProfileChange
-          open={profileFlag}
-          onClose={() => setProfileFlag(false)}
+          open={settingFlag.profile}
+          onClose={() =>
+            setSettingFlag({
+              ...settingFlag,
+              profile: false,
+            })
+          }
+        />
+        <AccountDelete
+          open={settingFlag.accountDelete}
+          onClose={() =>
+            setSettingFlag({
+              ...settingFlag,
+              accountDelete: false,
+            })
+          }
         />
       </div>
     </section>

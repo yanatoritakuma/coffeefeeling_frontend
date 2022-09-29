@@ -86,7 +86,7 @@ const CoffeeDetail = memo((props: Props) => {
 
     if (ret) {
       // 画像が設定してある場合firebaseStorageから画像も削除
-      deleteImg(coffeeImage);
+      deleteImg(coffeeImage, "coffeeImages");
       deleteCoffeeMutation.mutate(coffeeId);
       dispatch(setUpdateFlag(true));
       alert("削除しました。");
