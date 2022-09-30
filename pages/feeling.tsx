@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import { css } from "@emotion/react";
-import { useQueryFeelingCoffees } from "../hooks/useQueryFeelingCoffees";
+import { useFeelingCoffees } from "../hooks/useFeelingCoffees";
 import { AxiosRequestConfig } from "axios";
 import { Coffee } from "@prisma/client";
 import Image from "next/image";
@@ -10,12 +10,9 @@ import { SelectBox } from "../components/atoms/SelectBox";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { SliderBox } from "../components/atoms/SliderBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
-import { useQueryLikes } from "../hooks/useQueryLikes";
 
 const Feeling = () => {
-  const { getFeelingCoffees, feelingData } = useQueryFeelingCoffees();
-
-  const { data: likes } = useQueryLikes();
+  const { getFeelingCoffees, feelingData } = useFeelingCoffees();
 
   // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
@@ -213,7 +210,6 @@ const Feeling = () => {
           bestBitterCoffeeData={bestBitterCoffeeData}
           bestAcidityCoffeeData={bestAcidityCoffeeData}
           bestfeelingData={bestfeelingData}
-          likes={likes}
         />
       </div>
     </section>
