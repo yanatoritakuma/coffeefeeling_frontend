@@ -31,7 +31,6 @@ model User {
   hashedPassword String
   name           String?
   image          String?
-  likes          Int[]
   admin          Boolean?
   Coffee         Coffee[]
 }

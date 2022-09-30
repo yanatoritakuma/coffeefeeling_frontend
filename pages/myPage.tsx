@@ -115,12 +115,20 @@ const MyPage = () => {
           <div css={contentsBox}>
             {tabValue === "post" && (
               <div>
-                <CoffeeDetail coffees={userCoffees} />
+                {userCoffees !== undefined && userCoffees?.length < 0 ? (
+                  <CoffeeDetail coffees={userCoffees} />
+                ) : (
+                  <p>まだ投稿がありません</p>
+                )}
               </div>
             )}
             {tabValue === "like" && (
               <div>
-                <CoffeeDetail coffees={coffeeLikes} />
+                {coffeeLikes !== undefined && coffeeLikes?.length < 0 ? (
+                  <CoffeeDetail coffees={coffeeLikes} />
+                ) : (
+                  <p>まだいいねがありません</p>
+                )}
               </div>
             )}
           </div>

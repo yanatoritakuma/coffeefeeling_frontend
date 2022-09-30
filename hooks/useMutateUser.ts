@@ -40,7 +40,6 @@ export const useMutateUser = () => {
       deleteImg(user.image, "userImages");
       queryClient.removeQueries(["user"]);
       alert("削除しました。");
-      router.push("/");
     }
   });
 
