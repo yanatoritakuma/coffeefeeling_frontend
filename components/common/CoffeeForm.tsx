@@ -220,6 +220,7 @@ export const CoffeeForm = memo((props: Props) => {
               setCoffeeState({ ...coffeeState, name: e.target.value })
             }
             label="商品名"
+            fullWidth
           />
         </div>
         <div css={formStateBox}>
@@ -365,11 +366,6 @@ const coffeeFormBox = (width: string) => css`
 
 const textBox = css`
   margin: 20px 0;
-
-  .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
-    width: 100%;
-    background-color: #fff;
-  }
 `;
 
 const sliderBox = (color: string) => css`

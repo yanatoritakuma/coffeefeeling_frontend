@@ -5,6 +5,7 @@ import Image from "next/image";
 import TopImg from "../public/coffeeTop.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMugHot } from "@fortawesome/free-solid-svg-icons";
+import { faCrown } from "@fortawesome/free-solid-svg-icons";
 
 const Home: NextPage = () => {
   return (
@@ -15,6 +16,12 @@ const Home: NextPage = () => {
         <div css={linkBox}>
           今の気分で選ぶ
           <FontAwesomeIcon icon={faMugHot} />
+        </div>
+      </Link>
+      <Link href="/likeRanking">
+        <div css={linkLikeBox}>
+          いいねランキング
+          <FontAwesomeIcon icon={faCrown} />
         </div>
       </Link>
     </section>
@@ -83,5 +90,37 @@ const linkBox = css`
     @media screen and (max-width: 768px) {
       width: 30px;
     }
+  }
+`;
+
+const linkLikeBox = css`
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  width: fit-content;
+  min-width: 230px;
+  cursor: pointer;
+
+  a {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+  }
+
+  svg {
+    margin: 6px 12px 12px 12px;
+    width: 40px;
+  }
+
+  @media screen and (max-width: 768px) {
+    font-size: 20px;
   }
 `;
