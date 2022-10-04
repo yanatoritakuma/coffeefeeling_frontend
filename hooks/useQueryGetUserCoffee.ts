@@ -13,7 +13,7 @@ export const useQueryGetUserCoffee = () => {
     return data;
   };
   return useQuery<Coffee[], Error>({
-    queryKey: ["userCoffees"],
+    queryKey: ["coffees"],
     queryFn: getUserCoffees,
     onError: (err: any) => {
       if (err.response.status === 401 || err.response.status === 403)
