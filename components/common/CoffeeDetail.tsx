@@ -9,14 +9,13 @@ import { ButtonBox } from "../atoms/ButtonBox";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { useQueryLikes } from "../../hooks/useQueryLikes";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { useMutateLike } from "../../hooks/useMutateLike";
 import { setEditCoffee, setUpdateFlag } from "../../redux/editCoffeeSlice";
 import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import CoffeeEditDialog from "./CoffeeEditDialog";
+import likeFeature from "../../utils/likeFeature";
 
 type Props = {
   coffees: Coffee[] | undefined;
@@ -24,61 +23,16 @@ type Props = {
 
 const CoffeeDetail = memo((props: Props) => {
   const { coffees } = props;
-  const { createLikeMutation, deleteLikeMutation } = useMutateLike();
-  const { data: likes } = useQueryLikes();
+  const dispatch: AppDispatch = useDispatch();
+  const { onClickLike, likeColor, likeCount } = likeFeature();
+  const { deleteImg } = deleteImgStorage();
+  const { deleteCoffeeMutation } = useMutateCoffee();
 
   const [editFlag, setEditFlag] = useState(false);
-
-  const dispatch: AppDispatch = useDispatch();
 
   const loginUserStore = useSelector(
     (state: RootState) => state.loginUser.user
   );
-
-  const likeUser = likes?.filter((like) => like.userId === loginUserStore?.id);
-
-  const likeCoffees = (coffeeId: number) => {
-    return likeUser?.filter((like) => like.coffeeId === coffeeId);
-  };
-
-  const { deleteImg } = deleteImgStorage();
-  const { deleteCoffeeMutation } = useMutateCoffee();
-
-  // いいねクリックの処理
-  const onClickLike = (coffeeId: number) => {
-    const likedUser = likeCoffees(coffeeId)?.filter(
-      (liked) => liked.userId === loginUserStore.id
-    );
-
-    if (loginUserStore?.id === undefined) {
-      return alert("ログインしているユーザーしかいいねはできません");
-    }
-    if (likedUser !== undefined) {
-      if (likedUser.length > 0) {
-        deleteLikeMutation.mutate(coffeeId);
-      } else {
-        createLikeMutation.mutate({
-          coffeeId: coffeeId,
-        });
-      }
-    }
-  };
-
-  // いいね済みの商品の色変更処理
-  const likeColor = (coffeeId: number) => {
-    const likeFlag =
-      likeUser !== undefined &&
-      likeUser?.filter((like) => like.coffeeId === coffeeId).length > 0
-        ? true
-        : false;
-    return likeFlag;
-  };
-
-  const likeCount = (coffeeId: number) => {
-    const likeNum = likes?.filter((like) => like.coffeeId === coffeeId);
-
-    return likeNum;
-  };
 
   // 投稿Coffee削除
   const onClickDelete = (coffeeId: number, coffeeImage: string | null) => {
@@ -107,9 +61,21 @@ const CoffeeDetail = memo((props: Props) => {
               alt="画像なし"
             />
           )}
-          <div className="productNameBox">
-            <span>商品名</span>
+          <div css={explanationBox}>
+            <span className="explanationBox__text">商品名</span>
             <h4>{coffee.name}</h4>
+          </div>
+          <div css={explanationBox}>
+            <span className="explanationBox__text">カテゴリー</span>
+            <h4>{coffee.category}</h4>
+          </div>
+          <div css={explanationBox}>
+            <span className="explanationBox__text">値段</span>
+            <h4>{coffee.price}</h4>
+          </div>
+          <div css={explanationBox}>
+            <span className="explanationBox__text">場所</span>
+            <h4>{coffee.place}</h4>
           </div>
           <div css={evaluationMainBox}>
             <div css={evaluationBox}>
@@ -177,11 +143,6 @@ const productBox = css`
   border: 2px solid #aaa;
   border-radius: 4px;
 
-  .productNameBox {
-    display: flex;
-    align-items: center;
-  }
-
   h4 {
     font-size: 18px;
     color: #333;
@@ -195,6 +156,21 @@ const productBox = css`
 
   span {
     width: 65px;
+  }
+`;
+
+const explanationBox = css`
+  margin: 12px 0;
+  font-size: 18px;
+  font-weight: bold;
+  h4 {
+    margin: 0px;
+    padding: 8px 0 0 18px;
+  }
+
+  .explanationBox__text {
+    color: #7b5544;
+    font-size: 16px;
   }
 `;
 

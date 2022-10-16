@@ -8,7 +8,7 @@ import { deleteImgStorage } from "../utils/deleteImgStorage";
 export const useMutateUser = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { deleteImg } = deleteImgStorage();
+  const { deleteImg, deleteAllUserPostsImg } = deleteImgStorage();
 
   const updateUserMutation = useMutation(
     async (user: EditedUser) => {
@@ -38,6 +38,7 @@ export const useMutateUser = () => {
     if (ret) {
       await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/auth/${user.id}`);
       deleteImg(user.image, "userImages");
+      deleteAllUserPostsImg(user.id);
       queryClient.removeQueries(["user"]);
       alert("削除しました。");
     }

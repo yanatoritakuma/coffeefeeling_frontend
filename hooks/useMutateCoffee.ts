@@ -41,10 +41,12 @@ export const useMutateCoffee = () => {
     },
     {
       onSuccess: (res, variables) => {
-        const previousCoffees = queryClient.getQueryData<Coffee[]>(["coffees"]);
+        const previousCoffees = queryClient.getQueryData<Coffee[]>([
+          "userCoffees",
+        ]);
         if (previousCoffees) {
           queryClient.setQueryData(
-            ["coffees"],
+            ["userCoffees"],
             previousCoffees.map((coffee) =>
               coffee.id === res.id ? res : coffee
             )
@@ -68,7 +70,7 @@ export const useMutateCoffee = () => {
         const previousCoffees = queryClient.getQueryData<Coffee[]>(["coffees"]);
         if (previousCoffees) {
           queryClient.setQueryData(
-            ["coffees"],
+            ["userCoffees"],
             previousCoffees.filter((coffee) => coffee.id !== variables)
           );
         }

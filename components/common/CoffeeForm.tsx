@@ -15,6 +15,7 @@ import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
 import { setUpdateFlag } from "../../redux/editCoffeeSlice";
+import { useQueryUser } from "../../hooks/useQueryUser";
 
 type Props = {
   fromWidth?: string;
@@ -35,6 +36,7 @@ type TCoffeeState = {
 export const CoffeeForm = memo((props: Props) => {
   const { fromWidth, editType } = props;
 
+  const { data: user } = useQueryUser();
   const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
   const dispatch: AppDispatch = useDispatch();
 
@@ -182,7 +184,9 @@ export const CoffeeForm = memo((props: Props) => {
           .map((n) => S[n % S.length])
           .join("");
         const fileName = randomChar + "_" + photoUrl.name;
-        const uploadImg = storage.ref(`coffeeImages/${fileName}`).put(photoUrl);
+        const uploadImg = storage
+          .ref(`coffeeImages/${user?.id}/${fileName}`)
+          .put(photoUrl);
         uploadImg.on(
           firebase.storage.TaskEvent.STATE_CHANGED,
           () => {},
@@ -191,7 +195,7 @@ export const CoffeeForm = memo((props: Props) => {
           },
           async () => {
             await storage
-              .ref("coffeeImages")
+              .ref(`coffeeImages/${user?.id}/`)
               .child(fileName)
               .getDownloadURL()
               .then((fireBaseUrl) => {
@@ -220,6 +224,7 @@ export const CoffeeForm = memo((props: Props) => {
               setCoffeeState({ ...coffeeState, name: e.target.value })
             }
             label="商品名"
+            fullWidth
           />
         </div>
         <div css={formStateBox}>
@@ -365,11 +370,6 @@ const coffeeFormBox = (width: string) => css`
 
 const textBox = css`
   margin: 20px 0;
-
-  .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
-    width: 100%;
-    background-color: #fff;
-  }
 `;
 
 const sliderBox = (color: string) => css`
