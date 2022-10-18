@@ -8,6 +8,7 @@ import { ButtonBox } from "../components/atoms/ButtonBox";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import firebase, { storage } from "../firebase/initFirebase";
+import useChangeImage from "../hooks/useChangeImage";
 
 const Login = () => {
   const router = useRouter();
@@ -22,15 +23,10 @@ const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState("");
 
-  const [photoUrl, setPhotoUrl] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>("");
+  // アップロード画像hooks
+  const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
 
-  const onChangeImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files![0]) {
-      setPhotoUrl(e.target.files![0]);
-      e.target.value = "";
-    }
-  };
+  const [previewUrl, setPreviewUrl] = useState<string>("");
 
   useEffect(() => {
     if (!photoUrl) {

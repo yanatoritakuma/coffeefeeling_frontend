@@ -16,6 +16,7 @@ import { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
 import { setUpdateFlag } from "../../redux/editCoffeeSlice";
 import { useQueryUser } from "../../hooks/useQueryUser";
+import useChangeImage from "../../hooks/useChangeImage";
 
 type Props = {
   fromWidth?: string;
@@ -43,6 +44,9 @@ export const CoffeeForm = memo((props: Props) => {
   const editCoffeeStore = useSelector(
     (state: RootState) => state.editCoffee.editCoffee
   );
+
+  // アップロード画像hooks
+  const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
 
   const { deleteImg } = deleteImgStorage();
 
@@ -72,9 +76,6 @@ export const CoffeeForm = memo((props: Props) => {
       });
     }
   }, []);
-
-  // アップロード画像state
-  const [photoUrl, setPhotoUrl] = useState<File | null>(null);
 
   // 画像プレビュー用のstate
   const [previewUrl, setPreviewUrl] = useState<string>("");
@@ -130,13 +131,6 @@ export const CoffeeForm = memo((props: Props) => {
       price: 100,
       place: "",
     });
-  };
-
-  const onChangeImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files![0]) {
-      setPhotoUrl(e.target.files![0]);
-      e.target.value = "";
-    }
   };
 
   // プレビューの画像処理

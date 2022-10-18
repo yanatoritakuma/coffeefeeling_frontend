@@ -12,6 +12,7 @@ import { useMutateUser } from "../../hooks/useMutateUser";
 import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { useQueryUser } from "../../hooks/useQueryUser";
 import UserImg from "../../public/user.png";
+import useChangeImage from "../../hooks/useChangeImage";
 
 type Props = {
   open: boolean;
@@ -40,7 +41,8 @@ export const ProfileChange = memo((props: Props) => {
     }
   }, [user]);
 
-  const [photoUrl, setPhotoUrl] = useState<File | null>(null);
+  // アップロード画像hooks
+  const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
 
   const [previewUrl, setPreviewUrl] = useState<string>("");
 
@@ -52,13 +54,6 @@ export const ProfileChange = memo((props: Props) => {
 
   const handleClose = () => {
     onClose();
-  };
-
-  const onChangeImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files![0]) {
-      setPhotoUrl(e.target.files![0]);
-      e.target.value = "";
-    }
   };
 
   useEffect(() => {
