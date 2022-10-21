@@ -1,7 +1,6 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import { css } from "@emotion/react";
 import { useFeelingCoffees } from "../hooks/useFeelingCoffees";
-import { AxiosRequestConfig } from "axios";
 import { Coffee } from "@prisma/client";
 import Image from "next/image";
 import FormImg from "../public/feeling.jpg";
@@ -13,6 +12,7 @@ import { ButtonBox } from "../components/atoms/ButtonBox";
 
 const Feeling = () => {
   const { getFeelingCoffees, feelingData } = useFeelingCoffees();
+  console.log("!!!!", feelingData);
 
   // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
@@ -36,14 +36,12 @@ const Feeling = () => {
   // 検索して結果ダイアログ
   const [open, setOpen] = useState(false);
 
-  const requestParam: AxiosRequestConfig = {
-    data: {
-      category: selectCoffee.category,
-      bitter: selectCoffee.bitter,
-      acidity: selectCoffee.acidity,
-      price: selectCoffee.price,
-      place: selectCoffee.place,
-    },
+  const feelingReq = {
+    category: selectCoffee.category,
+    bitter: selectCoffee.bitter,
+    acidity: selectCoffee.acidity,
+    price: selectCoffee.price,
+    place: selectCoffee.place,
   };
 
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
@@ -51,7 +49,7 @@ const Feeling = () => {
     setBestBitterCoffeeData([]);
     setBestAcidityCoffeeData([]);
     setBestfeelingData([]);
-    getFeelingCoffees(requestParam);
+    getFeelingCoffees(feelingReq);
     setOpen(true);
   };
 
