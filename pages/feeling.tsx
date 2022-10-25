@@ -1,7 +1,6 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import { css } from "@emotion/react";
 import { useQueryFeelingCoffees } from "../hooks/useQueryFeelingCoffees";
-import { Coffee } from "@prisma/client";
 import Image from "next/image";
 import FormImg from "../public/feeling.jpg";
 import { CoffeeDialog } from "../components/common/CoffeeDialog";
@@ -19,16 +18,6 @@ const Feeling = () => {
     price: 100,
     place: "コンビニ",
   });
-
-  // 苦さの評価にヒットしたコーヒー
-  const [bestBitterCoffeeData, setBestBitterCoffeeData] = useState<Coffee[]>();
-
-  // 酸味の評価にヒットしたコーヒー
-  const [bestAcidityCoffeeData, setBestAcidityCoffeeData] =
-    useState<Coffee[]>();
-
-  // 総合での評価にヒットしたコーヒー
-  const [bestfeelingData, setBestfeelingData] = useState<Coffee[]>();
 
   // 検索して結果ダイアログ
   const [open, setOpen] = useState(false);
@@ -55,71 +44,11 @@ const Feeling = () => {
 
   useEffect(() => {
     if (searchFlag) {
-      setBestBitterCoffeeData([]);
-      setBestAcidityCoffeeData([]);
-      setBestfeelingData([]);
       refetch();
       setOpen(true);
       setSearchFlag(false);
     }
   }, [searchFlag]);
-
-  // useEffect(() => {
-  //   if (feelingData.length !== 0) {
-  //     // ユーザーが選択した「カテゴリー、値段、場所」が一致したコーヒーの苦さ数値取得
-  //     const selectBitter = feelingData.map((coffee: Coffee) => {
-  //       return Number(coffee.bitter);
-  //     });
-
-  //     // ユーザーが選択した苦さの評価にもっとも近い苦さ評価値取得
-  //     const bestBitter = selectBitter.reduce((prev, curr) => {
-  //       return Math.abs(curr - selectCoffee.bitter) <
-  //         Math.abs(prev - selectCoffee.bitter)
-  //         ? curr
-  //         : prev;
-  //     });
-
-  //     // ユーザーが選択した苦さの評価にもっとも近い商品取得
-  //     const bestBitterCoffee = feelingData.filter(
-  //       (coffee) => coffee.bitter === bestBitter
-  //     );
-
-  //     setBestBitterCoffeeData(bestBitterCoffee);
-
-  //     // ユーザーが選択した「カテゴリー、値段、場所」が一致したコーヒーの酸味数値取得
-  //     const selectAcidity = feelingData.map((coffee: Coffee) => {
-  //       return Number(coffee.acidity);
-  //     });
-
-  //     // ユーザーが選択した苦さの評価にもっとも近い酸味評価値取得
-  //     const bestAcidity = selectAcidity.reduce((prev, curr) => {
-  //       return Math.abs(curr - selectCoffee.acidity) <
-  //         Math.abs(prev - selectCoffee.acidity)
-  //         ? curr
-  //         : prev;
-  //     });
-
-  //     // ユーザーが選択した酸味の評価にもっとも近い商品取得
-  //     const bestAcidityCoffee = feelingData.filter(
-  //       (coffee) => coffee.acidity === bestAcidity
-  //     );
-
-  //     setBestAcidityCoffeeData(bestAcidityCoffee);
-
-  //     const bestArray = [...bestBitterCoffee, ...bestAcidityCoffee];
-
-  //     const bestfeeling = bestArray.filter(
-  //       (coffee) =>
-  //         bestBitterCoffee.includes(coffee) &&
-  //         bestAcidityCoffee.includes(coffee)
-  //     );
-
-  //     const setCoffee = new Set(bestfeeling);
-  //     const bestCoffees = [...setCoffee];
-
-  //     setBestfeelingData(bestCoffees);
-  //   }
-  // }, [feelingData]);
 
   return (
     <section css={feelingMainBox}>
@@ -213,13 +142,7 @@ const Feeling = () => {
           <ButtonBox onClick={(e) => onClickSearch(e)}>気分で飲む</ButtonBox>
         </div>
 
-        <CoffeeDialog
-          open={open}
-          onClose={() => setOpen(false)}
-          bestBitterCoffeeData={bestBitterCoffeeData}
-          bestAcidityCoffeeData={bestAcidityCoffeeData}
-          bestfeelingData={bestfeelingData}
-        />
+        <CoffeeDialog open={open} onClose={() => setOpen(false)} />
       </div>
     </section>
   );

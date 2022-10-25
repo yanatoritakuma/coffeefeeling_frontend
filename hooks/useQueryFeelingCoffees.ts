@@ -12,13 +12,16 @@ type TFeeling = {
   place: string;
 };
 
-export const useQueryFeelingCoffees = (feeling: TFeeling, enabled: boolean) => {
+export const useQueryFeelingCoffees = (
+  feeling?: TFeeling,
+  enabled?: boolean
+) => {
   const router = useRouter();
-  const categoryJson = JSON.stringify(feeling.category);
-  const bitterJson = JSON.stringify(feeling.bitter);
-  const acidityJson = JSON.stringify(feeling.acidity);
-  const priceJson = JSON.stringify(feeling.price);
-  const placeJson = JSON.stringify(feeling.place);
+  const categoryJson = feeling && JSON.stringify(feeling.category);
+  const bitterJson = feeling && JSON.stringify(feeling.bitter);
+  const acidityJson = feeling && JSON.stringify(feeling.acidity);
+  const priceJson = feeling && JSON.stringify(feeling.price);
+  const placeJson = feeling && JSON.stringify(feeling.place);
 
   const getFeelingCoffees = async () => {
     if (enabled) {

@@ -49,88 +49,105 @@ const CoffeeDetail = memo((props: Props) => {
 
   return (
     <div>
-      {coffees?.map((coffee) => (
-        <div key={coffee.id} css={productBox}>
-          {coffee.image !== null ? (
-            <img css={imgCoffee} src={coffee.image} alt="画像" />
-          ) : (
-            <Image
-              src={NoImage}
-              css={noImg}
-              layout="responsive"
-              alt="画像なし"
-            />
-          )}
-          <div css={explanationBox}>
-            <span className="explanationBox__text">商品名</span>
-            <h4>{coffee.name}</h4>
-          </div>
-          <div css={explanationBox}>
-            <span className="explanationBox__text">カテゴリー</span>
-            <h4>{coffee.category}</h4>
-          </div>
-          <div css={explanationBox}>
-            <span className="explanationBox__text">値段</span>
-            <h4>{coffee.price}</h4>
-          </div>
-          <div css={explanationBox}>
-            <span className="explanationBox__text">場所</span>
-            <h4>{coffee.place}</h4>
-          </div>
-          <div css={evaluationMainBox}>
-            <div css={evaluationBox}>
-              <Tooltip title="苦さ" placement="top">
-                <FontAwesomeIcon icon={faFaceFrown} className="bitterIcon" />
-              </Tooltip>
-              {coffee.bitter}
-            </div>
-            <div css={evaluationBox}>
-              <Tooltip title="酸味" placement="top">
-                <FontAwesomeIcon
-                  icon={faFaceGrinTongue}
-                  className="acidityIcon"
+      {coffees?.length !== 0 ? (
+        <>
+          {coffees?.map((coffee) => (
+            <div key={coffee.id} css={productBox}>
+              {coffee.image !== null ? (
+                <img css={imgCoffee} src={coffee.image} alt="画像" />
+              ) : (
+                <Image
+                  src={NoImage}
+                  css={noImg}
+                  layout="responsive"
+                  alt="画像なし"
                 />
-              </Tooltip>
-              {coffee.acidity}
-            </div>
-            <div css={evaluationBox}>
-              <FontAwesomeIcon
-                icon={faHeart}
-                className="heartIcon"
-                onClick={() => onClickLike(coffee.id)}
-                style={
-                  likeColor(coffee.id)
-                    ? { color: "#e73562" }
-                    : { color: "#bcc7d7" }
-                }
-              />
-              {likeCount(coffee.id)?.length}
-            </div>
-          </div>
-          {(() => {
-            if (loginUserStore?.admin || coffee.userId === loginUserStore?.id) {
-              return (
-                <div css={btnBox}>
-                  <ButtonBox
-                    onClick={() => {
-                      setEditFlag(true);
-                      dispatch(setEditCoffee(coffee));
-                    }}
-                  >
-                    編集
-                  </ButtonBox>
-                  <ButtonBox
-                    onClick={() => onClickDelete(coffee.id, coffee.image)}
-                  >
-                    削除
-                  </ButtonBox>
+              )}
+              <div css={explanationBox}>
+                <span className="explanationBox__text">商品名</span>
+                <h4>{coffee.name}</h4>
+              </div>
+              <div css={explanationBox}>
+                <span className="explanationBox__text">カテゴリー</span>
+                <h4>{coffee.category}</h4>
+              </div>
+              <div css={explanationBox}>
+                <span className="explanationBox__text">値段</span>
+                <h4>{coffee.price}</h4>
+              </div>
+              <div css={explanationBox}>
+                <span className="explanationBox__text">場所</span>
+                <h4>{coffee.place}</h4>
+              </div>
+              <div css={evaluationMainBox}>
+                <div css={evaluationBox}>
+                  <Tooltip title="苦さ" placement="top">
+                    <FontAwesomeIcon
+                      icon={faFaceFrown}
+                      className="bitterIcon"
+                    />
+                  </Tooltip>
+                  {coffee.bitter}
                 </div>
-              );
-            }
-          })()}
-        </div>
-      ))}
-      <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
+                <div css={evaluationBox}>
+                  <Tooltip title="酸味" placement="top">
+                    <FontAwesomeIcon
+                      icon={faFaceGrinTongue}
+                      className="acidityIcon"
+                    />
+                  </Tooltip>
+                  {coffee.acidity}
+                </div>
+                <div css={evaluationBox}>
+                  <FontAwesomeIcon
+                    icon={faHeart}
+                    className="heartIcon"
+                    onClick={() => onClickLike(coffee.id)}
+                    style={
+                      likeColor(coffee.id)
+                        ? { color: "#e73562" }
+                        : { color: "#bcc7d7" }
+                    }
+                  />
+                  {likeCount(coffee.id)?.length}
+                </div>
+              </div>
+              {(() => {
+                if (
+                  loginUserStore?.admin ||
+                  coffee.userId === loginUserStore?.id
+                ) {
+                  return (
+                    <div css={btnBox}>
+                      <ButtonBox
+                        onClick={() => {
+                          setEditFlag(true);
+                          dispatch(setEditCoffee(coffee));
+                        }}
+                      >
+                        編集
+                      </ButtonBox>
+                      <ButtonBox
+                        onClick={() => onClickDelete(coffee.id, coffee.image)}
+                      >
+                        削除
+                      </ButtonBox>
+                    </div>
+                  );
+                }
+              })()}
+            </div>
+          ))}
+          <CoffeeEditDialog
+            open={editFlag}
+            onClose={() => setEditFlag(false)}
+          />
+        </>
+      ) : (
+        <h4 style={{ textAlign: "center", fontSize: "18px" }}>
+          現在表示できるコーヒーがありません。
+        </h4>
+      )}
     </div>
   );
 });
@@ -138,10 +155,13 @@ const CoffeeDetail = memo((props: Props) => {
 export default CoffeeDetail;
 
 const productBox = css`
-  margin: 12px 0;
+  margin: 24px auto;
   padding: 12px;
   border: 2px solid #aaa;
   border-radius: 4px;
+  background-color: #fff;
+  width: 80%;
+  min-width: 260px;
 
   h4 {
     font-size: 18px;

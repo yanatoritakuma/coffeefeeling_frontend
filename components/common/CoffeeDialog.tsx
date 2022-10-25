@@ -11,23 +11,17 @@ import { RootState, AppDispatch } from "../../redux/store";
 import { useSelector, useDispatch } from "react-redux";
 import { setUpdateFlag } from "../../redux/editCoffeeSlice";
 import CoffeeDetail from "./CoffeeDetail";
+import { useQueryFeelingCoffees } from "../../hooks/useQueryFeelingCoffees";
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  bestBitterCoffeeData: Coffee[] | undefined;
-  bestAcidityCoffeeData: Coffee[] | undefined;
-  bestfeelingData: Coffee[] | undefined;
 };
 
 export const CoffeeDialog = (props: Props) => {
-  const {
-    onClose,
-    open,
-    bestBitterCoffeeData,
-    bestAcidityCoffeeData,
-    bestfeelingData,
-  } = props;
+  const { onClose, open } = props;
+  const { status, data, error } = useQueryFeelingCoffees();
+  console.log("CoffeeDetail", data);
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -60,34 +54,7 @@ export const CoffeeDialog = (props: Props) => {
         />
       </DialogTitle>
       <div css={bestBox}>
-        <div css={contentsBox}>
-          {bestfeelingData?.length !== 0 ? (
-            <h3 className="best">ベストコーヒー</h3>
-          ) : (
-            <h3 className="best">ベストコーヒーにはヒットしませんでした。</h3>
-          )}
-          <CoffeeDetail coffees={bestfeelingData} />
-        </div>
-        <div css={contentsBox}>
-          {bestBitterCoffeeData?.length !== 0 ? (
-            <h3 className="bitter">苦味ベストコーヒー</h3>
-          ) : (
-            <h3 className="bitter">
-              苦味ベストコーヒーにはヒットしませんでした。
-            </h3>
-          )}
-          <CoffeeDetail coffees={bestBitterCoffeeData} />
-        </div>
-        <div css={contentsBox}>
-          {bestAcidityCoffeeData?.length !== 0 ? (
-            <h3 className="acidity">酸味ベストコーヒー</h3>
-          ) : (
-            <h3 className="acidity">
-              酸味ベストコーヒーはヒットしませんでした。
-            </h3>
-          )}
-          <CoffeeDetail coffees={bestAcidityCoffeeData} />
-        </div>
+        <CoffeeDetail coffees={data} />
       </div>
       <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
     </Dialog>
@@ -150,12 +117,7 @@ const dialogBox = css`
 `;
 
 const bestBox = css`
-  display: flex;
-  justify-content: space-between;
-
-  @media screen and (max-width: 1024px) {
-    display: block;
-  }
+  overflow-y: scroll;
 
   h3 {
     text-align: center;
@@ -164,32 +126,5 @@ const bestBox = css`
     @media screen and (max-width: 1024px) {
       font-size: 20px;
     }
-  }
-
-  .best {
-    color: #ea5550;
-  }
-
-  .bitter {
-    color: #24140e;
-  }
-
-  .acidity {
-    color: #9fc24d;
-  }
-`;
-
-const contentsBox = css`
-  margin: 0 auto;
-  padding: 14px;
-  width: 30%;
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 4px 4px 2px #dddcd6;
-  overflow-wrap: break-word;
-
-  @media screen and (max-width: 1024px) {
-    margin: 30px auto;
-    width: 100%;
   }
 `;
