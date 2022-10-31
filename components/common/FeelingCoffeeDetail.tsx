@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { Coffee } from "@prisma/client";
 import Image from "next/image";
@@ -19,17 +19,18 @@ import likeFeature from "../../utils/likeFeature";
 import { TBestCoffee } from "../../hooks/useQueryFeelingCoffees";
 
 type Props = {
-  coffees: Coffee[];
+  bestCoffee: TBestCoffee | undefined;
 };
 
-const CoffeeDetail = memo((props: Props) => {
-  const { coffees } = props;
+const FeelingCoffeeDetail = memo((props: Props) => {
+  const { bestCoffee } = props;
   const dispatch: AppDispatch = useDispatch();
   const { onClickLike, likeColor, likeCount } = likeFeature();
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
   const [editFlag, setEditFlag] = useState(false);
+  const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("");
 
   const loginUserStore = useSelector(
     (state: RootState) => state.loginUser.user
@@ -48,100 +49,123 @@ const CoffeeDetail = memo((props: Props) => {
     }
   };
 
+  const switchCoffee = () => {
+    switch (switchCoffeeFlag) {
+      case "bestCoffee":
+        break;
+      case "bitterBest":
+        return bestCoffee?.bitterBest;
+      case "acidityBest":
+        return bestCoffee?.acidityBest;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    switchCoffee();
+  }, [switchCoffeeFlag]);
+
   return (
     <div>
-      <>
-        {coffees?.map((coffee) => (
-          <div key={coffee.id} css={productBox}>
-            {coffee.image !== null ? (
-              <img css={imgCoffee} src={coffee.image} alt="画像" />
-            ) : (
-              <Image
-                src={NoImage}
-                css={noImg}
-                layout="responsive"
-                alt="画像なし"
-              />
-            )}
-            <div css={explanationBox}>
-              <span className="explanationBox__text">商品名</span>
-              <h4>{coffee.name}</h4>
-            </div>
-            <div css={explanationBox}>
-              <span className="explanationBox__text">カテゴリー</span>
-              <h4>{coffee.category}</h4>
-            </div>
-            <div css={explanationBox}>
-              <span className="explanationBox__text">値段</span>
-              <h4>{coffee.price}</h4>
-            </div>
-            <div css={explanationBox}>
-              <span className="explanationBox__text">場所</span>
-              <h4>{coffee.place}</h4>
-            </div>
-            <div css={evaluationMainBox}>
-              <div css={evaluationBox}>
-                <Tooltip title="苦さ" placement="top">
-                  <FontAwesomeIcon icon={faFaceFrown} className="bitterIcon" />
-                </Tooltip>
-                {coffee.bitter}
-              </div>
-              <div css={evaluationBox}>
-                <Tooltip title="酸味" placement="top">
-                  <FontAwesomeIcon
-                    icon={faFaceGrinTongue}
-                    className="acidityIcon"
-                  />
-                </Tooltip>
-                {coffee.acidity}
-              </div>
-              <div css={evaluationBox}>
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  className="heartIcon"
-                  onClick={() => onClickLike(coffee.id)}
-                  style={
-                    likeColor(coffee.id)
-                      ? { color: "#e73562" }
-                      : { color: "#bcc7d7" }
-                  }
-                />
-                {likeCount(coffee.id)?.length}
-              </div>
-            </div>
-            {(() => {
-              if (
-                loginUserStore?.admin ||
-                coffee.userId === loginUserStore?.id
-              ) {
-                return (
-                  <div css={btnBox}>
-                    <ButtonBox
-                      onClick={() => {
-                        setEditFlag(true);
-                        dispatch(setEditCoffee(coffee));
-                      }}
-                    >
-                      編集
-                    </ButtonBox>
-                    <ButtonBox
-                      onClick={() => onClickDelete(coffee.id, coffee.image)}
-                    >
-                      削除
-                    </ButtonBox>
-                  </div>
-                );
-              }
-            })()}
+      <ul>
+        <li onClick={() => setSwitchCoffeeFlag("bestCoffee")}>
+          ベストコーヒー
+        </li>
+        <li onClick={() => setSwitchCoffeeFlag("bitterBest")}>
+          苦味ベストコーヒー
+        </li>
+        <li onClick={() => setSwitchCoffeeFlag("acidityBest")}>
+          酸味ベストコーヒー
+        </li>
+      </ul>
+      {switchCoffee()?.map((coffee) => (
+        <div key={coffee.id} css={productBox}>
+          {coffee.image !== null ? (
+            <img css={imgCoffee} src={coffee.image} alt="画像" />
+          ) : (
+            <Image
+              src={NoImage}
+              css={noImg}
+              layout="responsive"
+              alt="画像なし"
+            />
+          )}
+          <div css={explanationBox}>
+            <span className="explanationBox__text">商品名</span>
+            <h4>{coffee.name}</h4>
           </div>
-        ))}
-        <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
-      </>
+          <div css={explanationBox}>
+            <span className="explanationBox__text">カテゴリー</span>
+            <h4>{coffee.category}</h4>
+          </div>
+          <div css={explanationBox}>
+            <span className="explanationBox__text">値段</span>
+            <h4>{coffee.price}</h4>
+          </div>
+          <div css={explanationBox}>
+            <span className="explanationBox__text">場所</span>
+            <h4>{coffee.place}</h4>
+          </div>
+          <div css={evaluationMainBox}>
+            <div css={evaluationBox}>
+              <Tooltip title="苦さ" placement="top">
+                <FontAwesomeIcon icon={faFaceFrown} className="bitterIcon" />
+              </Tooltip>
+              {coffee.bitter}
+            </div>
+            <div css={evaluationBox}>
+              <Tooltip title="酸味" placement="top">
+                <FontAwesomeIcon
+                  icon={faFaceGrinTongue}
+                  className="acidityIcon"
+                />
+              </Tooltip>
+              {coffee.acidity}
+            </div>
+            <div css={evaluationBox}>
+              <FontAwesomeIcon
+                icon={faHeart}
+                className="heartIcon"
+                onClick={() => onClickLike(coffee.id)}
+                style={
+                  likeColor(coffee.id)
+                    ? { color: "#e73562" }
+                    : { color: "#bcc7d7" }
+                }
+              />
+              {likeCount(coffee.id)?.length}
+            </div>
+          </div>
+          {(() => {
+            if (loginUserStore?.admin || coffee.userId === loginUserStore?.id) {
+              return (
+                <div css={btnBox}>
+                  <ButtonBox
+                    onClick={() => {
+                      setEditFlag(true);
+                      dispatch(setEditCoffee(coffee));
+                    }}
+                  >
+                    編集
+                  </ButtonBox>
+                  <ButtonBox
+                    onClick={() => onClickDelete(coffee.id, coffee.image)}
+                  >
+                    削除
+                  </ButtonBox>
+                </div>
+              );
+            }
+          })()}
+        </div>
+      ))}
+      <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
     </div>
   );
 });
 
-export default CoffeeDetail;
+export default FeelingCoffeeDetail;
 
 const productBox = css`
   margin: 24px auto;

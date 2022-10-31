@@ -76,8 +76,8 @@ export const Layout = memo((props: Props) => {
                 </div>
               </>
             )}
-            {user?.id && <Link href="myPage">マイページ</Link>}
-            {user?.id && <Link href="register">登録</Link>}
+            {user?.id && <Link href="/myPage">マイページ</Link>}
+            {user?.id && <Link href="/register">登録</Link>}
           </div>
         )}
       </header>

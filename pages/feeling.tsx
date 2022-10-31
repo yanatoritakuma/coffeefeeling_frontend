@@ -1,15 +1,16 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import { css } from "@emotion/react";
-import { useQueryFeelingCoffees } from "../hooks/useQueryFeelingCoffees";
 import Image from "next/image";
 import FormImg from "../public/feeling.jpg";
-import { CoffeeDialog } from "../components/common/CoffeeDialog";
 import { SelectBox } from "../components/atoms/SelectBox";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { SliderBox } from "../components/atoms/SliderBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
+import { useRouter } from "next/router";
 
 const Feeling = () => {
+  const router = useRouter();
+
   // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
     category: "ブラック",
@@ -18,9 +19,6 @@ const Feeling = () => {
     price: 100,
     place: "コンビニ",
   });
-
-  // 検索して結果ダイアログ
-  const [open, setOpen] = useState(false);
 
   const feelingReq = {
     category: selectCoffee.category,
@@ -31,11 +29,25 @@ const Feeling = () => {
   };
 
   const [searchFlag, setSearchFlag] = useState(false);
-  const { status, data, error, refetch } = useQueryFeelingCoffees(
-    feelingReq,
-    searchFlag
-  );
-  console.log("data", data);
+
+  const categoryUrl = () => {
+    switch (selectCoffee.category) {
+      case "ブラック":
+        return "black";
+      case "カフェラテ":
+        return "latte";
+      case "エスプレッソ":
+        return "espresso";
+      case "カフェモカ":
+        return "mocha";
+      case "カフェオレ":
+        return "cafeAuLait";
+      case "カプチーノ":
+        return "cappuccino";
+      default:
+        break;
+    }
+  };
 
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,9 +56,12 @@ const Feeling = () => {
 
   useEffect(() => {
     if (searchFlag) {
-      refetch();
-      setOpen(true);
       setSearchFlag(false);
+
+      router.push(
+        { pathname: `/feeling/${categoryUrl()}`, query: feelingReq },
+        `/feeling/${categoryUrl()}`
+      );
     }
   }, [searchFlag]);
 
@@ -141,8 +156,6 @@ const Feeling = () => {
         <div css={btnBox}>
           <ButtonBox onClick={(e) => onClickSearch(e)}>気分で飲む</ButtonBox>
         </div>
-
-        <CoffeeDialog open={open} onClose={() => setOpen(false)} />
       </div>
     </section>
   );

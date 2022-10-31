@@ -12,10 +12,12 @@ type TFeeling = {
   place: string;
 };
 
-export const useQueryFeelingCoffees = (
-  feeling?: TFeeling,
-  enabled?: boolean
-) => {
+export type TBestCoffee = {
+  acidityBest: Coffee[];
+  bitterBest: Coffee[];
+};
+
+export const useQueryFeelingCoffees = (feeling?: TFeeling) => {
   const router = useRouter();
   const categoryJson = feeling && JSON.stringify(feeling.category);
   const bitterJson = feeling && JSON.stringify(feeling.bitter);
@@ -24,19 +26,15 @@ export const useQueryFeelingCoffees = (
   const placeJson = feeling && JSON.stringify(feeling.place);
 
   const getFeelingCoffees = async () => {
-    if (enabled) {
-      const { data } = await axios.get<Coffee[]>(
-        `${process.env.NEXT_PUBLIC_API_URL}/coffee/feeling?category=${categoryJson}
+    const { data } = await axios.get<TBestCoffee>(
+      `${process.env.NEXT_PUBLIC_API_URL}/coffee/feeling?category=${categoryJson}
       &bitter=${bitterJson}&acidity=${acidityJson}&price=${priceJson}&place=${placeJson}`
-      );
-      return data;
-    } else {
-      return [];
-    }
+    );
+    return data;
   };
-  return useQuery<Coffee[], Error>({
+  return useQuery<TBestCoffee, Error>({
     // enabled: enabled,
-    queryKey: ["coffees"],
+    queryKey: ["feelingCoffees"],
     queryFn: getFeelingCoffees,
     onError: (err: any) => {
       if (err.response.status === 401 || err.response.status === 403)
