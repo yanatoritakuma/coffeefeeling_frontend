@@ -38,10 +38,10 @@ const FeelNow = () => {
     place: String(router.query.place),
   };
 
-  const { status, data, error, refetch } = useQueryFeelingCoffees(feelingReq);
+  const { status, data, error } = useQueryFeelingCoffees(feelingReq);
 
   return (
-    <section>
+    <section css={feelNowBox}>
       {data?.bitterBest?.length !== 0 && data?.acidityBest?.length !== 0 ? (
         <>
           <h2>今の気分</h2>
@@ -55,3 +55,14 @@ const FeelNow = () => {
 };
 
 export default FeelNow;
+
+const feelNowBox = css`
+  padding: 20px 0;
+  background-color: #ffedab;
+
+  h2 {
+    color: #7b5544;
+    text-align: center;
+    font-size: 28px;
+  }
+`;

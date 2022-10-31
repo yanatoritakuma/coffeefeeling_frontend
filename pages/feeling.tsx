@@ -7,6 +7,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import { SliderBox } from "../components/atoms/SliderBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
 import { useRouter } from "next/router";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Feeling = () => {
   const router = useRouter();
@@ -29,6 +30,7 @@ const Feeling = () => {
   };
 
   const [searchFlag, setSearchFlag] = useState(false);
+  const [progresFlag, setProgresFlag] = useState(false);
 
   const categoryUrl = () => {
     switch (selectCoffee.category) {
@@ -52,6 +54,7 @@ const Feeling = () => {
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSearchFlag(true);
+    setProgresFlag(true);
   };
 
   useEffect(() => {
@@ -67,6 +70,11 @@ const Feeling = () => {
 
   return (
     <section css={feelingMainBox}>
+      {progresFlag && (
+        <div className="fileter">
+          <CircularProgress size="6rem" />
+        </div>
+      )}
       <div css={feelingBox}>
         <Image
           src={FormImg}
@@ -152,7 +160,6 @@ const Feeling = () => {
             menuItems={["コンビニ", "店舗"]}
           />
         </div>
-
         <div css={btnBox}>
           <ButtonBox onClick={(e) => onClickSearch(e)}>気分で飲む</ButtonBox>
         </div>
@@ -167,6 +174,19 @@ const feelingMainBox = css`
   width: 100%;
   height: 100vh;
   position: relative;
+
+  .fileter {
+    background-color: #333;
+    opacity: 0.7;
+    position: fixed;
+    top: 0;
+    z-index: 500;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const feelingBox = css`

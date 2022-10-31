@@ -30,7 +30,8 @@ const FeelingCoffeeDetail = memo((props: Props) => {
   const { deleteCoffeeMutation } = useMutateCoffee();
 
   const [editFlag, setEditFlag] = useState(false);
-  const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("");
+  const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("bestCoffee");
+  const [bestAllCoffee, setBestAllCoffee] = useState<Coffee[] | undefined>();
 
   const loginUserStore = useSelector(
     (state: RootState) => state.loginUser.user
@@ -49,10 +50,39 @@ const FeelingCoffeeDetail = memo((props: Props) => {
     }
   };
 
+  // 苦味と酸味どちらにも当てはまるコーヒー
+  useEffect(() => {
+    if (bestCoffee !== undefined) {
+      const bitterIds = bestCoffee.bitterBest.map((coffee) => {
+        return coffee.id;
+      });
+
+      const acidityIds = bestCoffee.acidityBest.map((coffee) => {
+        return coffee.id;
+      });
+
+      const bitterAcidityIds = [...bitterIds, ...acidityIds];
+
+      const bestAllCoffeeIdSelect = bitterAcidityIds.filter(
+        (id) => bitterIds.includes(id) && acidityIds.includes(id)
+      );
+
+      const bestAllCoffeeIds = new Set(bestAllCoffeeIdSelect);
+      const bestAllCoffeeIdArray = [...bestAllCoffeeIds];
+
+      const bestAllCoffeeSelect = bestCoffee.bitterBest.filter(
+        (coffee, index) => coffee.id === bestAllCoffeeIdArray[index]
+      );
+
+      setBestAllCoffee(bestAllCoffeeSelect);
+    }
+  }, [bestCoffee]);
+
+  // 表示するコーヒー
   const switchCoffee = () => {
     switch (switchCoffeeFlag) {
       case "bestCoffee":
-        break;
+        return bestAllCoffee;
       case "bitterBest":
         return bestCoffee?.bitterBest;
       case "acidityBest":
@@ -68,14 +98,23 @@ const FeelingCoffeeDetail = memo((props: Props) => {
 
   return (
     <div>
-      <ul>
-        <li onClick={() => setSwitchCoffeeFlag("bestCoffee")}>
+      <ul css={listBox}>
+        <li
+          className={switchCoffeeFlag === "bestCoffee" ? "selectedList" : ""}
+          onClick={() => setSwitchCoffeeFlag("bestCoffee")}
+        >
           ベストコーヒー
         </li>
-        <li onClick={() => setSwitchCoffeeFlag("bitterBest")}>
+        <li
+          className={switchCoffeeFlag === "bitterBest" ? "selectedList" : ""}
+          onClick={() => setSwitchCoffeeFlag("bitterBest")}
+        >
           苦味ベストコーヒー
         </li>
-        <li onClick={() => setSwitchCoffeeFlag("acidityBest")}>
+        <li
+          className={switchCoffeeFlag === "acidityBest" ? "selectedList" : ""}
+          onClick={() => setSwitchCoffeeFlag("acidityBest")}
+        >
           酸味ベストコーヒー
         </li>
       </ul>
@@ -173,6 +212,7 @@ const productBox = css`
   border: 2px solid #aaa;
   border-radius: 4px;
   background-color: #fff;
+  border-radius: 10px;
   width: 80%;
   min-width: 260px;
 
@@ -290,4 +330,24 @@ const btnBox = css`
   width: 50%;
   min-width: 140px;
   max-width: 200px;
+`;
+
+const listBox = css`
+  margin: 0 auto;
+  padding: 0;
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+
+  li {
+    font-size: 20px;
+    opacity: 0.7;
+  }
+
+  .selectedList {
+    font-size: 24px;
+    font-weight: bold;
+  }
 `;
