@@ -118,87 +118,95 @@ const FeelingCoffeeDetail = memo((props: Props) => {
           酸味ベストコーヒー
         </li>
       </ul>
-      {switchCoffee()?.map((coffee) => (
-        <div key={coffee.id} css={productBox}>
-          {coffee.image !== null ? (
-            <img css={imgCoffee} src={coffee.image} alt="画像" />
-          ) : (
-            <Image
-              src={NoImage}
-              css={noImg}
-              layout="responsive"
-              alt="画像なし"
-            />
-          )}
-          <div css={explanationBox}>
-            <span className="explanationBox__text">商品名</span>
-            <h4>{coffee.name}</h4>
-          </div>
-          <div css={explanationBox}>
-            <span className="explanationBox__text">カテゴリー</span>
-            <h4>{coffee.category}</h4>
-          </div>
-          <div css={explanationBox}>
-            <span className="explanationBox__text">値段</span>
-            <h4>{coffee.price}</h4>
-          </div>
-          <div css={explanationBox}>
-            <span className="explanationBox__text">場所</span>
-            <h4>{coffee.place}</h4>
-          </div>
-          <div css={evaluationMainBox}>
-            <div css={evaluationBox}>
-              <Tooltip title="苦さ" placement="top">
-                <FontAwesomeIcon icon={faFaceFrown} className="bitterIcon" />
-              </Tooltip>
-              {coffee.bitter}
-            </div>
-            <div css={evaluationBox}>
-              <Tooltip title="酸味" placement="top">
-                <FontAwesomeIcon
-                  icon={faFaceGrinTongue}
-                  className="acidityIcon"
-                />
-              </Tooltip>
-              {coffee.acidity}
-            </div>
-            <div css={evaluationBox}>
-              <FontAwesomeIcon
-                icon={faHeart}
-                className="heartIcon"
-                onClick={() => onClickLike(coffee.id)}
-                style={
-                  likeColor(coffee.id)
-                    ? { color: "#e73562" }
-                    : { color: "#bcc7d7" }
-                }
+      {switchCoffee()?.length !== 0 ? (
+        switchCoffee()?.map((coffee) => (
+          <div key={coffee.id} css={productBox}>
+            {coffee.image !== null ? (
+              <img css={imgCoffee} src={coffee.image} alt="画像" />
+            ) : (
+              <Image
+                src={NoImage}
+                css={noImg}
+                layout="responsive"
+                alt="画像なし"
               />
-              {likeCount(coffee.id)?.length}
+            )}
+            <div css={explanationBox}>
+              <span className="explanationBox__text">商品名</span>
+              <h4>{coffee.name}</h4>
             </div>
+            <div css={explanationBox}>
+              <span className="explanationBox__text">カテゴリー</span>
+              <h4>{coffee.category}</h4>
+            </div>
+            <div css={explanationBox}>
+              <span className="explanationBox__text">値段</span>
+              <h4>{coffee.price}</h4>
+            </div>
+            <div css={explanationBox}>
+              <span className="explanationBox__text">場所</span>
+              <h4>{coffee.place}</h4>
+            </div>
+            <div css={evaluationMainBox}>
+              <div css={evaluationBox}>
+                <Tooltip title="苦さ" placement="top">
+                  <FontAwesomeIcon icon={faFaceFrown} className="bitterIcon" />
+                </Tooltip>
+                {coffee.bitter}
+              </div>
+              <div css={evaluationBox}>
+                <Tooltip title="酸味" placement="top">
+                  <FontAwesomeIcon
+                    icon={faFaceGrinTongue}
+                    className="acidityIcon"
+                  />
+                </Tooltip>
+                {coffee.acidity}
+              </div>
+              <div css={evaluationBox}>
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  className="heartIcon"
+                  onClick={() => onClickLike(coffee.id)}
+                  style={
+                    likeColor(coffee.id)
+                      ? { color: "#e73562" }
+                      : { color: "#bcc7d7" }
+                  }
+                />
+                {likeCount(coffee.id)?.length}
+              </div>
+            </div>
+            {(() => {
+              if (
+                loginUserStore?.admin ||
+                coffee.userId === loginUserStore?.id
+              ) {
+                return (
+                  <div css={btnBox}>
+                    <ButtonBox
+                      onClick={() => {
+                        setEditFlag(true);
+                        dispatch(setEditCoffee(coffee));
+                      }}
+                    >
+                      編集
+                    </ButtonBox>
+                    <ButtonBox
+                      onClick={() => onClickDelete(coffee.id, coffee.image)}
+                    >
+                      削除
+                    </ButtonBox>
+                  </div>
+                );
+              }
+            })()}
           </div>
-          {(() => {
-            if (loginUserStore?.admin || coffee.userId === loginUserStore?.id) {
-              return (
-                <div css={btnBox}>
-                  <ButtonBox
-                    onClick={() => {
-                      setEditFlag(true);
-                      dispatch(setEditCoffee(coffee));
-                    }}
-                  >
-                    編集
-                  </ButtonBox>
-                  <ButtonBox
-                    onClick={() => onClickDelete(coffee.id, coffee.image)}
-                  >
-                    削除
-                  </ButtonBox>
-                </div>
-              );
-            }
-          })()}
-        </div>
-      ))}
+        ))
+      ) : (
+        <h3 style={{ textAlign: "center" }}>ヒットしませんでした</h3>
+      )}
+
       <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
     </div>
   );
@@ -215,6 +223,10 @@ const productBox = css`
   border-radius: 10px;
   width: 80%;
   min-width: 260px;
+
+  @media screen and (max-width: 1024px) {
+    width: 90%;
+  }
 
   h4 {
     font-size: 18px;
@@ -335,19 +347,50 @@ const btnBox = css`
 const listBox = css`
   margin: 0 auto;
   padding: 0;
-  width: 70%;
+  width: 80%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   list-style: none;
+  background-color: #fff;
+  border-radius: 4px;
+
+  @media screen and (max-width: 1024px) {
+    width: 90%;
+  }
 
   li {
+    padding: 12px;
     font-size: 20px;
     opacity: 0.7;
+    width: 30%;
+    text-align: center;
+    border-right: 1px solid #aaa;
+    cursor: pointer;
+
+    &:last-child {
+      border: none;
+    }
+
+    @media screen and (max-width: 1024px) {
+      font-size: 16px;
+    }
+    @media screen and (max-width: 768px) {
+      padding: 6px;
+      font-size: 14px;
+    }
   }
 
   .selectedList {
     font-size: 24px;
     font-weight: bold;
+
+    @media screen and (max-width: 1024px) {
+      font-size: 20px;
+    }
+    @media screen and (max-width: 768px) {
+      padding: 6px;
+      font-size: 14px;
+    }
   }
 `;
