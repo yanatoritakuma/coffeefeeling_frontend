@@ -14,7 +14,7 @@ type TFeeling = {
 
 export type TBestCoffee = {
   acidityBest: Coffee[];
-  bitterBest: Coffee[];
+  bitterBest: any[];
 };
 
 export const useQueryFeelingCoffees = (feeling?: TFeeling) => {

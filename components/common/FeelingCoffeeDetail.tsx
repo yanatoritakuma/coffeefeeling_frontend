@@ -177,6 +177,18 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                 {likeCount(coffee.id)?.length}
               </div>
             </div>
+            <div css={userBox}>
+              <div className="userBox__img">
+                <Image
+                  src={coffee.user_image}
+                  width={50}
+                  height={50}
+                  layout="responsive"
+                  alt="ユーザーアイコン"
+                />
+              </div>
+              <h5>{coffee.user_name}</h5>
+            </div>
             {(() => {
               if (
                 loginUserStore?.admin ||
@@ -391,6 +403,36 @@ const listBox = css`
     @media screen and (max-width: 768px) {
       padding: 6px;
       font-size: 14px;
+    }
+  }
+`;
+
+const userBox = css`
+  margin: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: fit-content;
+
+  .userBox__img {
+    margin-right: 20px;
+    width: 80px;
+
+    @media screen and (max-width: 768px) {
+      width: 60px;
+    }
+
+    img {
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  h5 {
+    font-size: 18px;
+
+    @media screen and (max-width: 768px) {
+      font-size: 16px;
     }
   }
 `;

@@ -45,7 +45,7 @@ const FeelNow = () => {
 
   return (
     <section css={feelNowBox}>
-      {data?.bitterBest?.length !== 0 && data?.acidityBest?.length !== 0 ? (
+      {data?.bitterBest?.length !== 0 || data?.acidityBest?.length !== 0 ? (
         <>
           <h2>今の気分</h2>
           <div css={feelNowListBox}>
