@@ -42,13 +42,13 @@ export const Layout = memo((props: Props) => {
         <div css={linkBox}>
           <Link href="/">トップページ</Link>
           {!user?.id && (
-            <Link href="login">
+            <Link href="/login">
               <LoginIcon className="login" />
             </Link>
           )}
           {user?.id && <LogoutIcon onClick={logout} className="logout" />}
-          {user?.id && <Link href="myPage">マイページ</Link>}
-          {user?.id && <Link href="register">登録</Link>}
+          {user?.id && <Link href="/myPage">マイページ</Link>}
+          {user?.id && <Link href="/register">登録</Link>}
         </div>
         <div css={hamBtn}>
           {!hamFlag ? (
@@ -61,7 +61,7 @@ export const Layout = memo((props: Props) => {
           <div css={spMenu} onClick={() => setHamFlag(false)}>
             <Link href="/">トップページ</Link>
             {!user?.id && (
-              <Link href="login">
+              <Link href="/login">
                 <div css={linkIconBox}>
                   <LoginIcon className="login" />
                   ログイン
