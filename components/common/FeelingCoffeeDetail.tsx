@@ -121,6 +121,18 @@ const FeelingCoffeeDetail = memo((props: Props) => {
       {switchCoffee()?.length !== 0 ? (
         switchCoffee()?.map((coffee) => (
           <div key={coffee.id} css={productBox}>
+            <div css={userBox}>
+              <div className="userBox__img">
+                <Image
+                  src={coffee.user_image}
+                  width={50}
+                  height={50}
+                  layout="responsive"
+                  alt="ユーザーアイコン"
+                />
+              </div>
+              <h5>{coffee.user_name}</h5>
+            </div>
             {coffee.image !== null ? (
               <img css={imgCoffee} src={coffee.image} alt="画像" />
             ) : (
@@ -176,18 +188,6 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                 />
                 {likeCount(coffee.id)?.length}
               </div>
-            </div>
-            <div css={userBox}>
-              <div className="userBox__img">
-                <Image
-                  src={coffee.user_image}
-                  width={50}
-                  height={50}
-                  layout="responsive"
-                  alt="ユーザーアイコン"
-                />
-              </div>
-              <h5>{coffee.user_name}</h5>
             </div>
             {(() => {
               if (
