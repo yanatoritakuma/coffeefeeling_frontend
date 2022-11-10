@@ -8,6 +8,8 @@ import { ButtonBox } from "../components/atoms/ButtonBox";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import firebase, { storage } from "../firebase/initFirebase";
+import useChangeImage from "../hooks/useChangeImage";
+import imageRegistration from "../utils/imageRegistration";
 
 const Login = () => {
   const router = useRouter();
@@ -22,15 +24,10 @@ const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState("");
 
-  const [photoUrl, setPhotoUrl] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string>("");
+  // アップロード画像hooks
+  const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
 
-  const onChangeImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files![0]) {
-      setPhotoUrl(e.target.files![0]);
-      e.target.value = "";
-    }
-  };
+  const [previewUrl, setPreviewUrl] = useState<string>("");
 
   useEffect(() => {
     if (!photoUrl) {
@@ -88,6 +85,8 @@ const Login = () => {
     }
   };
 
+  const { onClickRegistration } = imageRegistration();
+
   // 登録処理
   const onClickRegister = (e: React.FormEvent<HTMLFormElement>) => {
     const ret = window.confirm("この内容で登録しますか？");
@@ -98,39 +97,14 @@ const Login = () => {
     }
 
     if (ret) {
-      e.preventDefault();
-      if (photoUrl) {
-        const S =
-          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        const N = 16;
-        const randomChar = Array.from(
-          crypto.getRandomValues(new Uint32Array(N))
-        )
-          .map((n) => S[n % S.length])
-          .join("");
-        const fileName = randomChar + "_" + photoUrl.name;
-        const uploadImg = storage.ref(`userImages/${fileName}`).put(photoUrl);
-        uploadImg.on(
-          firebase.storage.TaskEvent.STATE_CHANGED,
-          () => {},
-          (err) => {
-            alert(err.message);
-          },
-          async () => {
-            await storage
-              .ref("userImages")
-              .child(fileName)
-              .getDownloadURL()
-              .then((fireBaseUrl) => {
-                createAccount(fireBaseUrl);
-              });
-          }
-        );
-      } else {
-        createAccount(null);
-      }
-      setPhotoUrl(null);
-      setPreviewUrl("");
+      onClickRegistration(
+        e,
+        photoUrl,
+        createAccount,
+        setPhotoUrl,
+        setPreviewUrl
+      );
+
       setAuth({
         email: "",
         password: "",

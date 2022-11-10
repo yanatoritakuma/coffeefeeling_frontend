@@ -1,18 +1,16 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import { css } from "@emotion/react";
-import { useFeelingCoffees } from "../hooks/useFeelingCoffees";
-import { AxiosRequestConfig } from "axios";
-import { Coffee } from "@prisma/client";
 import Image from "next/image";
 import FormImg from "../public/feeling.jpg";
-import { CoffeeDialog } from "../components/common/CoffeeDialog";
 import { SelectBox } from "../components/atoms/SelectBox";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { SliderBox } from "../components/atoms/SliderBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
+import { useRouter } from "next/router";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Feeling = () => {
-  const { getFeelingCoffees, feelingData } = useFeelingCoffees();
+  const router = useRouter();
 
   // ユーザー選択
   const [selectCoffee, setSelectCoffee] = useState({
@@ -23,97 +21,60 @@ const Feeling = () => {
     place: "コンビニ",
   });
 
-  // 苦さの評価にヒットしたコーヒー
-  const [bestBitterCoffeeData, setBestBitterCoffeeData] = useState<Coffee[]>();
+  const feelingReq = {
+    category: selectCoffee.category,
+    bitter: selectCoffee.bitter,
+    acidity: selectCoffee.acidity,
+    price: selectCoffee.price,
+    place: selectCoffee.place,
+  };
 
-  // 酸味の評価にヒットしたコーヒー
-  const [bestAcidityCoffeeData, setBestAcidityCoffeeData] =
-    useState<Coffee[]>();
+  const [searchFlag, setSearchFlag] = useState(false);
+  const [progresFlag, setProgresFlag] = useState(false);
 
-  // 総合での評価にヒットしたコーヒー
-  const [bestfeelingData, setBestfeelingData] = useState<Coffee[]>();
-
-  // 検索して結果ダイアログ
-  const [open, setOpen] = useState(false);
-
-  const requestParam: AxiosRequestConfig = {
-    data: {
-      category: selectCoffee.category,
-      bitter: selectCoffee.bitter,
-      acidity: selectCoffee.acidity,
-      price: selectCoffee.price,
-      place: selectCoffee.place,
-    },
+  const categoryUrl = () => {
+    switch (selectCoffee.category) {
+      case "ブラック":
+        return "black";
+      case "カフェラテ":
+        return "latte";
+      case "エスプレッソ":
+        return "espresso";
+      case "カフェモカ":
+        return "mocha";
+      case "カフェオレ":
+        return "cafeAuLait";
+      case "カプチーノ":
+        return "cappuccino";
+      default:
+        break;
+    }
   };
 
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setBestBitterCoffeeData([]);
-    setBestAcidityCoffeeData([]);
-    setBestfeelingData([]);
-    getFeelingCoffees(requestParam);
-    setOpen(true);
+    setSearchFlag(true);
+    setProgresFlag(true);
   };
 
   useEffect(() => {
-    if (feelingData.length !== 0) {
-      // ユーザーが選択した「カテゴリー、値段、場所」が一致したコーヒーの苦さ数値取得
-      const selectBitter = feelingData.map((coffee: Coffee) => {
-        return Number(coffee.bitter);
-      });
+    if (searchFlag) {
+      setSearchFlag(false);
 
-      // ユーザーが選択した苦さの評価にもっとも近い苦さ評価値取得
-      const bestBitter = selectBitter.reduce((prev, curr) => {
-        return Math.abs(curr - selectCoffee.bitter) <
-          Math.abs(prev - selectCoffee.bitter)
-          ? curr
-          : prev;
-      });
-
-      // ユーザーが選択した苦さの評価にもっとも近い商品取得
-      const bestBitterCoffee = feelingData.filter(
-        (coffee) => coffee.bitter === bestBitter
+      router.push(
+        { pathname: `/feeling/${categoryUrl()}`, query: feelingReq },
+        `/feeling/${categoryUrl()}`
       );
-
-      setBestBitterCoffeeData(bestBitterCoffee);
-
-      // ユーザーが選択した「カテゴリー、値段、場所」が一致したコーヒーの酸味数値取得
-      const selectAcidity = feelingData.map((coffee: Coffee) => {
-        return Number(coffee.acidity);
-      });
-
-      // ユーザーが選択した苦さの評価にもっとも近い酸味評価値取得
-      const bestAcidity = selectAcidity.reduce((prev, curr) => {
-        return Math.abs(curr - selectCoffee.acidity) <
-          Math.abs(prev - selectCoffee.acidity)
-          ? curr
-          : prev;
-      });
-
-      // ユーザーが選択した酸味の評価にもっとも近い商品取得
-      const bestAcidityCoffee = feelingData.filter(
-        (coffee) => coffee.acidity === bestAcidity
-      );
-
-      setBestAcidityCoffeeData(bestAcidityCoffee);
-
-      const bestArray = [...bestBitterCoffee, ...bestAcidityCoffee];
-
-      const bestfeeling = bestArray.filter(
-        (coffee) =>
-          bestBitterCoffee.includes(coffee) &&
-          bestAcidityCoffee.includes(coffee)
-      );
-
-      const setCoffee = new Set(bestfeeling);
-      const bestCoffees = [...setCoffee];
-
-      setBestfeelingData(bestCoffees);
     }
-  }, [feelingData]);
+  }, [searchFlag]);
 
   return (
     <section css={feelingMainBox}>
+      {progresFlag && (
+        <div className="fileter">
+          <CircularProgress size="6rem" />
+        </div>
+      )}
       <div css={feelingBox}>
         <Image
           src={FormImg}
@@ -199,18 +160,9 @@ const Feeling = () => {
             menuItems={["コンビニ", "店舗"]}
           />
         </div>
-
         <div css={btnBox}>
           <ButtonBox onClick={(e) => onClickSearch(e)}>気分で飲む</ButtonBox>
         </div>
-
-        <CoffeeDialog
-          open={open}
-          onClose={() => setOpen(false)}
-          bestBitterCoffeeData={bestBitterCoffeeData}
-          bestAcidityCoffeeData={bestAcidityCoffeeData}
-          bestfeelingData={bestfeelingData}
-        />
       </div>
     </section>
   );
@@ -222,6 +174,19 @@ const feelingMainBox = css`
   width: 100%;
   height: 100vh;
   position: relative;
+
+  .fileter {
+    background-color: #333;
+    opacity: 0.7;
+    position: fixed;
+    top: 0;
+    z-index: 500;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const feelingBox = css`

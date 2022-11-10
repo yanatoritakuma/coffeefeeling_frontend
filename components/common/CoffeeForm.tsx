@@ -16,6 +16,8 @@ import { AppDispatch } from "../../redux/store";
 import { useDispatch } from "react-redux";
 import { setUpdateFlag } from "../../redux/editCoffeeSlice";
 import { useQueryUser } from "../../hooks/useQueryUser";
+import useChangeImage from "../../hooks/useChangeImage";
+import imageRegistration from "../../utils/imageRegistration";
 
 type Props = {
   fromWidth?: string;
@@ -43,6 +45,9 @@ export const CoffeeForm = memo((props: Props) => {
   const editCoffeeStore = useSelector(
     (state: RootState) => state.editCoffee.editCoffee
   );
+
+  // アップロード画像hooks
+  const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
 
   const { deleteImg } = deleteImgStorage();
 
@@ -73,14 +78,11 @@ export const CoffeeForm = memo((props: Props) => {
     }
   }, []);
 
-  // アップロード画像state
-  const [photoUrl, setPhotoUrl] = useState<File | null>(null);
-
   // 画像プレビュー用のstate
   const [previewUrl, setPreviewUrl] = useState<string>("");
 
   // db登録処理
-  const handleSubmit = (file: any) => {
+  const dbRegistration = (file: any) => {
     if (coffeeState.id === 0) {
       // 新規登録
       createCoffeeMutation.mutate({
@@ -132,13 +134,6 @@ export const CoffeeForm = memo((props: Props) => {
     });
   };
 
-  const onChangeImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files![0]) {
-      setPhotoUrl(e.target.files![0]);
-      e.target.value = "";
-    }
-  };
-
   // プレビューの画像処理
   useEffect(() => {
     if (!photoUrl) {
@@ -159,10 +154,11 @@ export const CoffeeForm = memo((props: Props) => {
     };
   }, [photoUrl]);
 
-  // 登録処理
-  const onClickRegistration = (e: React.FormEvent<HTMLFormElement>) => {
-    const ret = window.confirm("この内容で登録しますか？");
+  const { onClickRegistration } = imageRegistration();
 
+  // 登録処理
+  const onClickCoffeeRegistration = (e: React.FormEvent<HTMLFormElement>) => {
+    const ret = window.confirm("この内容で登録しますか？");
     // バリデーション
     if (
       coffeeState.name === "" ||
@@ -173,43 +169,17 @@ export const CoffeeForm = memo((props: Props) => {
     }
 
     if (ret) {
-      e.preventDefault();
-      if (photoUrl) {
-        const S =
-          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        const N = 16;
-        const randomChar = Array.from(
-          crypto.getRandomValues(new Uint32Array(N))
-        )
-          .map((n) => S[n % S.length])
-          .join("");
-        const fileName = randomChar + "_" + photoUrl.name;
-        const uploadImg = storage
-          .ref(`coffeeImages/${user?.id}/${fileName}`)
-          .put(photoUrl);
-        uploadImg.on(
-          firebase.storage.TaskEvent.STATE_CHANGED,
-          () => {},
-          (err) => {
-            alert(err.message);
-          },
-          async () => {
-            await storage
-              .ref(`coffeeImages/${user?.id}/`)
-              .child(fileName)
-              .getDownloadURL()
-              .then((fireBaseUrl) => {
-                handleSubmit(fireBaseUrl);
-              });
-          }
-        );
-      } else {
-        handleSubmit(null);
-      }
-      setPhotoUrl(null);
-      setPreviewUrl("");
-      alert("登録完了しました。");
+      onClickRegistration(
+        e,
+        photoUrl,
+        dbRegistration,
+        setPhotoUrl,
+        setPreviewUrl,
+        user
+      );
+
       dispatch(setUpdateFlag(true));
+      alert("登録完了しました。");
     }
   };
 
@@ -329,7 +299,7 @@ export const CoffeeForm = memo((props: Props) => {
           />
         </div>
         <div css={btnBox}>
-          <ButtonBox onClick={(e) => onClickRegistration(e)}>
+          <ButtonBox onClick={(e) => onClickCoffeeRegistration(e)}>
             {!editType ? "投稿する" : "更新する"}
           </ButtonBox>
         </div>

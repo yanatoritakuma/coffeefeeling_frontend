@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { Coffee } from "@prisma/client";
 import Image from "next/image";
@@ -19,17 +19,19 @@ import likeFeature from "../../utils/likeFeature";
 import { TBestCoffee } from "../../hooks/useQueryFeelingCoffees";
 
 type Props = {
-  coffees: Coffee[];
+  bestCoffee: TBestCoffee | undefined;
 };
 
-const CoffeeDetail = memo((props: Props) => {
-  const { coffees } = props;
+const FeelingCoffeeDetail = memo((props: Props) => {
+  const { bestCoffee } = props;
   const dispatch: AppDispatch = useDispatch();
   const { onClickLike, likeColor, likeCount } = likeFeature();
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
   const [editFlag, setEditFlag] = useState(false);
+  const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("bestCoffee");
+  const [bestAllCoffee, setBestAllCoffee] = useState<Coffee[] | undefined>();
 
   const loginUserStore = useSelector(
     (state: RootState) => state.loginUser.user
@@ -48,11 +50,89 @@ const CoffeeDetail = memo((props: Props) => {
     }
   };
 
+  // 苦味と酸味どちらにも当てはまるコーヒー
+  useEffect(() => {
+    if (bestCoffee !== undefined) {
+      const bitterIds = bestCoffee.bitterBest.map((coffee) => {
+        return coffee.id;
+      });
+
+      const acidityIds = bestCoffee.acidityBest.map((coffee) => {
+        return coffee.id;
+      });
+
+      const bitterAcidityIds = [...bitterIds, ...acidityIds];
+
+      const bestAllCoffeeIdSelect = bitterAcidityIds.filter(
+        (id) => bitterIds.includes(id) && acidityIds.includes(id)
+      );
+
+      const bestAllCoffeeIds = new Set(bestAllCoffeeIdSelect);
+      const bestAllCoffeeIdArray = [...bestAllCoffeeIds];
+
+      const bestAllCoffeeSelect = bestCoffee.bitterBest.filter(
+        (coffee, index) => coffee.id === bestAllCoffeeIdArray[index]
+      );
+
+      setBestAllCoffee(bestAllCoffeeSelect);
+    }
+  }, [bestCoffee]);
+
+  // 表示するコーヒー
+  const switchCoffee = () => {
+    switch (switchCoffeeFlag) {
+      case "bestCoffee":
+        return bestAllCoffee;
+      case "bitterBest":
+        return bestCoffee?.bitterBest;
+      case "acidityBest":
+        return bestCoffee?.acidityBest;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    switchCoffee();
+  }, [switchCoffeeFlag]);
+
   return (
     <div>
-      <>
-        {coffees?.map((coffee) => (
+      <ul css={listBox}>
+        <li
+          className={switchCoffeeFlag === "bestCoffee" ? "selectedList" : ""}
+          onClick={() => setSwitchCoffeeFlag("bestCoffee")}
+        >
+          ベストコーヒー
+        </li>
+        <li
+          className={switchCoffeeFlag === "bitterBest" ? "selectedList" : ""}
+          onClick={() => setSwitchCoffeeFlag("bitterBest")}
+        >
+          苦味ベストコーヒー
+        </li>
+        <li
+          className={switchCoffeeFlag === "acidityBest" ? "selectedList" : ""}
+          onClick={() => setSwitchCoffeeFlag("acidityBest")}
+        >
+          酸味ベストコーヒー
+        </li>
+      </ul>
+      {switchCoffee()?.length !== 0 ? (
+        switchCoffee()?.map((coffee) => (
           <div key={coffee.id} css={productBox}>
+            <div css={userBox}>
+              <div className="userBox__img">
+                <Image
+                  src={coffee.user_image}
+                  width={50}
+                  height={50}
+                  layout="responsive"
+                  alt="ユーザーアイコン"
+                />
+              </div>
+              <h5>{coffee.user_name}</h5>
+            </div>
             {coffee.image !== null ? (
               <img css={imgCoffee} src={coffee.image} alt="画像" />
             ) : (
@@ -134,14 +214,17 @@ const CoffeeDetail = memo((props: Props) => {
               }
             })()}
           </div>
-        ))}
-        <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
-      </>
+        ))
+      ) : (
+        <h3 style={{ textAlign: "center" }}>ヒットしませんでした</h3>
+      )}
+
+      <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
     </div>
   );
 });
 
-export default CoffeeDetail;
+export default FeelingCoffeeDetail;
 
 const productBox = css`
   margin: 24px auto;
@@ -149,8 +232,13 @@ const productBox = css`
   border: 2px solid #aaa;
   border-radius: 4px;
   background-color: #fff;
+  border-radius: 10px;
   width: 80%;
   min-width: 260px;
+
+  @media screen and (max-width: 1024px) {
+    width: 90%;
+  }
 
   h4 {
     font-size: 18px;
@@ -266,4 +354,85 @@ const btnBox = css`
   width: 50%;
   min-width: 140px;
   max-width: 200px;
+`;
+
+const listBox = css`
+  margin: 0 auto;
+  padding: 0;
+  width: 80%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+  background-color: #fff;
+  border-radius: 4px;
+
+  @media screen and (max-width: 1024px) {
+    width: 90%;
+  }
+
+  li {
+    padding: 12px;
+    font-size: 20px;
+    opacity: 0.7;
+    width: 30%;
+    text-align: center;
+    border-right: 1px solid #aaa;
+    cursor: pointer;
+
+    &:last-child {
+      border: none;
+    }
+
+    @media screen and (max-width: 1024px) {
+      font-size: 16px;
+    }
+    @media screen and (max-width: 768px) {
+      padding: 6px;
+      font-size: 14px;
+    }
+  }
+
+  .selectedList {
+    font-size: 24px;
+    font-weight: bold;
+
+    @media screen and (max-width: 1024px) {
+      font-size: 20px;
+    }
+    @media screen and (max-width: 768px) {
+      padding: 6px;
+      font-size: 14px;
+    }
+  }
+`;
+
+const userBox = css`
+  margin: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: fit-content;
+
+  .userBox__img {
+    margin-right: 20px;
+    width: 80px;
+
+    @media screen and (max-width: 768px) {
+      width: 60px;
+    }
+
+    img {
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  h5 {
+    font-size: 18px;
+
+    @media screen and (max-width: 768px) {
+      font-size: 16px;
+    }
+  }
 `;
