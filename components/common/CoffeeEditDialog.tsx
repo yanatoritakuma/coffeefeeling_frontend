@@ -1,12 +1,13 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect } from "react";
 import { css } from "@emotion/react";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { CoffeeForm } from "./CoffeeForm";
-import { RootState } from "../../redux/store";
-import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { setUpdateFlag } from "../../redux/editCoffeeSlice";
 
 type Props = {
   open: boolean;
@@ -15,8 +16,9 @@ type Props = {
 
 const CoffeeEditDialog = memo((props: Props) => {
   const { open, onClose } = props;
+  const dispatch: AppDispatch = useDispatch();
 
-  const editCoffeeStore = useSelector(
+  const editCoffeeUpdateFlag = useSelector(
     (state: RootState) => state.editCoffee.updateFlag
   );
 
@@ -26,7 +28,8 @@ const CoffeeEditDialog = memo((props: Props) => {
 
   useEffect(() => {
     handleClose();
-  }, [editCoffeeStore]);
+    dispatch(setUpdateFlag(false));
+  }, [editCoffeeUpdateFlag]);
 
   return (
     <Dialog onClose={handleClose} open={open} maxWidth="xl" css={dialogBox}>
