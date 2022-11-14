@@ -16,7 +16,6 @@ import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import CoffeeEditDialog from "./CoffeeEditDialog";
 import likeFeature from "../../utils/likeFeature";
-import { TBestCoffee } from "../../hooks/useQueryFeelingCoffees";
 
 type Props = {
   coffees: Coffee[];
