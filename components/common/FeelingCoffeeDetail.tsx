@@ -1,6 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { Coffee } from "@prisma/client";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
 import { Tooltip } from "@mui/material";
@@ -16,7 +15,7 @@ import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import CoffeeEditDialog from "./CoffeeEditDialog";
 import likeFeature from "../../utils/likeFeature";
-import { TBestCoffee } from "../../hooks/useQueryFeelingCoffees";
+import { TBestCoffee, TCoffee } from "../../types/coffee";
 
 type Props = {
   bestCoffee: TBestCoffee | undefined;
@@ -31,7 +30,7 @@ const FeelingCoffeeDetail = memo((props: Props) => {
 
   const [editFlag, setEditFlag] = useState(false);
   const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("bestCoffee");
-  const [bestAllCoffee, setBestAllCoffee] = useState<Coffee[] | undefined>();
+  const [bestAllCoffee, setBestAllCoffee] = useState<TCoffee[] | undefined>();
 
   const loginUserStore = useSelector(
     (state: RootState) => state.loginUser.user
