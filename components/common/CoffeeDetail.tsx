@@ -1,6 +1,5 @@
 import React, { memo, useState } from "react";
 import { css } from "@emotion/react";
-import { Coffee } from "@prisma/client";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
 import { Tooltip } from "@mui/material";
@@ -17,6 +16,7 @@ import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import CoffeeEditDialog from "./CoffeeEditDialog";
 import likeFeature from "../../utils/likeFeature";
 import { TCoffeeUser } from "../../types/coffee";
+import UserImg from "../../public/user.png";
 
 type Props = {
   coffees: TCoffeeUser[];
@@ -53,18 +53,33 @@ const CoffeeDetail = memo((props: Props) => {
       <>
         {coffees?.map((coffee) => (
           <div key={coffee.id} css={productBox}>
-            <div css={userBox}>
-              <div className="userBox__img">
-                <Image
-                  src={coffee.user.image}
-                  width={50}
-                  height={50}
-                  layout="responsive"
-                  alt="ユーザーアイコン"
-                />
+            {coffee.user.image !== null ? (
+              <div css={userBox}>
+                <div className="userBox__img">
+                  <Image
+                    src={coffee.user.image}
+                    width={50}
+                    height={50}
+                    layout="responsive"
+                    alt="ユーザーアイコン"
+                  />
+                </div>
+                <h5>{coffee.user.name}</h5>
               </div>
-              <h5>{coffee.user.name}</h5>
-            </div>
+            ) : (
+              <div css={userBox}>
+                <div className="userBox__img">
+                  <Image
+                    src={UserImg}
+                    width={50}
+                    height={50}
+                    layout="responsive"
+                    alt="ユーザーアイコン"
+                  />
+                </div>
+                <h5>{coffee.user.name}</h5>
+              </div>
+            )}
             {coffee.image !== null ? (
               <img css={imgCoffee} src={coffee.image} alt="画像" />
             ) : (

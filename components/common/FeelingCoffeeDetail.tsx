@@ -16,6 +16,7 @@ import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import CoffeeEditDialog from "./CoffeeEditDialog";
 import likeFeature from "../../utils/likeFeature";
 import { TBestCoffee, TCoffee } from "../../types/coffee";
+import UserImg from "../../public/user.png";
 
 type Props = {
   bestCoffee: TBestCoffee | undefined;
@@ -120,18 +121,33 @@ const FeelingCoffeeDetail = memo((props: Props) => {
       {switchCoffee()?.length !== 0 ? (
         switchCoffee()?.map((coffee) => (
           <div key={coffee.id} css={productBox}>
-            <div css={userBox}>
-              <div className="userBox__img">
-                <Image
-                  src={coffee.user_image}
-                  width={50}
-                  height={50}
-                  layout="responsive"
-                  alt="ユーザーアイコン"
-                />
+            {coffee.user_image !== null ? (
+              <div css={userBox}>
+                <div className="userBox__img">
+                  <Image
+                    src={coffee.user_image}
+                    width={50}
+                    height={50}
+                    layout="responsive"
+                    alt="ユーザーアイコン"
+                  />
+                </div>
+                <h5>{coffee.user_name}</h5>
               </div>
-              <h5>{coffee.user_name}</h5>
-            </div>
+            ) : (
+              <div css={userBox}>
+                <div className="userBox__img">
+                  <Image
+                    src={UserImg}
+                    width={50}
+                    height={50}
+                    layout="responsive"
+                    alt="ユーザーアイコン"
+                  />
+                </div>
+                <h5>{coffee.user_name}</h5>
+              </div>
+            )}
             {coffee.image !== null ? (
               <img css={imgCoffee} src={coffee.image} alt="画像" />
             ) : (
