@@ -11,3 +11,12 @@ export type TBestCoffee = {
   acidityBest: TCoffee[];
   bitterBest: TCoffee[];
 };
+
+type TUserCoffee = {
+  user: {
+    name: string;
+    image: string;
+  };
+};
+
+export type TCoffeeUser = Coffee & TUserCoffee;

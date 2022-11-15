@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Coffee } from "@prisma/client";
+import { TCoffeeUser } from "../components/common/CoffeeDetail";
 
 type TCount = {
   _count: {
@@ -14,12 +15,12 @@ type TCoffees = Coffee & TCount;
 export const useQueryCoffees = () => {
   const router = useRouter();
   const getCoffees = async () => {
-    const { data } = await axios.get<TCoffees[]>(
+    const { data } = await axios.get<TCoffeeUser[]>(
       `${process.env.NEXT_PUBLIC_API_URL}/coffee`
     );
     return data;
   };
-  return useQuery<TCoffees[], Error>({
+  return useQuery<TCoffeeUser[], Error>({
     queryKey: ["coffees"],
     queryFn: getCoffees,
     onError: (err: any) => {
