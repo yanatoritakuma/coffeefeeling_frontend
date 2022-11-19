@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { css } from "@emotion/react";
 import { useQueryFeelingCoffees } from "../../hooks/useQueryFeelingCoffees";
 import { useRouter } from "next/router";
@@ -6,6 +6,8 @@ import FeelingCoffeeDetail from "../../components/common/FeelingCoffeeDetail";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
+import { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
 
 export async function getStaticPaths() {
   return {
@@ -33,6 +35,10 @@ export const getStaticProps = async (context: {
 const FeelNow = () => {
   const router = useRouter();
 
+  const editCoffeeUpdateFlag = useSelector(
+    (state: RootState) => state.editCoffee.updateFlag
+  );
+
   const feelingReq = {
     category: String(router.query.category),
     bitter: Number(router.query.bitter),
@@ -41,7 +47,17 @@ const FeelNow = () => {
     place: String(router.query.place),
   };
 
-  const { status, data, error } = useQueryFeelingCoffees(feelingReq);
+  const { status, data, error, refetch } = useQueryFeelingCoffees(feelingReq);
+
+  const refetchSetTime = () => {
+    refetch();
+  };
+
+  useEffect(() => {
+    if (editCoffeeUpdateFlag) {
+      setTimeout(refetchSetTime, 1000);
+    }
+  }, [editCoffeeUpdateFlag]);
 
   return (
     <section css={feelNowBox}>

@@ -1,6 +1,5 @@
 import React, { memo, useState } from "react";
 import { css } from "@emotion/react";
-import { Coffee } from "@prisma/client";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
 import { Tooltip } from "@mui/material";
@@ -14,12 +13,13 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { setEditCoffee, setUpdateFlag } from "../../redux/editCoffeeSlice";
 import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
-import CoffeeEditDialog from "./CoffeeEditDialog";
+import CoffeeEdit from "../dialog/CoffeeEdit";
 import likeFeature from "../../utils/likeFeature";
-import { TBestCoffee } from "../../hooks/useQueryFeelingCoffees";
+import { TCoffeeUser } from "../../types/coffee";
+import UserImg from "../../public/user.png";
 
 type Props = {
-  coffees: Coffee[];
+  coffees: TCoffeeUser[];
 };
 
 const CoffeeDetail = memo((props: Props) => {
@@ -53,6 +53,33 @@ const CoffeeDetail = memo((props: Props) => {
       <>
         {coffees?.map((coffee) => (
           <div key={coffee.id} css={productBox}>
+            {coffee.user.image !== null ? (
+              <div css={userBox}>
+                <div className="userBox__img">
+                  <Image
+                    src={coffee.user.image}
+                    width={50}
+                    height={50}
+                    layout="responsive"
+                    alt="ユーザーアイコン"
+                  />
+                </div>
+                <h5>{coffee.user.name}</h5>
+              </div>
+            ) : (
+              <div css={userBox}>
+                <div className="userBox__img">
+                  <Image
+                    src={UserImg}
+                    width={50}
+                    height={50}
+                    layout="responsive"
+                    alt="ユーザーアイコン"
+                  />
+                </div>
+                <h5>{coffee.user.name}</h5>
+              </div>
+            )}
             {coffee.image !== null ? (
               <img css={imgCoffee} src={coffee.image} alt="画像" />
             ) : (
@@ -135,7 +162,7 @@ const CoffeeDetail = memo((props: Props) => {
             })()}
           </div>
         ))}
-        <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
+        <CoffeeEdit open={editFlag} onClose={() => setEditFlag(false)} />
       </>
     </div>
   );
@@ -266,4 +293,34 @@ const btnBox = css`
   width: 50%;
   min-width: 140px;
   max-width: 200px;
+`;
+
+const userBox = css`
+  margin: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: fit-content;
+
+  .userBox__img {
+    margin-right: 20px;
+    width: 80px;
+
+    @media screen and (max-width: 768px) {
+      width: 60px;
+    }
+
+    img {
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  h5 {
+    font-size: 18px;
+
+    @media screen and (max-width: 768px) {
+      font-size: 16px;
+    }
+  }
 `;

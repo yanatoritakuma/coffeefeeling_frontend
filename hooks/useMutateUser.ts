@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { User } from "@prisma/client";
-import { EditedUser, DeleteUser } from "../types";
+import { EditedUser, DeleteUser } from "../types/form";
 import { deleteImgStorage } from "../utils/deleteImgStorage";
 
 export const useMutateUser = () => {

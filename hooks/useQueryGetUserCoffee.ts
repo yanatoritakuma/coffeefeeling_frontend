@@ -3,16 +3,17 @@ import axios from "axios";
 import { Coffee } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
+import { TCoffeeUser } from "../types/coffee";
 
 export const useQueryGetUserCoffee = () => {
   const router = useRouter();
   const getUserCoffees = async () => {
-    const { data } = await axios.get<Coffee[]>(
+    const { data } = await axios.get<TCoffeeUser[]>(
       `${process.env.NEXT_PUBLIC_API_URL}/coffee/userId`
     );
     return data;
   };
-  return useQuery<Coffee[], Error>({
+  return useQuery<TCoffeeUser[], Error>({
     queryKey: ["userCoffees"],
     queryFn: getUserCoffees,
     onError: (err: any) => {

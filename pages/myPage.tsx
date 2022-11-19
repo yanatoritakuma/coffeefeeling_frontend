@@ -12,8 +12,8 @@ import CoffeeDetail from "../components/common/CoffeeDetail";
 import { useQueryLikes } from "../hooks/useQueryLikes";
 import { useQueryCoffees } from "../hooks/useQueryCoffees";
 import { MenuBox } from "../components/common/MenuBox";
-import { ProfileChange } from "../components/common/ProfileChange";
-import AccountDelete from "../components/common/AccountDelete";
+import { ProfileChange } from "../components/dialog/ProfileChange";
+import AccountDelete from "../components/dialog/AccountDelete";
 
 const MyPage = () => {
   const { data: user } = useQueryUser();

@@ -1,12 +1,36 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { useQueryCoffees } from "../hooks/useQueryCoffees";
 import CoffeeLikeRankingDetail from "../components/common/CoffeeLikeRankingDetail";
+import { CircularProgress } from "@mui/material";
+import TimeOut from "../components/dialog/TimeOut";
 
 const LikeRanking = () => {
-  const { data: coffees } = useQueryCoffees();
+  const { status, data: coffees } = useQueryCoffees();
+  const [loadingFlag, setLoadingFlag] = useState(true);
+  const [timeOut, setTimeOut] = useState(false);
+  const [timeOutDailog, setTimeOutDailog] = useState(false);
+
+  // loading
+  // success
+  useEffect(() => {
+    if (status === "success") {
+      setLoadingFlag(false);
+      setTimeOut(false);
+    } else if (status === "loading") {
+      setTimeout(() => {
+        setTimeOut(true);
+      }, 5000);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (timeOut && status === "loading") {
+      setTimeOutDailog(true);
+    }
+  }, [timeOut]);
 
   const coffeeLikeBest = coffees?.filter(
     (coffee) => coffee._count.likes === coffees[0]._count.likes
@@ -48,6 +72,12 @@ const LikeRanking = () => {
         <CoffeeLikeRankingDetail coffeeLikes={secondCoffee} rankName="2位" />
         <CoffeeLikeRankingDetail coffeeLikes={thirdCoffee} rankName="3位" />
       </div>
+      {loadingFlag && (
+        <div className="fileter">
+          <CircularProgress size="6rem" />
+        </div>
+      )}
+      <TimeOut open={timeOutDailog} />
     </div>
   );
 };
@@ -59,6 +89,19 @@ const likeRankingMainBox = css`
   width: 100%;
   height: auto;
   min-height: 100vh;
+
+  .fileter {
+    background-color: #333;
+    opacity: 0.7;
+    position: fixed;
+    top: 0;
+    z-index: 500;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const likeRankingBox = css`

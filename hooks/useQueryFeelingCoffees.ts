@@ -3,6 +3,7 @@ import axios from "axios";
 import { Coffee } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
+import { TBestCoffee } from "../types/coffee";
 
 type TFeeling = {
   category: string;
@@ -10,11 +11,6 @@ type TFeeling = {
   acidity: number;
   price: number;
   place: string;
-};
-
-export type TBestCoffee = {
-  acidityBest: Coffee[];
-  bitterBest: any[];
 };
 
 export const useQueryFeelingCoffees = (feeling?: TFeeling) => {

@@ -17,8 +17,8 @@ type Props = {
 
 const CoffeeLikeRankingDetail = memo((props: Props) => {
   const { coffeeLikes, rankName } = props;
-  console.log(coffeeLikes);
   const { onClickLike, likeColor, likeCount } = likeFeature();
+
   return (
     <div>
       {coffeeLikes !== undefined && (

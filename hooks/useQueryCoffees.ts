@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { Coffee } from "@prisma/client";
+import { TCoffeeUser } from "../types/coffee";
 
 type TCount = {
   _count: {
@@ -9,7 +9,7 @@ type TCount = {
   };
 };
 
-type TCoffees = Coffee & TCount;
+type TCoffees = TCoffeeUser & TCount;
 
 export const useQueryCoffees = () => {
   const router = useRouter();
