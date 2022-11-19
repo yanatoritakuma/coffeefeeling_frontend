@@ -13,7 +13,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { setEditCoffee, setUpdateFlag } from "../../redux/editCoffeeSlice";
 import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
-import CoffeeEditDialog from "./CoffeeEditDialog";
+import CoffeeEdit from "../dialog/CoffeeEdit";
 import likeFeature from "../../utils/likeFeature";
 import { TCoffeeUser } from "../../types/coffee";
 import UserImg from "../../public/user.png";
@@ -162,7 +162,7 @@ const CoffeeDetail = memo((props: Props) => {
             })()}
           </div>
         ))}
-        <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
+        <CoffeeEdit open={editFlag} onClose={() => setEditFlag(false)} />
       </>
     </div>
   );

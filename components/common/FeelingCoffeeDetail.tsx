@@ -13,7 +13,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { setEditCoffee, setUpdateFlag } from "../../redux/editCoffeeSlice";
 import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
-import CoffeeEditDialog from "./CoffeeEditDialog";
+import CoffeeEdit from "../dialog/CoffeeEdit";
 import likeFeature from "../../utils/likeFeature";
 import { TBestCoffee, TCoffee } from "../../types/coffee";
 import UserImg from "../../public/user.png";
@@ -234,7 +234,7 @@ const FeelingCoffeeDetail = memo((props: Props) => {
         <h3 style={{ textAlign: "center" }}>ヒットしませんでした</h3>
       )}
 
-      <CoffeeEditDialog open={editFlag} onClose={() => setEditFlag(false)} />
+      <CoffeeEdit open={editFlag} onClose={() => setEditFlag(false)} />
     </div>
   );
 });

@@ -4,7 +4,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
-import { CoffeeForm } from "./CoffeeForm";
+import { CoffeeForm } from "../common/CoffeeForm";
 import { AppDispatch, RootState } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setUpdateFlag } from "../../redux/editCoffeeSlice";
@@ -14,7 +14,7 @@ type Props = {
   onClose: () => void;
 };
 
-const CoffeeEditDialog = memo((props: Props) => {
+const CoffeeEdit = memo((props: Props) => {
   const { open, onClose } = props;
   const dispatch: AppDispatch = useDispatch();
 
@@ -45,7 +45,7 @@ const CoffeeEditDialog = memo((props: Props) => {
   );
 });
 
-export default CoffeeEditDialog;
+export default CoffeeEdit;
 
 const dialogBox = css`
   .MuiPaper-root {
