@@ -30,7 +30,6 @@ const Feeling = () => {
   };
 
   const [searchFlag, setSearchFlag] = useState(false);
-  const [progresFlag, setProgresFlag] = useState(false);
 
   const categoryUrl = () => {
     switch (selectCoffee.category) {
@@ -54,7 +53,6 @@ const Feeling = () => {
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSearchFlag(true);
-    setProgresFlag(true);
   };
 
   useEffect(() => {
@@ -70,11 +68,6 @@ const Feeling = () => {
 
   return (
     <section css={feelingMainBox}>
-      {progresFlag && (
-        <div className="fileter">
-          <CircularProgress size="6rem" />
-        </div>
-      )}
       <div css={feelingBox}>
         <Image
           src={FormImg}

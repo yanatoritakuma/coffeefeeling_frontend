@@ -49,4 +49,9 @@ const timeOutBox = css`
     text-align: center;
     line-height: 1.5em;
   }
+
+  button {
+    margin: 12px auto;
+    width: 50%;
+  }
 `;

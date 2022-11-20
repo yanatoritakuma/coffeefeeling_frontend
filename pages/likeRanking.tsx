@@ -13,8 +13,7 @@ const LikeRanking = () => {
   const [timeOut, setTimeOut] = useState(false);
   const [timeOutDailog, setTimeOutDailog] = useState(false);
 
-  // loading
-  // success
+  // APIタイムアウト処理
   useEffect(() => {
     if (status === "success") {
       setLoadingFlag(false);
@@ -22,10 +21,11 @@ const LikeRanking = () => {
     } else if (status === "loading") {
       setTimeout(() => {
         setTimeOut(true);
-      }, 5000);
+      }, 20000);
     }
   }, [status]);
 
+  // タイムアウトしたらタイムアウトダイアログ表示
   useEffect(() => {
     if (timeOut && status === "loading") {
       setTimeOutDailog(true);
