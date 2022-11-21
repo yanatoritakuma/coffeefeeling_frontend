@@ -35,7 +35,6 @@ export const getStaticProps = async (context: {
 };
 
 const FeelNow = () => {
-  console.log("FeelNow");
   const router = useRouter();
 
   const editCoffeeUpdateFlag = useSelector(
@@ -50,7 +49,7 @@ const FeelNow = () => {
     place: String(router.query.place),
   };
 
-  const { status, data, error, refetch } = useQueryFeelingCoffees(feelingReq);
+  const { status, data, refetch } = useQueryFeelingCoffees(feelingReq);
   console.log("status", status);
 
   const [loadingFlag, setLoadingFlag] = useState(true);
@@ -80,6 +79,7 @@ const FeelNow = () => {
     refetch();
   };
 
+  // 編集後にAPI再取得
   useEffect(() => {
     if (editCoffeeUpdateFlag) {
       setTimeout(refetchSetTime, 1000);
