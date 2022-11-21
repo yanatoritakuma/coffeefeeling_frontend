@@ -35,6 +35,7 @@ export const getStaticProps = async (context: {
 };
 
 const FeelNow = () => {
+  console.log("FeelNow");
   const router = useRouter();
 
   const editCoffeeUpdateFlag = useSelector(
