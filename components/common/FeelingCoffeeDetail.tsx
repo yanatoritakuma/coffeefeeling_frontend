@@ -24,8 +24,37 @@ type Props = {
 
 const FeelingCoffeeDetail = memo((props: Props) => {
   const { bestCoffee } = props;
+
+  // 苦いベストコーヒーのcoffeeId取得
+  const bitterCoffeeIds =
+    bestCoffee !== undefined
+      ? bestCoffee?.bitterBest.map((coffee) => {
+          return coffee.id;
+        })
+      : [0];
+
+  // 酸味ベストコーヒーのcoffeeId取得;
+  const acidityCoffeeIds =
+    bestCoffee !== undefined
+      ? bestCoffee?.acidityBest.map((coffee) => {
+          return coffee.id;
+        })
+      : [0];
+
+  // 苦い・酸味ベストコーヒーのcoffeeIdを合わせる;
+  const bestCoffeeIdArray = [...bitterCoffeeIds, ...acidityCoffeeIds];
+
+  // 重複しているcoffeeIdを取り除く
+  const bestCoffeeIds = bestCoffeeIdArray.filter((x, i, self) => {
+    return self.indexOf(x) === i;
+  });
+
+  useEffect(() => {
+    getCoffeeId(bestCoffeeIds);
+  }, [bestCoffee]);
+
   const dispatch: AppDispatch = useDispatch();
-  const { onClickLike, likeColor, likeCount } = likeFeature();
+  const { onClickLike, likeColor, likeCount, getCoffeeId } = likeFeature();
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 

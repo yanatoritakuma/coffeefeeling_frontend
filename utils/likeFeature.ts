@@ -1,18 +1,62 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useMutateLike } from "../hooks/useMutateLike";
-import { useQueryLikes } from "../hooks/useQueryLikes";
+import { useQueryCoffeeIdLikes } from "../hooks/useQueryCoffeeIdLikes";
 import { RootState } from "../redux/store";
 
 const likeFeature = () => {
-  const { data: likes } = useQueryLikes();
+  // coffeeId[]を格納する変数
+  const [coffeeIdArray, setCoffeeIdArray] = useState<number[]>([]);
+  // useQueryFeelingLikes（いいね取得API）で渡す変数
+  const [coffeeIdArrayReq, setCoffeeIdArrayReq] = useState({
+    coffeeId1: 0,
+    coffeeId2: 0,
+    coffeeId3: 0,
+    coffeeId4: 0,
+    coffeeId5: 0,
+    coffeeId6: 0,
+    coffeeId7: 0,
+    coffeeId8: 0,
+    coffeeId9: 0,
+    coffeeId10: 0,
+  });
+
+  const refetchSetTime = () => {
+    refetch();
+  };
+
+  useEffect(() => {
+    if (coffeeIdArray.length !== 0) {
+      setCoffeeIdArrayReq({
+        ...coffeeIdArrayReq,
+        coffeeId1: coffeeIdArray[0] !== undefined ? coffeeIdArray[0] : 0,
+        coffeeId2: coffeeIdArray[1] !== undefined ? coffeeIdArray[1] : 0,
+        coffeeId3: coffeeIdArray[2] !== undefined ? coffeeIdArray[2] : 0,
+        coffeeId4: coffeeIdArray[3] !== undefined ? coffeeIdArray[3] : 0,
+        coffeeId5: coffeeIdArray[4] !== undefined ? coffeeIdArray[4] : 0,
+        coffeeId6: coffeeIdArray[5] !== undefined ? coffeeIdArray[5] : 0,
+        coffeeId7: coffeeIdArray[6] !== undefined ? coffeeIdArray[6] : 0,
+        coffeeId8: coffeeIdArray[7] !== undefined ? coffeeIdArray[7] : 0,
+        coffeeId9: coffeeIdArray[8] !== undefined ? coffeeIdArray[8] : 0,
+        coffeeId10: coffeeIdArray[9] !== undefined ? coffeeIdArray[9] : 0,
+      });
+    }
+    setTimeout(refetchSetTime, 100);
+  }, [coffeeIdArray]);
+
+  const { data: feelingLikes, refetch } =
+    useQueryCoffeeIdLikes(coffeeIdArrayReq);
+  console.log("feelingLikes", feelingLikes);
+
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
 
   const loginUserStore = useSelector(
     (state: RootState) => state.loginUser.user
   );
 
-  const likeUser = likes?.filter((like) => like.userId === loginUserStore?.id);
+  const likeUser = feelingLikes?.filter(
+    (like) => like.userId === loginUserStore?.id
+  );
 
   const likeCoffees = (coffeeId: number) => {
     return likeUser?.filter((like) => like.coffeeId === coffeeId);
@@ -50,12 +94,16 @@ const likeFeature = () => {
 
   // いいねの数表示
   const likeCount = (coffeeId: number) => {
-    const likeNum = likes?.filter((like) => like.coffeeId === coffeeId);
+    const likeNum = feelingLikes?.filter((like) => like.coffeeId === coffeeId);
 
     return likeNum;
   };
 
-  return { onClickLike, likeColor, likeCount };
+  const getCoffeeId = (coffeeIds: number[]) => {
+    return setCoffeeIdArray(coffeeIds);
+  };
+
+  return { onClickLike, likeColor, likeCount, getCoffeeId };
 };
 
 export default likeFeature;

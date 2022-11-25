@@ -50,7 +50,6 @@ const FeelNow = () => {
   };
 
   const { status, data, refetch } = useQueryFeelingCoffees(feelingReq);
-  console.log("status", status);
 
   const [loadingFlag, setLoadingFlag] = useState(true);
   const [timeOut, setTimeOut] = useState(false);
