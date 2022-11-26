@@ -46,7 +46,6 @@ const likeFeature = () => {
 
   const { data: feelingLikes, refetch } =
     useQueryCoffeeIdLikes(coffeeIdArrayReq);
-  console.log("feelingLikes", feelingLikes);
 
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
 

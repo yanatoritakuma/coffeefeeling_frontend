@@ -4,24 +4,46 @@ import { storage } from "../firebase/initFirebase";
 export const deleteImgStorage = () => {
   // 対象1つのimgを削除
   const deleteImg = useCallback(
-    (image: string | null, targetStorage: "coffeeImages" | "userImages") => {
+    (
+      image: string | null,
+      targetStorage: "coffeeImages" | "userImages",
+      userId?: number
+    ) => {
       if (image !== null) {
         const imgUrlStart = image.indexOf(targetStorage + "%2F");
         const imgUrlEnd = image.indexOf("?alt");
-        const deleteUrl = image
+        const deletePostCoffeeUrl = image
+          .substring(imgUrlStart, imgUrlEnd)
+          .replace(targetStorage + `%2F${userId}%2F`, "");
+        const deleteUserUrl = image
           .substring(imgUrlStart, imgUrlEnd)
           .replace(targetStorage + "%2F", "");
 
-        const desertRef = storage.ref(`${targetStorage}/${deleteUrl}`);
+        if (targetStorage === "coffeeImages") {
+          const desertRef = storage.ref(
+            `${targetStorage}/${userId}/${deletePostCoffeeUrl}`
+          );
 
-        desertRef
-          .delete()
-          .then(() => {
-            console.log("削除");
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+          desertRef
+            .delete()
+            .then(() => {
+              console.log("削除");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          const desertRef = storage.ref(`${targetStorage}/${deleteUserUrl}`);
+
+          desertRef
+            .delete()
+            .then(() => {
+              console.log("削除");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
       }
     },
     []

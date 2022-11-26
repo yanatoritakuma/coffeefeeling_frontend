@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { css } from "@emotion/react";
 import { Coffee } from "@prisma/client";
 import Image from "next/image";
@@ -17,7 +17,18 @@ type Props = {
 
 const CoffeeLikeRankingDetail = memo((props: Props) => {
   const { coffeeLikes, rankName } = props;
-  const { onClickLike, likeColor, likeCount } = likeFeature();
+  const coffeeIdArray =
+    coffeeLikes !== undefined
+      ? coffeeLikes.map((coffee) => {
+          return coffee.id;
+        })
+      : [0];
+  const { onClickLike, likeColor, likeCount, getCoffeeId } = likeFeature();
+
+  useEffect(() => {
+    console.log(coffeeLikes);
+    getCoffeeId(coffeeIdArray);
+  }, [coffeeLikes]);
 
   return (
     <div>

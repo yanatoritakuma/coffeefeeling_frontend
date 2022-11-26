@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
@@ -25,7 +25,14 @@ type Props = {
 const CoffeeDetail = memo((props: Props) => {
   const { coffees } = props;
   const dispatch: AppDispatch = useDispatch();
-  const { onClickLike, likeColor, likeCount } = likeFeature();
+  const coffeeIdArray = coffees.map((coffee) => {
+    return coffee.id;
+  });
+
+  const { onClickLike, likeColor, likeCount, getCoffeeId } = likeFeature();
+  useEffect(() => {
+    getCoffeeId(coffeeIdArray);
+  }, [coffees]);
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
@@ -36,12 +43,16 @@ const CoffeeDetail = memo((props: Props) => {
   );
 
   // 投稿Coffee削除
-  const onClickDelete = (coffeeId: number, coffeeImage: string | null) => {
+  const onClickDelete = (
+    coffeeId: number,
+    coffeeImage: string | null,
+    userId: number
+  ) => {
     const ret = window.confirm("削除しますか？");
 
     if (ret) {
       // 画像が設定してある場合firebaseStorageから画像も削除
-      deleteImg(coffeeImage, "coffeeImages");
+      deleteImg(coffeeImage, "coffeeImages", userId);
       deleteCoffeeMutation.mutate(coffeeId);
       dispatch(setUpdateFlag(true));
       alert("削除しました。");
@@ -152,7 +163,9 @@ const CoffeeDetail = memo((props: Props) => {
                       編集
                     </ButtonBox>
                     <ButtonBox
-                      onClick={() => onClickDelete(coffee.id, coffee.image)}
+                      onClick={() =>
+                        onClickDelete(coffee.id, coffee.image, coffee.userId)
+                      }
                     >
                       削除
                     </ButtonBox>
