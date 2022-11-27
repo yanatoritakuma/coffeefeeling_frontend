@@ -7,7 +7,6 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import { SliderBox } from "../components/atoms/SliderBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
 import { useRouter } from "next/router";
-import CircularProgress from "@mui/material/CircularProgress";
 
 const Feeling = () => {
   const router = useRouter();
@@ -30,7 +29,6 @@ const Feeling = () => {
   };
 
   const [searchFlag, setSearchFlag] = useState(false);
-  const [progresFlag, setProgresFlag] = useState(false);
 
   const categoryUrl = () => {
     switch (selectCoffee.category) {
@@ -54,7 +52,6 @@ const Feeling = () => {
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSearchFlag(true);
-    setProgresFlag(true);
   };
 
   useEffect(() => {
@@ -70,11 +67,6 @@ const Feeling = () => {
 
   return (
     <section css={feelingMainBox}>
-      {progresFlag && (
-        <div className="fileter">
-          <CircularProgress size="6rem" />
-        </div>
-      )}
       <div css={feelingBox}>
         <Image
           src={FormImg}

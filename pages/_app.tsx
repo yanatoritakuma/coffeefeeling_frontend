@@ -28,7 +28,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       axios.defaults.headers.common["csrf-token"] = data.csrfToken;
     };
     getCsrfToken();
-    console.log("getCsrfToken");
   }, []);
 
   return (

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { useQueryFeelingCoffees } from "../../hooks/useQueryFeelingCoffees";
 import { useRouter } from "next/router";
@@ -8,6 +8,8 @@ import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
+import { CircularProgress } from "@mui/material";
+import TimeOut from "../../components/dialog/TimeOut";
 
 export async function getStaticPaths() {
   return {
@@ -47,12 +49,36 @@ const FeelNow = () => {
     place: String(router.query.place),
   };
 
-  const { status, data, error, refetch } = useQueryFeelingCoffees(feelingReq);
+  const { status, data, refetch } = useQueryFeelingCoffees(feelingReq);
+
+  const [loadingFlag, setLoadingFlag] = useState(true);
+  const [timeOut, setTimeOut] = useState(false);
+  const [timeOutDailog, setTimeOutDailog] = useState(false);
+
+  // APIタイムアウト処理
+  useEffect(() => {
+    if (status === "success") {
+      setLoadingFlag(false);
+      setTimeOut(false);
+    } else if (status === "loading") {
+      setTimeout(() => {
+        setTimeOut(true);
+      }, 20000);
+    }
+  }, [status]);
+
+  // タイムアウトしたらタイムアウトダイアログ表示
+  useEffect(() => {
+    if (timeOut && status === "loading") {
+      setTimeOutDailog(true);
+    }
+  }, [timeOut]);
 
   const refetchSetTime = () => {
     refetch();
   };
 
+  // 編集後にAPI再取得
   useEffect(() => {
     if (editCoffeeUpdateFlag) {
       setTimeout(refetchSetTime, 1000);
@@ -108,6 +134,12 @@ const FeelNow = () => {
       ) : (
         <h2>現在表示できるコーヒーがありません。</h2>
       )}
+      {loadingFlag && (
+        <div className="fileter">
+          <CircularProgress size="6rem" />
+        </div>
+      )}
+      <TimeOut open={timeOutDailog} />
     </section>
   );
 };
@@ -124,6 +156,19 @@ const feelNowBox = css`
     color: #7b5544;
     text-align: center;
     font-size: 28px;
+  }
+
+  .fileter {
+    background-color: #333;
+    opacity: 0.7;
+    position: fixed;
+    top: 0;
+    z-index: 500;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
