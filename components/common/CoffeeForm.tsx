@@ -119,7 +119,11 @@ export const CoffeeForm = memo((props: Props) => {
           place: coffeeState.place,
         });
         // 既に登録済みの画像を削除
-        deleteImg(editCoffeeStore.image, "coffeeImages");
+        deleteImg(
+          editCoffeeStore.image,
+          "coffeeImages",
+          editCoffeeStore.userId
+        );
       }
     }
     setCoffeeState({

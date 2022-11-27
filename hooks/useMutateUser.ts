@@ -37,7 +37,7 @@ export const useMutateUser = () => {
     const ret = window.confirm("本当に削除しますか？");
     if (ret) {
       await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/auth/${user.id}`);
-      deleteImg(user.image, "userImages");
+      deleteImg(user.image, "userImages", user.id);
       deleteAllUserPostsImg(user.id);
       queryClient.removeQueries(["user"]);
       alert("削除しました。");
