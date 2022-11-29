@@ -36,12 +36,16 @@ const CoffeeDetail = memo((props: Props) => {
   );
 
   // 投稿Coffee削除
-  const onClickDelete = (coffeeId: number, coffeeImage: string | null) => {
+  const onClickDelete = (
+    coffeeId: number,
+    coffeeImage: string | null,
+    userId: number
+  ) => {
     const ret = window.confirm("削除しますか？");
 
     if (ret) {
       // 画像が設定してある場合firebaseStorageから画像も削除
-      deleteImg(coffeeImage, "coffeeImages");
+      deleteImg(coffeeImage, "coffeeImages", userId);
       deleteCoffeeMutation.mutate(coffeeId);
       dispatch(setUpdateFlag(true));
       alert("削除しました。");
@@ -152,7 +156,9 @@ const CoffeeDetail = memo((props: Props) => {
                       編集
                     </ButtonBox>
                     <ButtonBox
-                      onClick={() => onClickDelete(coffee.id, coffee.image)}
+                      onClick={() =>
+                        onClickDelete(coffee.id, coffee.image, coffee.userId)
+                      }
                     >
                       削除
                     </ButtonBox>
