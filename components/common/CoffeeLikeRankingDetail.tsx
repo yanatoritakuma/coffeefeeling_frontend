@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { css } from "@emotion/react";
 import { Coffee } from "@prisma/client";
 import Image from "next/image";

@@ -6,9 +6,12 @@ import { useQueryCoffees } from "../hooks/useQueryCoffees";
 import CoffeeLikeRankingDetail from "../components/common/CoffeeLikeRankingDetail";
 import { CircularProgress } from "@mui/material";
 import TimeOut from "../components/dialog/TimeOut";
+import { useQueryLikeRankingCoffees } from "../hooks/useQueryLikeRankingCoffees";
+import likeFeature from "../utils/likeFeature";
 
 const LikeRanking = () => {
-  const { status, data: coffees } = useQueryCoffees();
+  const { status, data: likeRankingCoffees } = useQueryLikeRankingCoffees();
+  const { getCoffeeId } = likeFeature();
   const [loadingFlag, setLoadingFlag] = useState(true);
   const [timeOut, setTimeOut] = useState(false);
   const [timeOutDailog, setTimeOutDailog] = useState(false);
@@ -31,11 +34,11 @@ const LikeRanking = () => {
     }
   }, [timeOut]);
 
-  const coffeeLikeBest = coffees?.filter(
-    (coffee) => coffee._count.likes === coffees[0]._count.likes
+  const coffeeLikeBest = likeRankingCoffees?.filter(
+    (coffee) => coffee._count.likes === likeRankingCoffees[0]._count.likes
   );
 
-  const bestCoffeeExcept = coffees?.filter(
+  const bestCoffeeExcept = likeRankingCoffees?.filter(
     (coffee, index) =>
       coffee.id !== (coffeeLikeBest !== undefined && coffeeLikeBest[index]?.id)
   );
@@ -51,7 +54,7 @@ const LikeRanking = () => {
 
   const bestAndSecond = [...coffeeLikeBestArray, ...secondCoffeeArray];
 
-  const bestAndSecondCoffeeExcept = coffees?.filter(
+  const bestAndSecondCoffeeExcept = likeRankingCoffees?.filter(
     (coffee, index) => coffee !== bestAndSecond[index]
   );
 
@@ -59,6 +62,17 @@ const LikeRanking = () => {
     (coffee) =>
       coffee._count.likes === bestAndSecondCoffeeExcept[0]._count.likes
   );
+
+  const coffeeIds =
+    likeRankingCoffees !== undefined
+      ? likeRankingCoffees?.map((coffee) => {
+          return coffee.id;
+        })
+      : [0];
+
+  useEffect(() => {
+    getCoffeeId(coffeeIds);
+  }, [likeRankingCoffees]);
 
   return (
     <div css={likeRankingMainBox}>
