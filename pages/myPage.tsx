@@ -15,34 +15,42 @@ import { MenuBox } from "../components/common/MenuBox";
 import { ProfileChange } from "../components/dialog/ProfileChange";
 import AccountDelete from "../components/dialog/AccountDelete";
 import { PaginationBox } from "../components/common/PaginationBox";
+import { useQueryLoginUserLikesCoffee } from "../hooks/useQueryLoginUserLikesCoffee";
 
 const MyPage = () => {
   const { data: user } = useQueryUser();
   const { data: likes } = useQueryLikes();
   const { data: coffees } = useQueryCoffees();
+  // ログインユーザーがいいねしたコーヒー
+  const { data: loginUserLikesCoffee, refetch: refetchLoginUserLikesCoffee } =
+    useQueryLoginUserLikesCoffee();
+
   // 現在のページ
   const [nowPage, setNowPage] = useState(1);
   const skipPage = nowPage * 10 - 10;
   const takePage = skipPage + 10;
 
-  const { data: userCoffees, refetch } = useQueryGetUserCoffee(
-    skipPage,
-    takePage
-  );
+  // 特定のユーザー（ログインユーザー）が投稿したコーヒー
+  const { data: userCoffees, refetch: refetchUserCoffees } =
+    useQueryGetUserCoffee(skipPage, takePage);
 
   // 全ページ数
   const paginationCount =
     userCoffees !== undefined
-      ? Math.ceil(userCoffees[0].user._count.coffee / 10)
+      ? Math.ceil(userCoffees[0]?.user?._count.coffee / 10)
       : 0;
 
   useEffect(() => {
-    refetch();
+    refetchUserCoffees();
     window.scrollTo({
       top: 0,
       // behavior: "smooth",
     });
   }, [nowPage]);
+
+  useEffect(() => {
+    refetchLoginUserLikesCoffee();
+  }, [userCoffees]);
 
   const [tabValue, setTabValue] = useState("post");
 
@@ -105,13 +113,13 @@ const MyPage = () => {
           <div css={imgRightBox}>
             <span>
               {userCoffees !== undefined
-                ? userCoffees[0].user._count.coffee
+                ? userCoffees[0]?.user?._count.coffee
                 : 0}
             </span>
             <span>投稿</span>
           </div>
           <div css={imgRightBox}>
-            <span>{coffeeLikes?.length}</span>
+            <span>{loginUserLikesCoffee?.length}</span>
             <span>いいね</span>
           </div>
         </div>
@@ -151,8 +159,9 @@ const MyPage = () => {
             )}
             {tabValue === "like" && (
               <div>
-                {coffeeLikes !== undefined && coffeeLikes?.length > 0 ? (
-                  <CoffeeDetail coffees={coffeeLikes} />
+                {loginUserLikesCoffee !== undefined &&
+                loginUserLikesCoffee?.length > 0 ? (
+                  <CoffeeDetail loginUserLikesCoffee={loginUserLikesCoffee} />
                 ) : (
                   <p>まだいいねがありません</p>
                 )}
