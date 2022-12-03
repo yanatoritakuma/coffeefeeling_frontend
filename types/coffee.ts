@@ -16,6 +16,9 @@ type TUserCoffee = {
   user: {
     name: string;
     image: string;
+    _count: {
+      coffee: number;
+    };
   };
 };
 

@@ -14,12 +14,35 @@ import { useQueryCoffees } from "../hooks/useQueryCoffees";
 import { MenuBox } from "../components/common/MenuBox";
 import { ProfileChange } from "../components/dialog/ProfileChange";
 import AccountDelete from "../components/dialog/AccountDelete";
+import { PaginationBox } from "../components/common/PaginationBox";
 
 const MyPage = () => {
   const { data: user } = useQueryUser();
   const { data: likes } = useQueryLikes();
   const { data: coffees } = useQueryCoffees();
-  const { data: userCoffees } = useQueryGetUserCoffee();
+  // 現在のページ
+  const [nowPage, setNowPage] = useState(1);
+  const skipPage = nowPage * 10 - 10;
+  const takePage = skipPage + 10;
+
+  const { data: userCoffees, refetch } = useQueryGetUserCoffee(
+    skipPage,
+    takePage
+  );
+
+  // 全ページ数
+  const paginationCount =
+    userCoffees !== undefined
+      ? Math.ceil(userCoffees[0].user._count.coffee / 10)
+      : 0;
+
+  useEffect(() => {
+    refetch();
+    window.scrollTo({
+      top: 0,
+      // behavior: "smooth",
+    });
+  }, [nowPage]);
 
   const [tabValue, setTabValue] = useState("post");
 
@@ -80,7 +103,11 @@ const MyPage = () => {
             )}
           </div>
           <div css={imgRightBox}>
-            <span>{userCoffees?.length}</span>
+            <span>
+              {userCoffees !== undefined
+                ? userCoffees[0].user._count.coffee
+                : 0}
+            </span>
             <span>投稿</span>
           </div>
           <div css={imgRightBox}>
@@ -130,6 +157,13 @@ const MyPage = () => {
                   <p>まだいいねがありません</p>
                 )}
               </div>
+            )}
+            {userCoffees !== undefined && (
+              <PaginationBox
+                nowPage={nowPage}
+                setNowPage={setNowPage}
+                count={paginationCount}
+              />
             )}
           </div>
         </div>

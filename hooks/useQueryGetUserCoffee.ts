@@ -5,11 +5,11 @@ import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
 import { TCoffeeUser } from "../types/coffee";
 
-export const useQueryGetUserCoffee = () => {
+export const useQueryGetUserCoffee = (skipPage: number, takePage: number) => {
   const router = useRouter();
   const getUserCoffees = async () => {
     const { data } = await axios.get<TCoffeeUser[]>(
-      `${process.env.NEXT_PUBLIC_API_URL}/coffee/userId`
+      `${process.env.NEXT_PUBLIC_API_URL}/coffee/userId?skipPage=${skipPage}&takePage=${takePage}`
     );
     return data;
   };
