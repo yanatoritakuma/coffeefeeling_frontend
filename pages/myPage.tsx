@@ -159,11 +159,13 @@ const MyPage = () => {
               </div>
             )}
             {userCoffees !== undefined && (
-              <PaginationBox
-                nowPage={nowPage}
-                setNowPage={setNowPage}
-                count={paginationCount}
-              />
+              <div css={paginationBox}>
+                <PaginationBox
+                  nowPage={nowPage}
+                  setNowPage={setNowPage}
+                  count={paginationCount}
+                />
+              </div>
             )}
           </div>
         </div>
@@ -296,4 +298,11 @@ const tabListBox = css`
 const contentsBox = css`
   padding: 20px;
   border: 1px solid #333;
+`;
+
+const paginationBox = css`
+  ul {
+    margin: 0 auto;
+    width: fit-content;
+  }
 `;
