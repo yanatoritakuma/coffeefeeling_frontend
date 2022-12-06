@@ -5,6 +5,9 @@ export type TLikesCoffee = {
   user: {
     name: string;
     image: string;
+    _count: {
+      likes: number;
+    };
   };
 };
 

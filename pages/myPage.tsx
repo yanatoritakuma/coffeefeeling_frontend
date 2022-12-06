@@ -21,36 +21,52 @@ const MyPage = () => {
   const { data: user } = useQueryUser();
   const { data: likes } = useQueryLikes();
   const { data: coffees } = useQueryCoffees();
-  // ログインユーザーがいいねしたコーヒー
-  const { data: loginUserLikesCoffee, refetch: refetchLoginUserLikesCoffee } =
-    useQueryLoginUserLikesCoffee();
 
-  // 現在のページ
-  const [nowPage, setNowPage] = useState(1);
-  const skipPage = nowPage * 10 - 10;
-  const takePage = skipPage + 10;
+  // 現在投稿のページ
+  const [nowPostPage, setPostNowPage] = useState(1);
+  const skipPostPage = nowPostPage * 10 - 10;
+  const takePostPage = skipPostPage + 10;
+  // 現在いいねのページ
+  const [nowLikePage, setLikeNowPage] = useState(1);
+  const skipLikePage = nowLikePage * 10 - 10;
+  const takeLikePage = skipLikePage + 10;
 
   // 特定のユーザー（ログインユーザー）が投稿したコーヒー
   const { data: userCoffees, refetch: refetchUserCoffees } =
-    useQueryGetUserCoffee(skipPage, takePage);
+    useQueryGetUserCoffee(skipPostPage, takePostPage);
 
-  // 全ページ数
-  const paginationCount =
+  // ログインユーザーがいいねしたコーヒー
+  const { data: loginUserLikesCoffee, refetch: refetchLoginUserLikesCoffee } =
+    useQueryLoginUserLikesCoffee(skipLikePage, takeLikePage);
+
+  //投稿した全ページ数
+  const paginationPostCount =
     userCoffees !== undefined
       ? Math.ceil(userCoffees[0]?.user?._count.coffee / 10)
       : 0;
+  // いいねの全ページ数
+  const paginationLikeCount =
+    loginUserLikesCoffee !== undefined
+      ? Math.ceil(loginUserLikesCoffee[0].user._count.likes / 10)
+      : 0;
 
+  // ページ移動したら画面TOPに戻す
   useEffect(() => {
     refetchUserCoffees();
     window.scrollTo({
       top: 0,
       // behavior: "smooth",
     });
-  }, [nowPage]);
+  }, [nowPostPage]);
 
+  // ページ移動したら画面TOPに戻す
   useEffect(() => {
     refetchLoginUserLikesCoffee();
-  }, [userCoffees]);
+    window.scrollTo({
+      top: 0,
+      // behavior: "smooth",
+    });
+  }, [nowLikePage]);
 
   const [tabValue, setTabValue] = useState("post");
 
@@ -112,14 +128,18 @@ const MyPage = () => {
           </div>
           <div css={imgRightBox}>
             <span>
-              {userCoffees !== undefined
+              {userCoffees?.length !== 0 && userCoffees !== undefined
                 ? userCoffees[0]?.user?._count.coffee
                 : 0}
             </span>
             <span>投稿</span>
           </div>
           <div css={imgRightBox}>
-            <span>{loginUserLikesCoffee?.length}</span>
+            <span>
+              {loginUserLikesCoffee !== undefined
+                ? loginUserLikesCoffee[0].user._count.likes
+                : 0}
+            </span>
             <span>いいね</span>
           </div>
         </div>
@@ -167,12 +187,20 @@ const MyPage = () => {
                 )}
               </div>
             )}
-            {userCoffees !== undefined && (
+            {tabValue === "post" ? (
               <div css={paginationBox}>
                 <PaginationBox
-                  nowPage={nowPage}
-                  setNowPage={setNowPage}
-                  count={paginationCount}
+                  nowPage={nowPostPage}
+                  setNowPage={setPostNowPage}
+                  count={paginationPostCount}
+                />
+              </div>
+            ) : (
+              <div css={paginationBox}>
+                <PaginationBox
+                  nowPage={nowLikePage}
+                  setNowPage={setLikeNowPage}
+                  count={paginationLikeCount}
                 />
               </div>
             )}
