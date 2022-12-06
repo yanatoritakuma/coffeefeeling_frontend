@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useMutateLike } from "../hooks/useMutateLike";
 import { useQueryCoffeeIdLikes } from "../hooks/useQueryCoffeeIdLikes";
-import { useQueryLikes } from "../hooks/useQueryLikes";
 import { RootState } from "../redux/store";
 
 const likeFeature = () => {
-  const { data: likes } = useQueryLikes();
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
 
   const loginUserStore = useSelector(
@@ -54,9 +52,10 @@ const likeFeature = () => {
 
   const { data: coffeeIdLikes, refetch } =
     useQueryCoffeeIdLikes(coffeeIdArrayReq);
-  console.log("coffeeIdLikes", coffeeIdLikes);
 
-  const likeUser = likes?.filter((like) => like.userId === loginUserStore?.id);
+  const likeUser = coffeeIdLikes?.filter(
+    (like) => like.userId === loginUserStore?.id
+  );
 
   const likeCoffees = (coffeeId: number) => {
     return likeUser?.filter((like) => like.coffeeId === coffeeId);
@@ -94,7 +93,7 @@ const likeFeature = () => {
 
   // いいねの数表示
   const likeCount = (coffeeId: number) => {
-    const likeNum = likes?.filter((like) => like.coffeeId === coffeeId);
+    const likeNum = coffeeIdLikes?.filter((like) => like.coffeeId === coffeeId);
 
     return likeNum;
   };

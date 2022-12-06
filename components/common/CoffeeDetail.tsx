@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
@@ -27,7 +27,7 @@ type Props = {
 const CoffeeDetail = memo((props: Props) => {
   const { coffees, loginUserLikesCoffee } = props;
   const dispatch: AppDispatch = useDispatch();
-  const { onClickLike, likeColor, likeCount } = likeFeature();
+  const { onClickLike, likeColor, likeCount, getCoffeeId } = likeFeature();
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
@@ -53,6 +53,24 @@ const CoffeeDetail = memo((props: Props) => {
       alert("削除しました。");
     }
   };
+
+  const coffeeIds = coffees?.map((coffee) => {
+    return coffee.id;
+  });
+
+  const loginUserLikesCoffeeIds = loginUserLikesCoffee?.map((like) => {
+    return like.coffeeId;
+  });
+
+  useEffect(() => {
+    if (coffeeIds !== undefined) {
+      getCoffeeId(coffeeIds);
+    }
+
+    if (loginUserLikesCoffeeIds !== undefined) {
+      getCoffeeId(loginUserLikesCoffeeIds);
+    }
+  }, [coffees, loginUserLikesCoffee]);
 
   return (
     <div>
