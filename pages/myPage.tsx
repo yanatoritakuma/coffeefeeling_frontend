@@ -47,7 +47,7 @@ const MyPage = () => {
   // いいねの全ページ数
   const paginationLikeCount =
     loginUserLikesCoffee !== undefined
-      ? Math.ceil(loginUserLikesCoffee[0].user._count.likes / 10)
+      ? Math.ceil(loginUserLikesCoffee[0]?.user._count.likes / 10)
       : 0;
 
   // ページ移動したら画面TOPに戻す
@@ -114,6 +114,8 @@ const MyPage = () => {
     setSelectMenu(-1);
   }, [settingFlag]);
 
+  console.log("loginUserLikesCoffee", loginUserLikesCoffee);
+
   return (
     <section css={myPageMainBox}>
       <h2>マイページ</h2>
@@ -136,8 +138,9 @@ const MyPage = () => {
           </div>
           <div css={imgRightBox}>
             <span>
-              {loginUserLikesCoffee !== undefined
-                ? loginUserLikesCoffee[0].user._count.likes
+              {loginUserLikesCoffee !== undefined &&
+              loginUserLikesCoffee.length > 0
+                ? loginUserLikesCoffee[0]?.user._count.likes
                 : 0}
             </span>
             <span>いいね</span>

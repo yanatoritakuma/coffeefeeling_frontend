@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
-import { useQueryCoffees } from "../hooks/useQueryCoffees";
 import CoffeeLikeRankingDetail from "../components/common/CoffeeLikeRankingDetail";
 import { CircularProgress } from "@mui/material";
 import TimeOut from "../components/dialog/TimeOut";
