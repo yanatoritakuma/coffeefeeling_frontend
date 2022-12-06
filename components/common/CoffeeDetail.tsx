@@ -198,18 +198,18 @@ const CoffeeDetail = memo((props: Props) => {
         <>
           {loginUserLikesCoffee?.map((coffee) => (
             <div key={coffee.id} css={productBox}>
-              {coffee.user.image !== null ? (
+              {coffee.coffee.user.name !== null ? (
                 <div css={userBox}>
                   <div className="userBox__img">
                     <Image
-                      src={coffee.user.image}
+                      src={coffee.coffee.user.image}
                       width={50}
                       height={50}
                       layout="responsive"
                       alt="ユーザーアイコン"
                     />
                   </div>
-                  <h5>{coffee.user.name}</h5>
+                  <h5>{coffee.coffee.user.name}</h5>
                 </div>
               ) : (
                 <div css={userBox}>
@@ -222,7 +222,7 @@ const CoffeeDetail = memo((props: Props) => {
                       alt="ユーザーアイコン"
                     />
                   </div>
-                  <h5>{coffee.user.name}</h5>
+                  <h5>{coffee.coffee.user.name}</h5>
                 </div>
               )}
               {coffee.coffee.image !== null ? (

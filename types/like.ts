@@ -1,10 +1,15 @@
 import { Coffee, Likes } from "@prisma/client";
 
-export type TLikesCoffee = {
-  coffee: Coffee;
+type TLikesUser = {
   user: {
     name: string;
     image: string;
+  };
+};
+
+export type TLikesCoffee = {
+  coffee: Coffee & TLikesUser;
+  user: {
     _count: {
       likes: number;
     };
