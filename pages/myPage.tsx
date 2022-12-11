@@ -9,8 +9,6 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faMugSaucer } from "@fortawesome/free-solid-svg-icons";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import CoffeeDetail from "../components/common/CoffeeDetail";
-import { useQueryLikes } from "../hooks/useQueryLikes";
-import { useQueryCoffees } from "../hooks/useQueryCoffees";
 import { MenuBox } from "../components/common/MenuBox";
 import { ProfileChange } from "../components/dialog/ProfileChange";
 import AccountDelete from "../components/dialog/AccountDelete";
@@ -19,8 +17,6 @@ import { useQueryLoginUserLikesCoffee } from "../hooks/useQueryLoginUserLikesCof
 
 const MyPage = () => {
   const { data: user } = useQueryUser();
-  const { data: likes } = useQueryLikes();
-  const { data: coffees } = useQueryCoffees();
 
   // 現在投稿のページ
   const [nowPostPage, setPostNowPage] = useState(1);
@@ -70,19 +66,6 @@ const MyPage = () => {
 
   const [tabValue, setTabValue] = useState("post");
 
-  // LikesDBからログインしているユーザーがいいねした全てを取得
-  const likeUser = likes?.filter((like) => like.userId === user?.id);
-
-  // LikesDBからログインしているユーザーがいいね済みcoffeeIdを取得
-  const likeUserCoffeeId = likeUser?.map((coffee) => {
-    return coffee.coffeeId;
-  });
-
-  // ログインしているユーザーがいいね済みcoffee取得
-  const coffeeLikes = coffees?.filter(
-    (coffee) => likeUserCoffeeId?.indexOf(coffee.id) !== -1
-  );
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const onClickMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -113,8 +96,6 @@ const MyPage = () => {
   useEffect(() => {
     setSelectMenu(-1);
   }, [settingFlag]);
-
-  console.log("loginUserLikesCoffee", loginUserLikesCoffee);
 
   return (
     <section css={myPageMainBox}>
