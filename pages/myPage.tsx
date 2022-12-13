@@ -68,6 +68,8 @@ const MyPage = () => {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  const [transmission, setTransmission] = useState(false);
+
   const onClickMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(e.currentTarget);
   };
@@ -96,6 +98,13 @@ const MyPage = () => {
   useEffect(() => {
     setSelectMenu(-1);
   }, [settingFlag]);
+
+  // いいねした場合APIを叩く
+  useEffect(() => {
+    refetchUserCoffees();
+    refetchLoginUserLikesCoffee();
+    setTransmission(false);
+  }, [transmission, tabValue]);
 
   return (
     <section css={myPageMainBox}>
@@ -155,7 +164,10 @@ const MyPage = () => {
             {tabValue === "post" && (
               <div>
                 {userCoffees !== undefined && userCoffees?.length > 0 ? (
-                  <CoffeeDetail coffees={userCoffees} />
+                  <CoffeeDetail
+                    coffees={userCoffees}
+                    setTransmission={setTransmission}
+                  />
                 ) : (
                   <p>まだ投稿がありません</p>
                 )}
@@ -165,7 +177,10 @@ const MyPage = () => {
               <div>
                 {loginUserLikesCoffee !== undefined &&
                 loginUserLikesCoffee?.length > 0 ? (
-                  <CoffeeDetail loginUserLikesCoffee={loginUserLikesCoffee} />
+                  <CoffeeDetail
+                    loginUserLikesCoffee={loginUserLikesCoffee}
+                    setTransmission={setTransmission}
+                  />
                 ) : (
                   <p>まだいいねがありません</p>
                 )}

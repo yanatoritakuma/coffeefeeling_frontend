@@ -22,10 +22,11 @@ import { TLoginUserLikesCoffee } from "../../types/like";
 type Props = {
   coffees?: TCoffeeUser[];
   loginUserLikesCoffee?: TLoginUserLikesCoffee[];
+  setTransmission: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const CoffeeDetail = memo((props: Props) => {
-  const { coffees, loginUserLikesCoffee } = props;
+  const { coffees, loginUserLikesCoffee, setTransmission } = props;
   const dispatch: AppDispatch = useDispatch();
   const { onClickLike, likeColor, likeCount, getCoffeeId } = likeFeature();
   const { deleteImg } = deleteImgStorage();
@@ -154,7 +155,10 @@ const CoffeeDetail = memo((props: Props) => {
                   <FontAwesomeIcon
                     icon={faHeart}
                     className="heartIcon"
-                    onClick={() => onClickLike(coffee.id)}
+                    onClick={() => {
+                      onClickLike(coffee.id);
+                      setTransmission(true);
+                    }}
                     style={
                       likeColor(coffee.id)
                         ? { color: "#e73562" }
@@ -274,7 +278,10 @@ const CoffeeDetail = memo((props: Props) => {
                   <FontAwesomeIcon
                     icon={faHeart}
                     className="heartIcon"
-                    onClick={() => onClickLike(coffee.coffee.id)}
+                    onClick={() => {
+                      onClickLike(coffee.coffee.id);
+                      setTransmission(true);
+                    }}
                     style={
                       likeColor(coffee.coffee.id)
                         ? { color: "#e73562" }
