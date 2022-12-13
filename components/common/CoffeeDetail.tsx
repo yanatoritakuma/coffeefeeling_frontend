@@ -28,7 +28,8 @@ type Props = {
 const CoffeeDetail = memo((props: Props) => {
   const { coffees, loginUserLikesCoffee, setTransmission } = props;
   const dispatch: AppDispatch = useDispatch();
-  const { onClickLike, likeColor, likeCount, getCoffeeId } = likeFeature();
+  const { onClickLike, likeColor, likeColor2, likeCount, getCoffeeId } =
+    likeFeature();
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
@@ -159,13 +160,18 @@ const CoffeeDetail = memo((props: Props) => {
                       onClickLike(coffee.id);
                       setTransmission(true);
                     }}
+                    // style={
+                    //   likeColor(coffee.id)
+                    //     ? { color: "#e73562" }
+                    //     : { color: "#bcc7d7" }
+                    // }
                     style={
-                      likeColor(coffee.id)
+                      likeColor2(coffee.likes)
                         ? { color: "#e73562" }
                         : { color: "#bcc7d7" }
                     }
                   />
-                  {likeCount(coffee.id)?.length}
+                  {coffee.likes.length}
                 </div>
               </div>
               {(() => {

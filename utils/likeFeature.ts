@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useMutateLike } from "../hooks/useMutateLike";
 import { useQueryCoffeeIdLikes } from "../hooks/useQueryCoffeeIdLikes";
 import { RootState } from "../redux/store";
+import { TUserId } from "../types/coffee";
 
 const likeFeature = () => {
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
@@ -91,6 +92,16 @@ const likeFeature = () => {
     return likeFlag;
   };
 
+  const likeColor2 = (userIds: TUserId[]) => {
+    const likeUsers = userIds.map((id) => {
+      return id.userId;
+    });
+
+    const likeFlag = likeUsers.indexOf(loginUserStore.id) === -1 ? false : true;
+
+    return likeFlag;
+  };
+
   // いいねの数表示
   const likeCount = (coffeeId: number) => {
     const likeNum = coffeeIdLikes?.filter((like) => like.coffeeId === coffeeId);
@@ -103,7 +114,7 @@ const likeFeature = () => {
     return setCoffeeIdArray(coffeeIds);
   };
 
-  return { onClickLike, likeColor, likeCount, getCoffeeId };
+  return { onClickLike, likeColor, likeColor2, likeCount, getCoffeeId };
 };
 
 export default likeFeature;

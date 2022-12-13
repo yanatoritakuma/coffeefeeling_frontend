@@ -12,6 +12,10 @@ export type TBestCoffee = {
   bitterBest: TCoffee[];
 };
 
+export type TUserId = {
+  userId: number;
+};
+
 type TUserCoffee = {
   user: {
     name: string;
@@ -20,6 +24,7 @@ type TUserCoffee = {
       coffee: number;
     };
   };
+  likes: TUserId[];
 };
 
 export type TCoffeeUser = Coffee & TUserCoffee;
