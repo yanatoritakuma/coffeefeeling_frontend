@@ -128,9 +128,9 @@ const MyPage = () => {
           </div>
           <div css={imgRightBox}>
             <span>
-              {loginUserLikesCoffee !== undefined &&
-              loginUserLikesCoffee.length > 0
-                ? loginUserLikesCoffee[0]?.user._count.likes
+              {loginUserLikesCoffee?.length !== 0 &&
+              loginUserLikesCoffee !== undefined
+                ? loginUserLikesCoffee[0]?.user?._count.likes
                 : 0}
             </span>
             <span>いいね</span>
@@ -178,7 +178,7 @@ const MyPage = () => {
                 {loginUserLikesCoffee !== undefined &&
                 loginUserLikesCoffee?.length > 0 ? (
                   <CoffeeDetail
-                    loginUserLikesCoffee={loginUserLikesCoffee}
+                    coffees={loginUserLikesCoffee}
                     setTransmission={setTransmission}
                   />
                 ) : (

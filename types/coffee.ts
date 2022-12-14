@@ -22,6 +22,7 @@ type TUserCoffee = {
     image: string;
     _count: {
       coffee: number;
+      likes: number;
     };
   };
   likes: TUserId[];
