@@ -3,6 +3,7 @@ import { Coffee } from "@prisma/client";
 type TUser = {
   user_name: string;
   user_image: string;
+  like_user_id: number[];
 };
 
 export type TCoffee = Coffee & TUser;

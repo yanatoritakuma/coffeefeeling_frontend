@@ -12,9 +12,9 @@ const likeFeature = () => {
   );
 
   // いいねクリックの処理
-  const onClickLike = (likes: TUserId[], coffeeId: number) => {
-    const likedUser = likes.filter((user) => {
-      return user.userId === loginUserStore.id;
+  const onClickLike = (likesUserIds: number[], coffeeId: number) => {
+    const likedUser = likesUserIds.filter((id) => {
+      return id === loginUserStore.id;
     });
 
     if (loginUserStore?.id === undefined) {
@@ -31,12 +31,9 @@ const likeFeature = () => {
   };
 
   // いいね済みの商品の色変更処理
-  const likeColor = (userIds: TUserId[]) => {
-    const likeUsers = userIds.map((id) => {
-      return id.userId;
-    });
-
-    const likeFlag = likeUsers.indexOf(loginUserStore.id) === -1 ? false : true;
+  const likeColor = (likesUserIds: number[]) => {
+    const likeFlag =
+      likesUserIds.indexOf(loginUserStore.id) === -1 ? false : true;
 
     return likeFlag;
   };

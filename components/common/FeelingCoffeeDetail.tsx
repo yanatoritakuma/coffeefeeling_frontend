@@ -25,36 +25,8 @@ type Props = {
 const FeelingCoffeeDetail = memo((props: Props) => {
   const { bestCoffee } = props;
 
-  // 苦いベストコーヒーのcoffeeId取得
-  const bitterCoffeeIds =
-    bestCoffee !== undefined
-      ? bestCoffee?.bitterBest.map((coffee) => {
-          return coffee.id;
-        })
-      : [0];
-
-  // 酸味ベストコーヒーのcoffeeId取得;
-  const acidityCoffeeIds =
-    bestCoffee !== undefined
-      ? bestCoffee?.acidityBest.map((coffee) => {
-          return coffee.id;
-        })
-      : [0];
-
-  // 苦い・酸味ベストコーヒーのcoffeeIdを合わせる;
-  const bestCoffeeIdArray = [...bitterCoffeeIds, ...acidityCoffeeIds];
-
-  // 重複しているcoffeeIdを取り除く
-  const bestCoffeeIds = bestCoffeeIdArray.filter((x, i, self) => {
-    return self.indexOf(x) === i;
-  });
-
-  useEffect(() => {
-    getCoffeeId(bestCoffeeIds);
-  }, [bestCoffee]);
-
   const dispatch: AppDispatch = useDispatch();
-  const { onClickLike, likeColor, likeCount, getCoffeeId } = likeFeature();
+  const { onClickLike, likeColor } = likeFeature();
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
@@ -227,14 +199,14 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                 <FontAwesomeIcon
                   icon={faHeart}
                   className="heartIcon"
-                  onClick={() => onClickLike(coffee.id)}
+                  onClick={() => onClickLike(coffee.like_user_id, coffee.id)}
                   style={
-                    likeColor(coffee.id)
+                    likeColor(coffee.like_user_id)
                       ? { color: "#e73562" }
                       : { color: "#bcc7d7" }
                   }
                 />
-                {likeCount(coffee.id)?.length}
+                {coffee.like_user_id.length}
               </div>
             </div>
             {(() => {

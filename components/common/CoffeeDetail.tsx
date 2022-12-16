@@ -15,7 +15,7 @@ import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import CoffeeEdit from "../dialog/CoffeeEdit";
 import likeFeature from "../../utils/likeFeature";
-import { TCoffeeUser } from "../../types/coffee";
+import { TCoffeeUser, TUserId } from "../../types/coffee";
 import UserImg from "../../public/user.png";
 
 type Props = {
@@ -51,6 +51,14 @@ const CoffeeDetail = memo((props: Props) => {
       dispatch(setUpdateFlag(true));
       alert("削除しました。");
     }
+  };
+
+  const likeUserIds = (userIds: TUserId[]) => {
+    const likesId = userIds.map((user) => {
+      return user.userId;
+    });
+
+    return likesId;
   };
 
   return (
@@ -131,11 +139,11 @@ const CoffeeDetail = memo((props: Props) => {
                 icon={faHeart}
                 className="heartIcon"
                 onClick={() => {
-                  onClickLike(coffee.likes, coffee.id);
+                  onClickLike(likeUserIds(coffee.likes), coffee.id);
                   setTransmission(true);
                 }}
                 style={
-                  likeColor(coffee.likes)
+                  likeColor(likeUserIds(coffee.likes))
                     ? { color: "#e73562" }
                     : { color: "#bcc7d7" }
                 }
