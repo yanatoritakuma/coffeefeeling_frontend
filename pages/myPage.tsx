@@ -100,9 +100,14 @@ const MyPage = () => {
   }, [settingFlag]);
 
   // いいねした場合APIを叩く
-  useEffect(() => {
+
+  const refetchSetTime = () => {
     refetchUserCoffees();
     refetchLoginUserLikesCoffee();
+  };
+
+  useEffect(() => {
+    setTimeout(refetchSetTime, 1000);
     setTransmission(false);
   }, [transmission, tabValue]);
 
