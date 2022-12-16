@@ -20,10 +20,11 @@ import UserImg from "../../public/user.png";
 
 type Props = {
   bestCoffee: TBestCoffee | undefined;
+  setTransmission: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const FeelingCoffeeDetail = memo((props: Props) => {
-  const { bestCoffee } = props;
+  const { bestCoffee, setTransmission } = props;
 
   const dispatch: AppDispatch = useDispatch();
   const { onClickLike, likeColor } = likeFeature();
@@ -199,14 +200,19 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                 <FontAwesomeIcon
                   icon={faHeart}
                   className="heartIcon"
-                  onClick={() => onClickLike(coffee.like_user_id, coffee.id)}
+                  onClick={() => {
+                    onClickLike(coffee.like_user_id, coffee.id);
+                    setTransmission(true);
+                  }}
                   style={
                     likeColor(coffee.like_user_id)
                       ? { color: "#e73562" }
                       : { color: "#bcc7d7" }
                   }
                 />
-                {coffee.like_user_id.length}
+                {coffee.like_user_id[0] !== null
+                  ? coffee.like_user_id.length
+                  : 0}
               </div>
             </div>
             {(() => {
