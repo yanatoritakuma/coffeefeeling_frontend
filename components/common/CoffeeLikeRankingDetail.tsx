@@ -9,15 +9,25 @@ import { Tooltip } from "@mui/material";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { TCoffeeUser, TUserId } from "../../types/coffee";
 
 type Props = {
-  coffeeLikes: Coffee[] | undefined;
+  coffeeLikes: TCoffeeUser[] | undefined;
   rankName: string;
+  setTransmission: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const CoffeeLikeRankingDetail = memo((props: Props) => {
-  const { coffeeLikes, rankName } = props;
-  const { onClickLike, likeColor, likeCount } = likeFeature();
+  const { coffeeLikes, rankName, setTransmission } = props;
+  const { onClickLike, likeColor } = likeFeature();
+
+  const likeUserIds = (userIds: TUserId[]) => {
+    const likesId = userIds.map((user) => {
+      return user.userId;
+    });
+
+    return likesId;
+  };
 
   return (
     <div>
@@ -93,14 +103,17 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
                       <FontAwesomeIcon
                         icon={faHeart}
                         className="heartIcon"
-                        onClick={() => onClickLike(coffee.id)}
+                        onClick={() => {
+                          onClickLike(likeUserIds(coffee.likes), coffee.id);
+                          setTransmission(true);
+                        }}
                         style={
-                          likeColor(coffee.id)
+                          likeColor(likeUserIds(coffee.likes))
                             ? { color: "#e73562" }
                             : { color: "#bcc7d7" }
                         }
                       />
-                      {likeCount(coffee.id)?.length}
+                      {coffee.likes.length}
                     </div>
                   </div>
                 </div>
