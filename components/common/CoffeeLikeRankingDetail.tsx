@@ -1,7 +1,7 @@
 import React, { memo, useEffect } from "react";
 import { css } from "@emotion/react";
-import { Coffee } from "@prisma/client";
 import Image from "next/image";
+import UserImg from "../../public/user.png";
 import NoImage from "../../public/noimage.png";
 import likeFeature from "../../utils/likeFeature";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -43,6 +43,25 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
 
           {coffeeLikes?.map((coffee) => (
             <div key={coffee.id} css={rankingBox}>
+              <div className="rankingBox__userBox">
+                {coffee.user?.image !== null ? (
+                  <Image
+                    src={coffee.user?.image}
+                    width={80}
+                    height={80}
+                    alt="ユーザーアイコン"
+                  />
+                ) : (
+                  <Image
+                    src={UserImg}
+                    width={80}
+                    height={80}
+                    alt="ユーザーアイコン"
+                  />
+                )}
+                <h5>{coffee.user.name}</h5>
+              </div>
+
               <div className="rankingBox__box">
                 <div className="rankingBox__boxIn">
                   {coffee.image !== null ? (
@@ -157,6 +176,20 @@ const rankingBox = css`
 
     @media screen and (max-width: 768px) {
       width: 100%;
+    }
+  }
+
+  .rankingBox__userBox {
+    display: flex;
+    align-items: center;
+
+    img {
+      border-radius: 50%;
+    }
+
+    h5 {
+      margin-left: 12px;
+      font-size: 16px;
     }
   }
 `;
