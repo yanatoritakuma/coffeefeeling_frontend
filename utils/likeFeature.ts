@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useMutateLike } from "../hooks/useMutateLike";
 import { RootState } from "../redux/store";
-import { TUserId } from "../types/coffee";
 
 const likeFeature = () => {
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
 
-  const loginUserStore = useSelector(
-    (state: RootState) => state.loginUser.user
-  );
+  const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
 
   // いいねクリックの処理
   const onClickLike = (likesUserIds: number[], coffeeId: number) => {
@@ -32,8 +28,7 @@ const likeFeature = () => {
 
   // いいね済みの商品の色変更処理
   const likeColor = (likesUserIds: number[]) => {
-    const likeFlag =
-      likesUserIds.indexOf(loginUserStore?.id) === -1 ? false : true;
+    const likeFlag = likesUserIds.indexOf(loginUserStore?.id) === -1 ? false : true;
 
     return likeFlag;
   };
