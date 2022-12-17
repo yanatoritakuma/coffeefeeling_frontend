@@ -2,16 +2,17 @@ import React, { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
-import { useQueryCoffees } from "../hooks/useQueryCoffees";
 import CoffeeLikeRankingDetail from "../components/common/CoffeeLikeRankingDetail";
 import { CircularProgress } from "@mui/material";
 import TimeOut from "../components/dialog/TimeOut";
+import { useQueryLikeRankingCoffees } from "../hooks/useQueryLikeRankingCoffees";
 
 const LikeRanking = () => {
-  const { status, data: coffees } = useQueryCoffees();
+  const { status, data, refetch } = useQueryLikeRankingCoffees();
   const [loadingFlag, setLoadingFlag] = useState(true);
   const [timeOut, setTimeOut] = useState(false);
   const [timeOutDailog, setTimeOutDailog] = useState(false);
+  const [transmission, setTransmission] = useState(false);
 
   // APIタイムアウト処理
   useEffect(() => {
@@ -31,45 +32,57 @@ const LikeRanking = () => {
     }
   }, [timeOut]);
 
-  const coffeeLikeBest = coffees?.filter(
-    (coffee) => coffee._count.likes === coffees[0]._count.likes
-  );
+  // 1位のコーヒー
+  const coffeeLikeBest = data?.filter((coffee) => {
+    return coffee.likes.length === data[0].likes.length;
+  });
 
-  const bestCoffeeExcept = coffees?.filter(
-    (coffee, index) =>
-      coffee.id !== (coffeeLikeBest !== undefined && coffeeLikeBest[index]?.id)
-  );
+  // 1位を除くTOP10のコーヒー
+  const bestCoffeeExcept = data?.filter((coffee) => {
+    return coffee.likes.length !== data[0].likes.length;
+  });
 
-  const secondCoffee = bestCoffeeExcept?.filter(
-    (coffee) => coffee._count.likes === bestCoffeeExcept[0]._count.likes
-  );
+  // 2位のコーヒー
+  const secondCoffee = data?.filter((coffee) => {
+    if (bestCoffeeExcept !== undefined) {
+      return coffee.likes.length === bestCoffeeExcept[0].likes.length;
+    }
+  });
 
-  const coffeeLikeBestArray =
-    coffeeLikeBest !== undefined ? coffeeLikeBest : [];
+  // 3位のコーヒー
+  const thirdCoffee = bestCoffeeExcept?.filter((coffee) => {
+    if (secondCoffee !== undefined) {
+      return coffee.likes.length !== secondCoffee[0].likes.length;
+    }
+  });
 
-  const secondCoffeeArray = secondCoffee !== undefined ? secondCoffee : [];
-
-  const bestAndSecond = [...coffeeLikeBestArray, ...secondCoffeeArray];
-
-  const bestAndSecondCoffeeExcept = coffees?.filter(
-    (coffee, index) => coffee !== bestAndSecond[index]
-  );
-
-  const thirdCoffee = bestAndSecondCoffeeExcept?.filter(
-    (coffee) =>
-      coffee._count.likes === bestAndSecondCoffeeExcept[0]._count.likes
-  );
+  useEffect(() => {
+    setTimeout(refetch, 1000);
+    setTransmission(false);
+  }, [transmission]);
 
   return (
     <div css={likeRankingMainBox}>
       <div css={likeRankingBox}>
         <h2>
-          いいねランキング
+          いいねランキング TOP10
           <FontAwesomeIcon icon={faCrown} />
         </h2>
-        <CoffeeLikeRankingDetail coffeeLikes={coffeeLikeBest} rankName="1位" />
-        <CoffeeLikeRankingDetail coffeeLikes={secondCoffee} rankName="2位" />
-        <CoffeeLikeRankingDetail coffeeLikes={thirdCoffee} rankName="3位" />
+        <CoffeeLikeRankingDetail
+          coffeeLikes={coffeeLikeBest}
+          rankName="1位"
+          setTransmission={setTransmission}
+        />
+        <CoffeeLikeRankingDetail
+          coffeeLikes={secondCoffee}
+          rankName="2位"
+          setTransmission={setTransmission}
+        />
+        <CoffeeLikeRankingDetail
+          coffeeLikes={thirdCoffee}
+          rankName="3位"
+          setTransmission={setTransmission}
+        />
       </div>
       {loadingFlag && (
         <div className="fileter">

@@ -27,9 +27,11 @@ export const useMutateLike = () => {
     },
     {
       onSuccess: (res) => {
-        const previousTodos = queryClient.getQueryData<Likes[]>(["likes"]);
+        const previousTodos = queryClient.getQueryData<Likes[]>([
+          "coffeeIdLikes",
+        ]);
         if (previousTodos) {
-          queryClient.setQueryData(["likes"], [res, ...previousTodos]);
+          queryClient.setQueryData(["coffeeIdLikes"], [res, ...previousTodos]);
         }
       },
       onError: (err: any) => {
@@ -48,10 +50,12 @@ export const useMutateLike = () => {
     },
     {
       onSuccess: (_, variables) => {
-        const previousLikes = queryClient.getQueryData<Likes[]>(["likes"]);
+        const previousLikes = queryClient.getQueryData<Likes[]>([
+          "coffeeIdLikes",
+        ]);
         if (previousLikes) {
           queryClient.setQueryData(
-            ["likes"],
+            ["coffeeIdLikes"],
             previousLikes.filter(
               (like) =>
                 like.coffeeId !== variables ||

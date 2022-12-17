@@ -9,34 +9,66 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { faMugSaucer } from "@fortawesome/free-solid-svg-icons";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import CoffeeDetail from "../components/common/CoffeeDetail";
-import { useQueryLikes } from "../hooks/useQueryLikes";
-import { useQueryCoffees } from "../hooks/useQueryCoffees";
 import { MenuBox } from "../components/common/MenuBox";
 import { ProfileChange } from "../components/dialog/ProfileChange";
 import AccountDelete from "../components/dialog/AccountDelete";
+import { PaginationBox } from "../components/common/PaginationBox";
+import { useQueryLoginUserLikesCoffee } from "../hooks/useQueryLoginUserLikesCoffee";
 
 const MyPage = () => {
   const { data: user } = useQueryUser();
-  const { data: likes } = useQueryLikes();
-  const { data: coffees } = useQueryCoffees();
-  const { data: userCoffees } = useQueryGetUserCoffee();
+
+  // 現在投稿のページ
+  const [nowPostPage, setPostNowPage] = useState(1);
+  const skipPostPage = nowPostPage * 10 - 10;
+  const takePostPage = skipPostPage + 10;
+  // 現在いいねのページ
+  const [nowLikePage, setLikeNowPage] = useState(1);
+  const skipLikePage = nowLikePage * 10 - 10;
+  const takeLikePage = skipLikePage + 10;
+
+  // 特定のユーザー（ログインユーザー）が投稿したコーヒー
+  const { data: userCoffees, refetch: refetchUserCoffees } =
+    useQueryGetUserCoffee(skipPostPage, takePostPage);
+
+  // ログインユーザーがいいねしたコーヒー
+  const { data: loginUserLikesCoffee, refetch: refetchLoginUserLikesCoffee } =
+    useQueryLoginUserLikesCoffee(skipLikePage, takeLikePage);
+
+  //投稿した全ページ数
+  const paginationPostCount =
+    userCoffees !== undefined
+      ? Math.ceil(userCoffees[0]?.user?._count.coffee / 10)
+      : 0;
+  // いいねの全ページ数
+  const paginationLikeCount =
+    loginUserLikesCoffee !== undefined
+      ? Math.ceil(loginUserLikesCoffee[0]?.user._count.likes / 10)
+      : 0;
+
+  // ページ移動したら画面TOPに戻す
+  useEffect(() => {
+    refetchUserCoffees();
+    window.scrollTo({
+      top: 0,
+      // behavior: "smooth",
+    });
+  }, [nowPostPage]);
+
+  // ページ移動したら画面TOPに戻す
+  useEffect(() => {
+    refetchLoginUserLikesCoffee();
+    window.scrollTo({
+      top: 0,
+      // behavior: "smooth",
+    });
+  }, [nowLikePage]);
 
   const [tabValue, setTabValue] = useState("post");
 
-  // LikesDBからログインしているユーザーがいいねした全てを取得
-  const likeUser = likes?.filter((like) => like.userId === user?.id);
-
-  // LikesDBからログインしているユーザーがいいね済みcoffeeIdを取得
-  const likeUserCoffeeId = likeUser?.map((coffee) => {
-    return coffee.coffeeId;
-  });
-
-  // ログインしているユーザーがいいね済みcoffee取得
-  const coffeeLikes = coffees?.filter(
-    (coffee) => likeUserCoffeeId?.indexOf(coffee.id) !== -1
-  );
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const [transmission, setTransmission] = useState(false);
 
   const onClickMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(e.currentTarget);
@@ -67,6 +99,18 @@ const MyPage = () => {
     setSelectMenu(-1);
   }, [settingFlag]);
 
+  // いいねした場合APIを叩く
+
+  const refetchSetTime = () => {
+    refetchUserCoffees();
+    refetchLoginUserLikesCoffee();
+  };
+
+  useEffect(() => {
+    setTimeout(refetchSetTime, 1000);
+    setTransmission(false);
+  }, [transmission, tabValue]);
+
   return (
     <section css={myPageMainBox}>
       <h2>マイページ</h2>
@@ -80,11 +124,20 @@ const MyPage = () => {
             )}
           </div>
           <div css={imgRightBox}>
-            <span>{userCoffees?.length}</span>
+            <span>
+              {userCoffees?.length !== 0 && userCoffees !== undefined
+                ? userCoffees[0]?.user?._count.coffee
+                : 0}
+            </span>
             <span>投稿</span>
           </div>
           <div css={imgRightBox}>
-            <span>{coffeeLikes?.length}</span>
+            <span>
+              {loginUserLikesCoffee?.length !== 0 &&
+              loginUserLikesCoffee !== undefined
+                ? loginUserLikesCoffee[0]?.user?._count.likes
+                : 0}
+            </span>
             <span>いいね</span>
           </div>
         </div>
@@ -116,7 +169,10 @@ const MyPage = () => {
             {tabValue === "post" && (
               <div>
                 {userCoffees !== undefined && userCoffees?.length > 0 ? (
-                  <CoffeeDetail coffees={userCoffees} />
+                  <CoffeeDetail
+                    coffees={userCoffees}
+                    setTransmission={setTransmission}
+                  />
                 ) : (
                   <p>まだ投稿がありません</p>
                 )}
@@ -124,11 +180,32 @@ const MyPage = () => {
             )}
             {tabValue === "like" && (
               <div>
-                {coffeeLikes !== undefined && coffeeLikes?.length > 0 ? (
-                  <CoffeeDetail coffees={coffeeLikes} />
+                {loginUserLikesCoffee !== undefined &&
+                loginUserLikesCoffee?.length > 0 ? (
+                  <CoffeeDetail
+                    coffees={loginUserLikesCoffee}
+                    setTransmission={setTransmission}
+                  />
                 ) : (
                   <p>まだいいねがありません</p>
                 )}
+              </div>
+            )}
+            {tabValue === "post" ? (
+              <div css={paginationBox}>
+                <PaginationBox
+                  nowPage={nowPostPage}
+                  setNowPage={setPostNowPage}
+                  count={paginationPostCount}
+                />
+              </div>
+            ) : (
+              <div css={paginationBox}>
+                <PaginationBox
+                  nowPage={nowLikePage}
+                  setNowPage={setLikeNowPage}
+                  count={paginationLikeCount}
+                />
               </div>
             )}
           </div>
@@ -262,4 +339,11 @@ const tabListBox = css`
 const contentsBox = css`
   padding: 20px;
   border: 1px solid #333;
+`;
+
+const paginationBox = css`
+  ul {
+    margin: 0 auto;
+    width: fit-content;
+  }
 `;

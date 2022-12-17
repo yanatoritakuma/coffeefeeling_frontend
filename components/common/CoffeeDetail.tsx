@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
@@ -15,17 +15,18 @@ import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import CoffeeEdit from "../dialog/CoffeeEdit";
 import likeFeature from "../../utils/likeFeature";
-import { TCoffeeUser } from "../../types/coffee";
+import { TCoffeeUser, TUserId } from "../../types/coffee";
 import UserImg from "../../public/user.png";
 
 type Props = {
-  coffees: TCoffeeUser[];
+  coffees?: TCoffeeUser[];
+  setTransmission: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const CoffeeDetail = memo((props: Props) => {
-  const { coffees } = props;
+  const { coffees, setTransmission } = props;
   const dispatch: AppDispatch = useDispatch();
-  const { onClickLike, likeColor, likeCount } = likeFeature();
+  const { onClickLike, likeColor } = likeFeature();
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
@@ -52,124 +53,130 @@ const CoffeeDetail = memo((props: Props) => {
     }
   };
 
+  const likeUserIds = (userIds: TUserId[]) => {
+    const likesId = userIds.map((user) => {
+      return user.userId;
+    });
+
+    return likesId;
+  };
+
   return (
     <div>
-      <>
-        {coffees?.map((coffee) => (
-          <div key={coffee.id} css={productBox}>
-            {coffee.user.image !== null ? (
-              <div css={userBox}>
-                <div className="userBox__img">
-                  <Image
-                    src={coffee.user.image}
-                    width={50}
-                    height={50}
-                    layout="responsive"
-                    alt="ユーザーアイコン"
-                  />
-                </div>
-                <h5>{coffee.user.name}</h5>
-              </div>
-            ) : (
-              <div css={userBox}>
-                <div className="userBox__img">
-                  <Image
-                    src={UserImg}
-                    width={50}
-                    height={50}
-                    layout="responsive"
-                    alt="ユーザーアイコン"
-                  />
-                </div>
-                <h5>{coffee.user.name}</h5>
-              </div>
-            )}
-            {coffee.image !== null ? (
-              <img css={imgCoffee} src={coffee.image} alt="画像" />
-            ) : (
-              <Image
-                src={NoImage}
-                css={noImg}
-                layout="responsive"
-                alt="画像なし"
-              />
-            )}
-            <div css={explanationBox}>
-              <span className="explanationBox__text">商品名</span>
-              <h4>{coffee.name}</h4>
-            </div>
-            <div css={explanationBox}>
-              <span className="explanationBox__text">カテゴリー</span>
-              <h4>{coffee.category}</h4>
-            </div>
-            <div css={explanationBox}>
-              <span className="explanationBox__text">値段</span>
-              <h4>{coffee.price}</h4>
-            </div>
-            <div css={explanationBox}>
-              <span className="explanationBox__text">場所</span>
-              <h4>{coffee.place}</h4>
-            </div>
-            <div css={evaluationMainBox}>
-              <div css={evaluationBox}>
-                <Tooltip title="苦さ" placement="top">
-                  <FontAwesomeIcon icon={faFaceFrown} className="bitterIcon" />
-                </Tooltip>
-                {coffee.bitter}
-              </div>
-              <div css={evaluationBox}>
-                <Tooltip title="酸味" placement="top">
-                  <FontAwesomeIcon
-                    icon={faFaceGrinTongue}
-                    className="acidityIcon"
-                  />
-                </Tooltip>
-                {coffee.acidity}
-              </div>
-              <div css={evaluationBox}>
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  className="heartIcon"
-                  onClick={() => onClickLike(coffee.id)}
-                  style={
-                    likeColor(coffee.id)
-                      ? { color: "#e73562" }
-                      : { color: "#bcc7d7" }
-                  }
+      {coffees?.map((coffee) => (
+        <div key={coffee.id} css={productBox}>
+          {coffee.user?.image !== null ? (
+            <div css={userBox}>
+              <div className="userBox__img">
+                <Image
+                  src={coffee.user?.image}
+                  width={50}
+                  height={50}
+                  layout="responsive"
+                  alt="ユーザーアイコン"
                 />
-                {likeCount(coffee.id)?.length}
               </div>
+              <h5>{coffee.user?.name}</h5>
             </div>
-            {(() => {
-              if (
-                loginUserStore?.admin ||
-                coffee.userId === loginUserStore?.id
-              ) {
-                return (
-                  <div css={btnBox}>
-                    <ButtonBox
-                      onClick={() => {
-                        setEditFlag(true);
-                        dispatch(setEditCoffee(coffee));
-                      }}
-                    >
-                      編集
-                    </ButtonBox>
-                    <ButtonBox
-                      onClick={() =>
-                        onClickDelete(coffee.id, coffee.image, coffee.userId)
-                      }
-                    >
-                      削除
-                    </ButtonBox>
-                  </div>
-                );
-              }
-            })()}
+          ) : (
+            <div css={userBox}>
+              <div className="userBox__img">
+                <Image
+                  src={UserImg}
+                  width={50}
+                  height={50}
+                  layout="responsive"
+                  alt="ユーザーアイコン"
+                />
+              </div>
+              <h5>{coffee.user.name}</h5>
+            </div>
+          )}
+          {coffee.image !== null ? (
+            <img css={imgCoffee} src={coffee.image} alt="画像" />
+          ) : (
+            <Image
+              src={NoImage}
+              css={noImg}
+              layout="responsive"
+              alt="画像なし"
+            />
+          )}
+          <div css={explanationBox}>
+            <span className="explanationBox__text">商品名</span>
+            <h4>{coffee.name}</h4>
           </div>
-        ))}
-        <CoffeeEdit open={editFlag} onClose={() => setEditFlag(false)} />
-      </>
+          <div css={explanationBox}>
+            <span className="explanationBox__text">カテゴリー</span>
+            <h4>{coffee.category}</h4>
+          </div>
+          <div css={explanationBox}>
+            <span className="explanationBox__text">値段</span>
+            <h4>{coffee.price}</h4>
+          </div>
+          <div css={explanationBox}>
+            <span className="explanationBox__text">場所</span>
+            <h4>{coffee.place}</h4>
+          </div>
+          <div css={evaluationMainBox}>
+            <div css={evaluationBox}>
+              <Tooltip title="苦さ" placement="top">
+                <FontAwesomeIcon icon={faFaceFrown} className="bitterIcon" />
+              </Tooltip>
+              {coffee.bitter}
+            </div>
+            <div css={evaluationBox}>
+              <Tooltip title="酸味" placement="top">
+                <FontAwesomeIcon
+                  icon={faFaceGrinTongue}
+                  className="acidityIcon"
+                />
+              </Tooltip>
+              {coffee.acidity}
+            </div>
+            <div css={evaluationBox}>
+              <FontAwesomeIcon
+                icon={faHeart}
+                className="heartIcon"
+                onClick={() => {
+                  onClickLike(likeUserIds(coffee.likes), coffee.id);
+                  setTransmission(true);
+                }}
+                style={
+                  likeColor(likeUserIds(coffee.likes))
+                    ? { color: "#e73562" }
+                    : { color: "#bcc7d7" }
+                }
+              />
+              {coffee.likes.length}
+            </div>
+          </div>
+          {(() => {
+            if (loginUserStore?.admin || coffee.userId === loginUserStore?.id) {
+              return (
+                <div css={btnBox}>
+                  <ButtonBox
+                    onClick={() => {
+                      setEditFlag(true);
+                      dispatch(setEditCoffee(coffee));
+                    }}
+                  >
+                    編集
+                  </ButtonBox>
+                  <ButtonBox
+                    onClick={() =>
+                      onClickDelete(coffee.id, coffee.image, coffee.userId)
+                    }
+                  >
+                    削除
+                  </ButtonBox>
+                </div>
+              );
+            }
+          })()}
+        </div>
+      ))}
+      <CoffeeEdit open={editFlag} onClose={() => setEditFlag(false)} />
     </div>
   );
 });

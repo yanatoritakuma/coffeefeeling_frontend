@@ -54,6 +54,7 @@ const FeelNow = () => {
   const [loadingFlag, setLoadingFlag] = useState(true);
   const [timeOut, setTimeOut] = useState(false);
   const [timeOutDailog, setTimeOutDailog] = useState(false);
+  const [transmission, setTransmission] = useState(false);
 
   // APIタイムアウト処理
   useEffect(() => {
@@ -84,6 +85,11 @@ const FeelNow = () => {
       setTimeout(refetchSetTime, 1000);
     }
   }, [editCoffeeUpdateFlag]);
+
+  useEffect(() => {
+    setTimeout(refetchSetTime, 1000);
+    setTransmission(false);
+  }, [transmission]);
 
   return (
     <section css={feelNowBox}>
@@ -129,7 +135,10 @@ const FeelNow = () => {
               <span className="feelNowListBox__text">{router.query.place}</span>
             </p>
           </div>
-          <FeelingCoffeeDetail bestCoffee={data} />
+          <FeelingCoffeeDetail
+            bestCoffee={data}
+            setTransmission={setTransmission}
+          />
         </>
       ) : (
         <h2>現在表示できるコーヒーがありません。</h2>

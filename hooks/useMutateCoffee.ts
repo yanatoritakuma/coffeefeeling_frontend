@@ -3,6 +3,7 @@ import axios from "axios";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Coffee } from "@prisma/client";
 import { EditedCoffee } from "../types/form";
+import { TCoffeeUser } from "../types/coffee";
 
 export const useMutateCoffee = () => {
   const queryClient = useQueryClient();

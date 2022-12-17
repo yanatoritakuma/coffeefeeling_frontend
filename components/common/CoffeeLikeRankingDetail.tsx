@@ -1,7 +1,7 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { css } from "@emotion/react";
-import { Coffee } from "@prisma/client";
 import Image from "next/image";
+import UserImg from "../../public/user.png";
 import NoImage from "../../public/noimage.png";
 import likeFeature from "../../utils/likeFeature";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,15 +9,25 @@ import { Tooltip } from "@mui/material";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { TCoffeeUser, TUserId } from "../../types/coffee";
 
 type Props = {
-  coffeeLikes: Coffee[] | undefined;
+  coffeeLikes: TCoffeeUser[] | undefined;
   rankName: string;
+  setTransmission: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const CoffeeLikeRankingDetail = memo((props: Props) => {
-  const { coffeeLikes, rankName } = props;
-  const { onClickLike, likeColor, likeCount } = likeFeature();
+  const { coffeeLikes, rankName, setTransmission } = props;
+  const { onClickLike, likeColor } = likeFeature();
+
+  const likeUserIds = (userIds: TUserId[]) => {
+    const likesId = userIds.map((user) => {
+      return user.userId;
+    });
+
+    return likesId;
+  };
 
   return (
     <div>
@@ -33,6 +43,25 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
 
           {coffeeLikes?.map((coffee) => (
             <div key={coffee.id} css={rankingBox}>
+              <div className="rankingBox__userBox">
+                {coffee.user?.image !== null ? (
+                  <Image
+                    src={coffee.user?.image}
+                    width={80}
+                    height={80}
+                    alt="ユーザーアイコン"
+                  />
+                ) : (
+                  <Image
+                    src={UserImg}
+                    width={80}
+                    height={80}
+                    alt="ユーザーアイコン"
+                  />
+                )}
+                <h5>{coffee.user.name}</h5>
+              </div>
+
               <div className="rankingBox__box">
                 <div className="rankingBox__boxIn">
                   {coffee.image !== null ? (
@@ -93,14 +122,17 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
                       <FontAwesomeIcon
                         icon={faHeart}
                         className="heartIcon"
-                        onClick={() => onClickLike(coffee.id)}
+                        onClick={() => {
+                          onClickLike(likeUserIds(coffee.likes), coffee.id);
+                          setTransmission(true);
+                        }}
                         style={
-                          likeColor(coffee.id)
+                          likeColor(likeUserIds(coffee.likes))
                             ? { color: "#e73562" }
                             : { color: "#bcc7d7" }
                         }
                       />
-                      {likeCount(coffee.id)?.length}
+                      {coffee.likes.length}
                     </div>
                   </div>
                 </div>
@@ -144,6 +176,20 @@ const rankingBox = css`
 
     @media screen and (max-width: 768px) {
       width: 100%;
+    }
+  }
+
+  .rankingBox__userBox {
+    display: flex;
+    align-items: center;
+
+    img {
+      border-radius: 50%;
+    }
+
+    h5 {
+      margin-left: 12px;
+      font-size: 16px;
     }
   }
 `;

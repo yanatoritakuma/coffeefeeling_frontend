@@ -1,21 +1,19 @@
-import React from "react";
-import axios from "axios";
-import { Coffee } from "@prisma/client";
 import { useRouter } from "next/router";
+import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { TCoffeeUser } from "../types/coffee";
 
-export const useQueryGetUserCoffee = (skipPage: number, takePage: number) => {
+export const useQueryLikeRankingCoffees = () => {
   const router = useRouter();
-  const getUserCoffees = async () => {
+  const getLikeRankingCoffees = async () => {
     const { data } = await axios.get<TCoffeeUser[]>(
-      `${process.env.NEXT_PUBLIC_API_URL}/coffee/userId?skipPage=${skipPage}&takePage=${takePage}`
+      `${process.env.NEXT_PUBLIC_API_URL}/coffee/likeRankingCoffees`
     );
     return data;
   };
   return useQuery<TCoffeeUser[], Error>({
-    queryKey: ["userCoffees"],
-    queryFn: getUserCoffees,
+    queryKey: ["likeRankingCoffees"],
+    queryFn: getLikeRankingCoffees,
     onError: (err: any) => {
       if (err.response.status === 401 || err.response.status === 403)
         router.push("/");
