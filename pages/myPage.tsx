@@ -14,6 +14,7 @@ import { ProfileChange } from "../components/dialog/ProfileChange";
 import AccountDelete from "../components/dialog/AccountDelete";
 import { PaginationBox } from "../components/common/PaginationBox";
 import { useQueryLoginUserLikesCoffee } from "../hooks/useQueryLoginUserLikesCoffee";
+import { useQueryGetUserLiked } from "../hooks/useQueryGetUserLiked";
 
 const MyPage = () => {
   const { data: user } = useQueryUser();
@@ -37,14 +38,14 @@ const MyPage = () => {
   const { data: loginUserLikesCoffee, refetch: refetchLoginUserLikesCoffee } =
     useQueryLoginUserLikesCoffee(skipLikePage, takeLikePage);
 
+  // ログインユーザーがいいね済みを取得
+  const { data: getUserLiked, refetch: refetchGetUserLiked } = useQueryGetUserLiked();
+
   //投稿した全ページ数
   const paginationPostCount =
     userCoffees !== undefined ? Math.ceil(userCoffees[0]?.user?._count.coffee / 10) : 0;
   // いいねの全ページ数
-  const paginationLikeCount =
-    loginUserLikesCoffee !== undefined
-      ? Math.ceil(loginUserLikesCoffee[0]?.user._count.likes / 10)
-      : 0;
+  const paginationLikeCount = getUserLiked !== undefined ? Math.ceil(getUserLiked.length / 10) : 0;
 
   // ページ移動したら画面TOPに戻す
   useEffect(() => {
@@ -100,10 +101,10 @@ const MyPage = () => {
   }, [settingFlag]);
 
   // いいねした場合APIを叩く
-
   const refetchSetTime = () => {
     refetchUserCoffees();
     refetchLoginUserLikesCoffee();
+    refetchGetUserLiked();
   };
 
   useEffect(() => {
@@ -133,9 +134,7 @@ const MyPage = () => {
           </div>
           <div css={imgRightBox}>
             <span>
-              {loginUserLikesCoffee?.length !== 0 && loginUserLikesCoffee !== undefined
-                ? loginUserLikesCoffee[0]?.user?._count.likes
-                : 0}
+              {getUserLiked?.length !== 0 && getUserLiked !== undefined ? getUserLiked.length : 0}
             </span>
             <span>いいね</span>
           </div>
