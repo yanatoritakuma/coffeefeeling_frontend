@@ -7,7 +7,6 @@ import { TextBox } from "../components/atoms/TextBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
-import firebase, { storage } from "../firebase/initFirebase";
 import useChangeImage from "../hooks/useChangeImage";
 import imageRegistration from "../utils/imageRegistration";
 
@@ -97,13 +96,7 @@ const Login = () => {
     }
 
     if (ret) {
-      onClickRegistration(
-        e,
-        photoUrl,
-        createAccount,
-        setPhotoUrl,
-        setPreviewUrl
-      );
+      onClickRegistration(e, photoUrl, createAccount, setPhotoUrl, setPreviewUrl);
 
       setAuth({
         email: "",
@@ -120,7 +113,7 @@ const Login = () => {
       <div css={loginBox}>
         <h2>{isRegister ? "アカウント作成" : "ログイン"}</h2>
         {error && (
-          <Stack sx={{ width: "50%" }} spacing={2}>
+          <Stack sx={{ width: "100%" }} spacing={2}>
             <Alert severity="error">{error}</Alert>
           </Stack>
         )}
@@ -173,25 +166,15 @@ const Login = () => {
 
         {previewUrl !== "" && (
           <div css={imageBox}>
-            <Image
-              src={previewUrl}
-              alt="画像"
-              layout="responsive"
-              width={400}
-              height={340}
-            />
+            <Image src={previewUrl} alt="画像" layout="responsive" width={400} height={340} />
           </div>
         )}
 
         <div css={registerTextBox}>
           {isRegister ? (
-            <p onClick={() => setIsRegister(false)}>
-              アカウントをお持ちの場合はこちら
-            </p>
+            <p onClick={() => setIsRegister(false)}>アカウントをお持ちの場合はこちら</p>
           ) : (
-            <p onClick={() => setIsRegister(true)}>
-              アカウントをお持ちでない場合はこちら
-            </p>
+            <p onClick={() => setIsRegister(true)}>アカウントをお持ちでない場合はこちら</p>
           )}
         </div>
 

@@ -68,13 +68,7 @@ const Feeling = () => {
   return (
     <section css={feelingMainBox}>
       <div css={feelingBox}>
-        <Image
-          src={FormImg}
-          priority
-          layout="fill"
-          css={feelingImg}
-          alt="feelingImg"
-        />
+        <Image src={FormImg} priority layout="fill" css={feelingImg} alt="feelingImg" />
         <h2>今の気分で選ぼう</h2>
         <div css={selectBox}>
           <SelectBox

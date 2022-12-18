@@ -25,9 +25,7 @@ export async function getStaticPaths() {
   };
 }
 
-export const getStaticProps = async (context: {
-  params: { feelNow: string };
-}) => {
+export const getStaticProps = async (context: { params: { feelNow: string } }) => {
   const { feelNow } = context.params;
   return {
     props: { feelNow },
@@ -37,9 +35,7 @@ export const getStaticProps = async (context: {
 const FeelNow = () => {
   const router = useRouter();
 
-  const editCoffeeUpdateFlag = useSelector(
-    (state: RootState) => state.editCoffee.updateFlag
-  );
+  const editCoffeeUpdateFlag = useSelector((state: RootState) => state.editCoffee.updateFlag);
 
   const feelingReq = {
     category: String(router.query.category),
@@ -99,32 +95,21 @@ const FeelNow = () => {
           <div css={feelNowListBox}>
             <p>
               <span className="feelNowListBox__label">カテゴリー</span>：
-              <span className="feelNowListBox__text">
-                {router.query.category}
-              </span>
+              <span className="feelNowListBox__text">{router.query.category}</span>
             </p>
             <p>
               <span className="feelNowListBox__label">
                 苦味
                 <FontAwesomeIcon icon={faFaceFrown} className="bitterIcon" />
               </span>
-              ：
-              <span className="feelNowListBox__text">
-                {router.query.bitter}
-              </span>
+              ：<span className="feelNowListBox__text">{router.query.bitter}</span>
             </p>
             <p>
               <span className="feelNowListBox__label">
                 酸味
-                <FontAwesomeIcon
-                  icon={faFaceGrinTongue}
-                  className="acidityIcon"
-                />
+                <FontAwesomeIcon icon={faFaceGrinTongue} className="acidityIcon" />
               </span>
-              ：
-              <span className="feelNowListBox__text">
-                {router.query.acidity}
-              </span>
+              ：<span className="feelNowListBox__text">{router.query.acidity}</span>
             </p>
             <p>
               <span className="feelNowListBox__label">値段</span>：
@@ -135,10 +120,7 @@ const FeelNow = () => {
               <span className="feelNowListBox__text">{router.query.place}</span>
             </p>
           </div>
-          <FeelingCoffeeDetail
-            bestCoffee={data}
-            setTransmission={setTransmission}
-          />
+          <FeelingCoffeeDetail bestCoffee={data} setTransmission={setTransmission} />
         </>
       ) : (
         <h2>現在表示できるコーヒーがありません。</h2>
