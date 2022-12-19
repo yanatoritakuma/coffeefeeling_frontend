@@ -10,6 +10,7 @@ import Stack from "@mui/material/Stack";
 import useChangeImage from "../hooks/useChangeImage";
 import imageRegistration from "../utils/imageRegistration";
 import CanNotLogin from "../components/dialog/CanNotLogin";
+import { CircularProgress } from "@mui/material";
 
 const Login = () => {
   const router = useRouter();
@@ -22,6 +23,7 @@ const Login = () => {
   });
 
   const [questionFlag, setQuestionFlag] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState("");
@@ -51,6 +53,7 @@ const Login = () => {
   }, [photoUrl]);
 
   const onClickLogin = async () => {
+    setLoading(true);
     try {
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         email: auth.email,
@@ -66,10 +69,12 @@ const Login = () => {
       router.push("/myPage");
     } catch (e: any) {
       setError(e.response.data.message);
+      setLoading(false);
     }
   };
 
   const createAccount = async (file: any) => {
+    setLoading(true);
     try {
       if (isRegister) {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
@@ -84,6 +89,7 @@ const Login = () => {
       router.push("/myPage");
     } catch (e: any) {
       setError(e.response.data.message);
+      setLoading(false);
     }
   };
 
@@ -200,6 +206,11 @@ const Login = () => {
           </ButtonBox>
         </div>
       </div>
+      {loading && (
+        <div className="fileter">
+          <CircularProgress size="6rem" />
+        </div>
+      )}
     </section>
   );
 };
@@ -210,6 +221,19 @@ const loginMainBox = css`
   background-color: #f7f6f5;
   width: 100%;
   height: 100vh;
+
+  .fileter {
+    background-color: #333;
+    opacity: 0.7;
+    position: fixed;
+    top: 0;
+    z-index: 500;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const loginBox = css`
