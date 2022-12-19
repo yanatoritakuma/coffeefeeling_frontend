@@ -9,6 +9,7 @@ import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import useChangeImage from "../hooks/useChangeImage";
 import imageRegistration from "../utils/imageRegistration";
+import CanNotLogin from "../components/dialog/CanNotLogin";
 
 const Login = () => {
   const router = useRouter();
@@ -19,6 +20,8 @@ const Login = () => {
     img: null,
     admin: false,
   });
+
+  const [questionFlag, setQuestionFlag] = useState(false);
 
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState("");
@@ -114,7 +117,9 @@ const Login = () => {
         <h2>{isRegister ? "アカウント作成" : "ログイン"}</h2>
         {error && (
           <Stack sx={{ width: "100%" }} spacing={2}>
-            <Alert severity="error">{error}</Alert>
+            <Alert severity="error">
+              {error === "invalid csrf token" ? "Cookieが無効になっています。" : error}
+            </Alert>
           </Stack>
         )}
         <div css={textBox}>
@@ -178,6 +183,13 @@ const Login = () => {
           )}
         </div>
 
+        <div css={questionBox} onClick={() => setQuestionFlag(true)}>
+          <span className="questionBox__icon">？</span>
+          <span>ログインできない場合</span>
+        </div>
+
+        <CanNotLogin open={questionFlag} onClose={() => setQuestionFlag(false)} />
+
         <div css={btnBox}>
           <ButtonBox
             onClick={(e) => {
@@ -238,5 +250,20 @@ const imageBox = css`
 
   img {
     border-radius: 50%;
+  }
+`;
+
+const questionBox = css`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: fit-content;
+
+  .questionBox__icon {
+    margin-right: 6px;
+    padding: 6px;
+    background-color: #e73562;
+    border-radius: 50%;
+    color: #fff;
   }
 `;
