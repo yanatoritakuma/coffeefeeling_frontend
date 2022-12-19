@@ -58,23 +58,14 @@ const Feeling = () => {
     if (searchFlag) {
       setSearchFlag(false);
 
-      router.push(
-        { pathname: `/feeling/${categoryUrl()}`, query: feelingReq },
-        `/feeling/${categoryUrl()}`
-      );
+      router.push({ pathname: `/feeling/feelNow`, query: feelingReq });
     }
   }, [searchFlag]);
 
   return (
     <section css={feelingMainBox}>
       <div css={feelingBox}>
-        <Image
-          src={FormImg}
-          priority
-          layout="fill"
-          css={feelingImg}
-          alt="feelingImg"
-        />
+        <Image src={FormImg} priority layout="fill" css={feelingImg} alt="feelingImg" />
         <h2>今の気分で選ぼう</h2>
         <div css={selectBox}>
           <SelectBox

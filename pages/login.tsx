@@ -7,9 +7,10 @@ import { TextBox } from "../components/atoms/TextBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
-import firebase, { storage } from "../firebase/initFirebase";
 import useChangeImage from "../hooks/useChangeImage";
 import imageRegistration from "../utils/imageRegistration";
+import CanNotLogin from "../components/dialog/CanNotLogin";
+import { CircularProgress } from "@mui/material";
 
 const Login = () => {
   const router = useRouter();
@@ -20,6 +21,9 @@ const Login = () => {
     img: null,
     admin: false,
   });
+
+  const [questionFlag, setQuestionFlag] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState("");
@@ -49,6 +53,7 @@ const Login = () => {
   }, [photoUrl]);
 
   const onClickLogin = async () => {
+    setLoading(true);
     try {
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         email: auth.email,
@@ -64,10 +69,12 @@ const Login = () => {
       router.push("/myPage");
     } catch (e: any) {
       setError(e.response.data.message);
+      setLoading(false);
     }
   };
 
   const createAccount = async (file: any) => {
+    setLoading(true);
     try {
       if (isRegister) {
         await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
@@ -82,6 +89,7 @@ const Login = () => {
       router.push("/myPage");
     } catch (e: any) {
       setError(e.response.data.message);
+      setLoading(false);
     }
   };
 
@@ -97,13 +105,7 @@ const Login = () => {
     }
 
     if (ret) {
-      onClickRegistration(
-        e,
-        photoUrl,
-        createAccount,
-        setPhotoUrl,
-        setPreviewUrl
-      );
+      onClickRegistration(e, photoUrl, createAccount, setPhotoUrl, setPreviewUrl);
 
       setAuth({
         email: "",
@@ -120,8 +122,10 @@ const Login = () => {
       <div css={loginBox}>
         <h2>{isRegister ? "アカウント作成" : "ログイン"}</h2>
         {error && (
-          <Stack sx={{ width: "50%" }} spacing={2}>
-            <Alert severity="error">{error}</Alert>
+          <Stack sx={{ width: "100%" }} spacing={2}>
+            <Alert severity="error">
+              {error === "invalid csrf token" ? "Cookieが無効になっています。" : error}
+            </Alert>
           </Stack>
         )}
         <div css={textBox}>
@@ -173,27 +177,24 @@ const Login = () => {
 
         {previewUrl !== "" && (
           <div css={imageBox}>
-            <Image
-              src={previewUrl}
-              alt="画像"
-              layout="responsive"
-              width={400}
-              height={340}
-            />
+            <Image src={previewUrl} alt="画像" layout="responsive" width={400} height={340} />
           </div>
         )}
 
         <div css={registerTextBox}>
           {isRegister ? (
-            <p onClick={() => setIsRegister(false)}>
-              アカウントをお持ちの場合はこちら
-            </p>
+            <p onClick={() => setIsRegister(false)}>アカウントをお持ちの場合はこちら</p>
           ) : (
-            <p onClick={() => setIsRegister(true)}>
-              アカウントをお持ちでない場合はこちら
-            </p>
+            <p onClick={() => setIsRegister(true)}>アカウントをお持ちでない場合はこちら</p>
           )}
         </div>
+
+        <div css={questionBox} onClick={() => setQuestionFlag(true)}>
+          <span className="questionBox__icon">？</span>
+          <span>ログインできない場合</span>
+        </div>
+
+        <CanNotLogin open={questionFlag} onClose={() => setQuestionFlag(false)} />
 
         <div css={btnBox}>
           <ButtonBox
@@ -205,6 +206,11 @@ const Login = () => {
           </ButtonBox>
         </div>
       </div>
+      {loading && (
+        <div className="fileter">
+          <CircularProgress size="6rem" />
+        </div>
+      )}
     </section>
   );
 };
@@ -215,6 +221,19 @@ const loginMainBox = css`
   background-color: #f7f6f5;
   width: 100%;
   height: 100vh;
+
+  .fileter {
+    background-color: #333;
+    opacity: 0.7;
+    position: fixed;
+    top: 0;
+    z-index: 500;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const loginBox = css`
@@ -255,5 +274,20 @@ const imageBox = css`
 
   img {
     border-radius: 50%;
+  }
+`;
+
+const questionBox = css`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: fit-content;
+
+  .questionBox__icon {
+    margin-right: 6px;
+    padding: 6px;
+    background-color: #e73562;
+    border-radius: 50%;
+    color: #fff;
   }
 `;

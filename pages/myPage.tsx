@@ -14,6 +14,7 @@ import { ProfileChange } from "../components/dialog/ProfileChange";
 import AccountDelete from "../components/dialog/AccountDelete";
 import { PaginationBox } from "../components/common/PaginationBox";
 import { useQueryLoginUserLikesCoffee } from "../hooks/useQueryLoginUserLikesCoffee";
+import { useQueryGetUserLiked } from "../hooks/useQueryGetUserLiked";
 
 const MyPage = () => {
   const { data: user } = useQueryUser();
@@ -28,23 +29,23 @@ const MyPage = () => {
   const takeLikePage = skipLikePage + 10;
 
   // 特定のユーザー（ログインユーザー）が投稿したコーヒー
-  const { data: userCoffees, refetch: refetchUserCoffees } =
-    useQueryGetUserCoffee(skipPostPage, takePostPage);
+  const { data: userCoffees, refetch: refetchUserCoffees } = useQueryGetUserCoffee(
+    skipPostPage,
+    takePostPage
+  );
 
   // ログインユーザーがいいねしたコーヒー
   const { data: loginUserLikesCoffee, refetch: refetchLoginUserLikesCoffee } =
     useQueryLoginUserLikesCoffee(skipLikePage, takeLikePage);
 
+  // ログインユーザーがいいね済みを取得
+  const { data: getUserLiked, refetch: refetchGetUserLiked } = useQueryGetUserLiked();
+
   //投稿した全ページ数
   const paginationPostCount =
-    userCoffees !== undefined
-      ? Math.ceil(userCoffees[0]?.user?._count.coffee / 10)
-      : 0;
+    userCoffees !== undefined ? Math.ceil(userCoffees[0]?.user?._count.coffee / 10) : 0;
   // いいねの全ページ数
-  const paginationLikeCount =
-    loginUserLikesCoffee !== undefined
-      ? Math.ceil(loginUserLikesCoffee[0]?.user._count.likes / 10)
-      : 0;
+  const paginationLikeCount = getUserLiked !== undefined ? Math.ceil(getUserLiked.length / 10) : 0;
 
   // ページ移動したら画面TOPに戻す
   useEffect(() => {
@@ -100,10 +101,10 @@ const MyPage = () => {
   }, [settingFlag]);
 
   // いいねした場合APIを叩く
-
   const refetchSetTime = () => {
     refetchUserCoffees();
     refetchLoginUserLikesCoffee();
+    refetchGetUserLiked();
   };
 
   useEffect(() => {
@@ -133,10 +134,7 @@ const MyPage = () => {
           </div>
           <div css={imgRightBox}>
             <span>
-              {loginUserLikesCoffee?.length !== 0 &&
-              loginUserLikesCoffee !== undefined
-                ? loginUserLikesCoffee[0]?.user?._count.likes
-                : 0}
+              {getUserLiked?.length !== 0 && getUserLiked !== undefined ? getUserLiked.length : 0}
             </span>
             <span>いいね</span>
           </div>
@@ -147,21 +145,13 @@ const MyPage = () => {
             <span onClick={() => setTabValue("post")}>
               <FontAwesomeIcon
                 icon={faMugSaucer}
-                style={
-                  tabValue === "post"
-                    ? { color: "#7b5544" }
-                    : { color: "#bcc7d7" }
-                }
+                style={tabValue === "post" ? { color: "#7b5544" } : { color: "#bcc7d7" }}
               />
             </span>
             <span onClick={() => setTabValue("like")}>
               <FontAwesomeIcon
                 icon={faHeart}
-                style={
-                  tabValue === "like"
-                    ? { color: "#e73562" }
-                    : { color: "#bcc7d7" }
-                }
+                style={tabValue === "like" ? { color: "#e73562" } : { color: "#bcc7d7" }}
               />
             </span>
           </div>
@@ -169,10 +159,7 @@ const MyPage = () => {
             {tabValue === "post" && (
               <div>
                 {userCoffees !== undefined && userCoffees?.length > 0 ? (
-                  <CoffeeDetail
-                    coffees={userCoffees}
-                    setTransmission={setTransmission}
-                  />
+                  <CoffeeDetail coffees={userCoffees} setTransmission={setTransmission} />
                 ) : (
                   <p>まだ投稿がありません</p>
                 )}
@@ -180,12 +167,8 @@ const MyPage = () => {
             )}
             {tabValue === "like" && (
               <div>
-                {loginUserLikesCoffee !== undefined &&
-                loginUserLikesCoffee?.length > 0 ? (
-                  <CoffeeDetail
-                    coffees={loginUserLikesCoffee}
-                    setTransmission={setTransmission}
-                  />
+                {loginUserLikesCoffee !== undefined && loginUserLikesCoffee?.length > 0 ? (
+                  <CoffeeDetail coffees={loginUserLikesCoffee} setTransmission={setTransmission} />
                 ) : (
                   <p>まだいいねがありません</p>
                 )}
@@ -210,11 +193,7 @@ const MyPage = () => {
             )}
           </div>
         </div>
-        <FontAwesomeIcon
-          icon={faGear}
-          css={settingIcon}
-          onClick={(e: any) => onClickMenu(e)}
-        />
+        <FontAwesomeIcon icon={faGear} css={settingIcon} onClick={(e: any) => onClickMenu(e)} />
         <MenuBox
           anchorEl={anchorEl}
           setAnchorEl={setAnchorEl}
