@@ -1,38 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { useQueryFeelingCoffees } from "../../hooks/useQueryFeelingCoffees";
 import { useRouter } from "next/router";
-import FeelingCoffeeDetail from "../../components/common/FeelingCoffeeDetail";
+import { useSelector } from "react-redux";
+import { useQueryFeelingCoffees } from "../../hooks/useQueryFeelingCoffees";
+import { RootState } from "../../redux/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
-import { RootState } from "../../redux/store";
-import { useSelector } from "react-redux";
+import FeelingCoffeeDetail from "../../components/common/FeelingCoffeeDetail";
 import { CircularProgress } from "@mui/material";
 import TimeOut from "../../components/dialog/TimeOut";
 
-export async function getStaticPaths() {
-  return {
-    paths: [
-      { params: { feelNow: "black" } },
-      { params: { feelNow: "latte" } },
-      { params: { feelNow: "espresso" } },
-      { params: { feelNow: "mocha" } },
-      { params: { feelNow: "cafeAuLait" } },
-      { params: { feelNow: "cappuccino" } },
-    ],
-    fallback: false,
-  };
-}
-
-export const getStaticProps = async (context: { params: { feelNow: string } }) => {
-  const { feelNow } = context.params;
-  return {
-    props: { feelNow },
-  };
-};
-
-const FeelNow = () => {
+const feelNow = () => {
   const router = useRouter();
 
   const editCoffeeUpdateFlag = useSelector((state: RootState) => state.editCoffee.updateFlag);
@@ -135,7 +114,7 @@ const FeelNow = () => {
   );
 };
 
-export default FeelNow;
+export default feelNow;
 
 const feelNowBox = css`
   padding: 20px 0;

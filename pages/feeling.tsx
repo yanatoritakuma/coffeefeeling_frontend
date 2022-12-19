@@ -58,10 +58,7 @@ const Feeling = () => {
     if (searchFlag) {
       setSearchFlag(false);
 
-      router.push(
-        { pathname: `/feeling/${categoryUrl()}`, query: feelingReq },
-        `/feeling/${categoryUrl()}`
-      );
+      router.push({ pathname: `/feeling/feelNow`, query: feelingReq });
     }
   }, [searchFlag]);
 
