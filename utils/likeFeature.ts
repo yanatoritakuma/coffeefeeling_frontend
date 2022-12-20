@@ -9,6 +9,10 @@ const likeFeature = () => {
 
   // いいねクリックの処理
   const onClickLike = (likesUserIds: number[], coffeeId: number) => {
+    if (loginUserStore === undefined) {
+      return alert("ログインしていないユーザーはいいねできません。");
+    }
+
     const likedUser = likesUserIds.filter((id) => {
       return id === loginUserStore.id;
     });

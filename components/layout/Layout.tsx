@@ -123,6 +123,10 @@ const linkBox = css`
   @media screen and (max-width: 768px) {
     display: none;
   }
+
+  svg {
+    cursor: pointer;
+  }
 `;
 
 const hamBtn = css`

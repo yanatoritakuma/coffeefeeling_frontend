@@ -23,7 +23,9 @@ const CanNotLogin = memo((props: Props) => {
         <FontAwesomeIcon icon={faCircleXmark} className="closeBtn" onClick={handleClose} />
       </DialogTitle>
       <p>
-        Cookieを無効に設定している場合は
+        このアプリはCookieを使用しております。
+        <br />
+        お使いの端末がCookieを無効に設定している場合は
         <br />
         Cookieを有効にしてから再度ログインしてください。
       </p>
