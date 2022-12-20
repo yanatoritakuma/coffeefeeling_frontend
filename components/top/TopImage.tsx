@@ -7,6 +7,7 @@ import coffeeTop from "../../public/coffeeTopIcon.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMugHot } from "@fortawesome/free-solid-svg-icons";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 const TopImage = () => {
   return (
@@ -30,10 +31,10 @@ const TopImage = () => {
             <FontAwesomeIcon icon={faCrown} />
           </div>
         </Link>
-        <Link href="/likeRanking">
+        <Link href="/">
           <div css={productSearchBox}>
             商品検索
-            <FontAwesomeIcon icon={faCrown} />
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
           </div>
         </Link>
       </div>
@@ -84,6 +85,7 @@ const topBoxIn = css`
     padding: 0;
     color: #fff;
     font-size: 60px;
+    font-family: "Kalam", cursive;
 
     @media screen and (max-width: 768px) {
       font-size: 42px;
