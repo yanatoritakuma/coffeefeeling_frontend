@@ -242,6 +242,10 @@ const loginBox = css`
   width: 50%;
   min-width: 300px;
   max-width: 1200px;
+
+  h2 {
+    margin-top: 120px;
+  }
 `;
 
 const textBox = css`

@@ -136,6 +136,7 @@ const likeRankingBox = css`
   }
 
   h2 {
+    margin-top: 120px;
     display: flex;
     justify-content: center;
     align-items: center;

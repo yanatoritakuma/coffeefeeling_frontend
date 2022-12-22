@@ -232,6 +232,7 @@ const myPageMainBox = css`
   background-color: #ebf6f7;
 
   h2 {
+    margin-top: 120px;
     text-align: center;
   }
 `;

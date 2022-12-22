@@ -179,6 +179,7 @@ const feelingBox = css`
   max-width: 1200px;
 
   h2 {
+    margin-top: 120px;
     text-align: center;
   }
 `;

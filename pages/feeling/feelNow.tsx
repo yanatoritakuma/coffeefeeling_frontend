@@ -123,6 +123,7 @@ const feelNowBox = css`
   height: 100%;
 
   h2 {
+    margin-top: 120px;
     color: #7b5544;
     text-align: center;
     font-size: 28px;
