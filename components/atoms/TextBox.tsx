@@ -94,5 +94,6 @@ export const TextBox = memo((props: Props) => {
 const textBox = css`
   input {
     background-color: #fff;
+    font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", "Meiryo", sans-serif;
   }
 `;

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
@@ -42,7 +42,7 @@ const CoffeeDetail = memo((props: Props) => {
       // 画像が設定してある場合firebaseStorageから画像も削除
       deleteImg(coffeeImage, "coffeeImages", userId);
       deleteCoffeeMutation.mutate(coffeeId);
-      dispatch(setUpdateFlag(true));
+      setTransmission(true);
       alert("削除しました。");
     }
   };
