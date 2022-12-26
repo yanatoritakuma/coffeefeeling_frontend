@@ -229,7 +229,7 @@ const myPageMainBox = css`
   padding: 30px 10px;
   width: 100%;
   height: 100%;
-  background-color: #ebf6f7;
+  background-color: #abced8;
 
   h2 {
     margin-top: 120px;

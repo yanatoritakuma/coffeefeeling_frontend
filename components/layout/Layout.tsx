@@ -3,6 +3,7 @@ import { memo, ReactNode, useEffect, useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import logo from "../../public/coffee.png";
+import logoActive from "../../public/coffeeTopIcon.png";
 import Link from "next/link";
 import { useQueryUser } from "../../hooks/useQueryUser";
 import { useLogout } from "../../hooks/useLogout";
@@ -34,7 +35,7 @@ export const Layout = memo((props: Props) => {
   const [yScrollAmount, setYScrollAmount] = useState(false);
 
   const toggleVisibility = () => {
-    window.scrollY > 500 ? setYScrollAmount(true) : setYScrollAmount(false);
+    window.scrollY > 200 ? setYScrollAmount(true) : setYScrollAmount(false);
   };
 
   useEffect(() => {
@@ -50,7 +51,11 @@ export const Layout = memo((props: Props) => {
       </Head>
       <header css={headerBox} className={yScrollAmount ? "active" : "inactive"}>
         <div css={logoBox}>
-          <Image src={logo} alt="ロゴ" layout="fill" />
+          {!yScrollAmount ? (
+            <Image src={logoActive} alt="ロゴ" layout="fill" />
+          ) : (
+            <Image src={logo} alt="ロゴ" layout="fill" />
+          )}
         </div>
         <div css={linkBox}>
           <Link href="/">トップページ</Link>

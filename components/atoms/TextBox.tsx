@@ -31,9 +31,7 @@ export const TextBox = memo((props: Props) => {
 
   const [displayPs, setDisplayPs] = useState(false);
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
@@ -59,6 +57,7 @@ export const TextBox = memo((props: Props) => {
           sx={{
             maxWidth: "100%",
             width: "100%",
+            background: "#fff",
           }}
         >
           <InputLabel>{label}</InputLabel>

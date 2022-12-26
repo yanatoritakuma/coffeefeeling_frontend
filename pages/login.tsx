@@ -218,7 +218,7 @@ const Login = () => {
 export default Login;
 
 const loginMainBox = css`
-  background-color: #f7f6f5;
+  background-color: #80989b;
   width: 100%;
   height: 100vh;
 
@@ -245,6 +245,7 @@ const loginBox = css`
 
   h2 {
     margin-top: 120px;
+    text-align: center;
   }
 `;
 

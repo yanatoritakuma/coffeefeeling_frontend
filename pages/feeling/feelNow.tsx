@@ -118,7 +118,7 @@ export default feelNow;
 
 const feelNowBox = css`
   padding: 20px 0;
-  background-color: #ffedab;
+  background-color: #d3cbc6;
   width: 100%;
   height: 100%;
 

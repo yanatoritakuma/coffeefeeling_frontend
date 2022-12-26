@@ -15,7 +15,7 @@ const TopImage = () => {
       <span css={filter}></span>
       <Image src={TopImg} layout="fill" css={topImg} alt="topImage" />
       <div css={topBoxIn}>
-        <h1>CoffeFeeling</h1>
+        <h1>CoffeeFeeling</h1>
         <div className="topBoxIn__icon">
           <Image src={coffeeTop} layout="fill" css={topImg} alt="coffeeIcon" />
         </div>

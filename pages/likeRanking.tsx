@@ -97,7 +97,7 @@ const LikeRanking = () => {
 export default LikeRanking;
 
 const likeRankingMainBox = css`
-  background-color: #f7f6f5;
+  background-color: #c1bebd;
   width: 100%;
   height: auto;
   min-height: 100vh;
