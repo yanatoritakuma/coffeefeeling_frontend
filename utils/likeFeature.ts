@@ -32,7 +32,7 @@ const likeFeature = () => {
 
   // いいね済みの商品の色変更処理
   const likeColor = (likesUserIds: number[]) => {
-    const likeFlag = likesUserIds.indexOf(loginUserStore?.id) === -1 ? false : true;
+    const likeFlag = likesUserIds?.indexOf(loginUserStore?.id) === -1 ? false : true;
 
     return likeFlag;
   };

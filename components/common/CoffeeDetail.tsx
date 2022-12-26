@@ -32,16 +32,10 @@ const CoffeeDetail = memo((props: Props) => {
 
   const [editFlag, setEditFlag] = useState(false);
 
-  const loginUserStore = useSelector(
-    (state: RootState) => state.loginUser.user
-  );
+  const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
 
   // 投稿Coffee削除
-  const onClickDelete = (
-    coffeeId: number,
-    coffeeImage: string | null,
-    userId: number
-  ) => {
+  const onClickDelete = (coffeeId: number, coffeeImage: string | null, userId: number) => {
     const ret = window.confirm("削除しますか？");
 
     if (ret) {
@@ -54,7 +48,7 @@ const CoffeeDetail = memo((props: Props) => {
   };
 
   const likeUserIds = (userIds: TUserId[]) => {
-    const likesId = userIds.map((user) => {
+    const likesId = userIds?.map((user) => {
       return user.userId;
     });
 
@@ -95,12 +89,7 @@ const CoffeeDetail = memo((props: Props) => {
           {coffee.image !== null ? (
             <img css={imgCoffee} src={coffee.image} alt="画像" />
           ) : (
-            <Image
-              src={NoImage}
-              css={noImg}
-              layout="responsive"
-              alt="画像なし"
-            />
+            <Image src={NoImage} css={noImg} layout="responsive" alt="画像なし" />
           )}
           <div css={explanationBox}>
             <span className="explanationBox__text">商品名</span>
@@ -127,10 +116,7 @@ const CoffeeDetail = memo((props: Props) => {
             </div>
             <div css={evaluationBox}>
               <Tooltip title="酸味" placement="top">
-                <FontAwesomeIcon
-                  icon={faFaceGrinTongue}
-                  className="acidityIcon"
-                />
+                <FontAwesomeIcon icon={faFaceGrinTongue} className="acidityIcon" />
               </Tooltip>
               {coffee.acidity}
             </div>
@@ -143,12 +129,10 @@ const CoffeeDetail = memo((props: Props) => {
                   setTransmission(true);
                 }}
                 style={
-                  likeColor(likeUserIds(coffee.likes))
-                    ? { color: "#e73562" }
-                    : { color: "#bcc7d7" }
+                  likeColor(likeUserIds(coffee.likes)) ? { color: "#e73562" } : { color: "#bcc7d7" }
                 }
               />
-              {coffee.likes.length}
+              {coffee.likes?.length}
             </div>
           </div>
           {(() => {
@@ -163,11 +147,7 @@ const CoffeeDetail = memo((props: Props) => {
                   >
                     編集
                   </ButtonBox>
-                  <ButtonBox
-                    onClick={() =>
-                      onClickDelete(coffee.id, coffee.image, coffee.userId)
-                    }
-                  >
+                  <ButtonBox onClick={() => onClickDelete(coffee.id, coffee.image, coffee.userId)}>
                     削除
                   </ButtonBox>
                 </div>
