@@ -15,6 +15,7 @@ import AccountDelete from "../components/dialog/AccountDelete";
 import { PaginationBox } from "../components/common/PaginationBox";
 import { useQueryLoginUserLikesCoffee } from "../hooks/useQueryLoginUserLikesCoffee";
 import { useQueryGetUserLiked } from "../hooks/useQueryGetUserLiked";
+import { CircularProgress } from "@mui/material";
 
 const MyPage = () => {
   const { data: user } = useQueryUser();
@@ -29,14 +30,21 @@ const MyPage = () => {
   const takeLikePage = skipLikePage + 10;
 
   // 特定のユーザー（ログインユーザー）が投稿したコーヒー
-  const { data: userCoffees, refetch: refetchUserCoffees } = useQueryGetUserCoffee(
-    skipPostPage,
-    takePostPage
-  );
+  const {
+    data: userCoffees,
+    refetch: refetchUserCoffees,
+    status: userCoffeesStatus,
+  } = useQueryGetUserCoffee(skipPostPage, takePostPage);
+
+  console.log(userCoffeesStatus);
 
   // ログインユーザーがいいねしたコーヒー
-  const { data: loginUserLikesCoffee, refetch: refetchLoginUserLikesCoffee } =
-    useQueryLoginUserLikesCoffee(skipLikePage, takeLikePage);
+  const {
+    data: loginUserLikesCoffee,
+    refetch: refetchLoginUserLikesCoffee,
+    status: loginUserLikesCoffeeStatus,
+  } = useQueryLoginUserLikesCoffee(skipLikePage, takeLikePage);
+  console.log(loginUserLikesCoffeeStatus);
 
   // ログインユーザーがいいね済みを取得
   const { data: getUserLiked, refetch: refetchGetUserLiked } = useQueryGetUserLiked();
@@ -219,6 +227,11 @@ const MyPage = () => {
           }
         />
       </div>
+      {userCoffeesStatus === "loading" && loginUserLikesCoffeeStatus === "loading" && (
+        <div className="fileter">
+          <CircularProgress size="6rem" />
+        </div>
+      )}
     </section>
   );
 };
@@ -234,6 +247,19 @@ const myPageMainBox = css`
   h2 {
     margin-top: 120px;
     text-align: center;
+  }
+
+  .fileter {
+    background-color: #333;
+    opacity: 0.7;
+    position: fixed;
+    top: 0;
+    z-index: 500;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
