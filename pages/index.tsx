@@ -1,11 +1,12 @@
 import type { NextPage } from "next";
 import TopImage from "../components/top/TopImage";
+import Feeling from "../components/top/Feeling";
 
 const Home: NextPage = () => {
   return (
     <main>
       <TopImage />
-      <p>aaaaaa</p>
+      <Feeling />
       <p>aaaaaa</p>
       <p>aaaaaa</p>
       <p>aaaaaa</p>
