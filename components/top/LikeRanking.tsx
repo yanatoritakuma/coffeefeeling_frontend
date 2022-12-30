@@ -1,16 +1,16 @@
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { css } from "@emotion/react";
 import Image from "next/image";
-import topFeeling from "../../public/topFeeling.jpg";
+import likeRanking from "../../public/likeRanking.jpg";
 import { ButtonBox } from "../atoms/ButtonBox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMugHot } from "@fortawesome/free-solid-svg-icons";
+import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/router";
 
-const Feeling = memo(() => {
+const LikeRanking = () => {
   const router = useRouter();
   const [scrollAmount, setScrollAmount] = useState(0);
-
+  console.log(scrollAmount);
   const toggleVisibility = () => {
     setScrollAmount(window.scrollY);
   };
@@ -21,40 +21,40 @@ const Feeling = memo(() => {
   }, []);
 
   return (
-    <div css={feelingBox}>
-      <div className={scrollAmount > 500 ? "view" : "hidden"}>
-        <h2>Feeling</h2>
-        <p className="feelingBox__topText">
-          あなたの今の気分はなんですか？
+    <div css={likeRankingBox}>
+      <div className={scrollAmount > 1600 ? "view" : "hidden"}>
+        <h2>LikeRanking</h2>
+        <p className="likeRankingBox__topText">
+          人気のコーヒーを見ることができます。
           <br />
-          今の気分で飲みたいコーヒーを探します。
+          いいね数TOP10を選出しています。
         </p>
         <div css={imgMainBox}>
           <h4 className="imgMainBox__text">
-            Feeling
+            LikeRanking
             <br />
-            気分で探す
+            人気のコーヒー
           </h4>
           <div css={imgBox}>
-            <Image src={topFeeling} layout="responsive" alt="topImage" />
+            <Image src={likeRanking} layout="responsive" alt="likeRanking" />
           </div>
-          <div className="feelingBox__explanation">
-            <h3>あなたにマッチするコーヒーを</h3>
-            <p>カテゴリー、苦味、酸味、値段、購入場所からお好きなコーヒーを探すことができます。</p>
+          <div className="likeRankingBox__explanation">
+            <h3>今人気のコーヒーを</h3>
+            <p>いいね数のTOP10のコーヒーを見ることができます。</p>
           </div>
         </div>
-        <ButtonBox onClick={() => router.push("/feeling")}>
-          今の気分で選ぶ
-          <FontAwesomeIcon icon={faMugHot} />
+        <ButtonBox onClick={() => router.push("/likeRanking")}>
+          ランキングを見る
+          <FontAwesomeIcon icon={faCrown} />
         </ButtonBox>
       </div>
     </div>
   );
-});
+};
 
-export default Feeling;
+export default LikeRanking;
 
-const feelingBox = css`
+const likeRankingBox = css`
   margin: 160px auto;
   width: 100%;
   max-width: 1440px;
@@ -65,7 +65,7 @@ const feelingBox = css`
     text-align: center;
   }
 
-  .feelingBox__topText {
+  .likeRankingBox__topText {
     margin: 80px 0;
     text-align: center;
     line-height: 2.5em;
@@ -84,14 +84,14 @@ const feelingBox = css`
     align-items: center;
     width: fit-content;
     font-size: 18px;
-    background-color: #7b5544;
+    background-color: #fcc800;
 
     @media screen and (max-width: 425px) {
       font-size: 16px;
     }
 
     &:hover {
-      background-color: #7b5544;
+      background-color: #fcc800;
       opacity: 0.7;
     }
 
@@ -117,8 +117,8 @@ const imgMainBox = css`
   .imgMainBox__text {
     writing-mode: vertical-rl;
     position: absolute;
-    top: 60px;
-    left: 128px;
+    top: 12px;
+    right: 128px;
     font-size: 24px;
     line-height: 1.5em;
 
@@ -128,14 +128,14 @@ const imgMainBox = css`
     }
   }
 
-  .feelingBox__explanation {
+  .likeRankingBox__explanation {
     padding: 30px;
-    background-color: #7b5544;
+    background-color: #fcc800;
     width: 360px;
     height: 220px;
     position: absolute;
     top: 250px;
-    right: 422px;
+    left: 422px;
     color: #fff;
 
     @media screen and (max-width: 1024px) {
@@ -144,12 +144,13 @@ const imgMainBox = css`
       height: 196px;
       position: absolute;
       top: 200px;
-      right: 422px;
+      left: 422px;
     }
 
     @media screen and (max-width: 768px) {
       top: 340px;
-      left: 0;
+      left: unset;
+      right: 0;
       width: 300px;
       height: 200px;
     }
@@ -180,7 +181,7 @@ const imgMainBox = css`
 `;
 
 const imgBox = css`
-  margin-left: auto;
+  margin-right: auto;
   width: 46%;
   min-width: 500px;
   position: relative;

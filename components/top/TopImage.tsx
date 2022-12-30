@@ -5,8 +5,6 @@ import Image from "next/image";
 import TopImg from "../../public/coffeeTop.jpg";
 import coffeeTop from "../../public/coffeeTopIcon.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMugHot } from "@fortawesome/free-solid-svg-icons";
-import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 const TopImage = () => {
@@ -19,12 +17,6 @@ const TopImage = () => {
         <div className="topBoxIn__icon">
           <Image src={coffeeTop} layout="fill" css={topImg} alt="coffeeIcon" />
         </div>
-        <Link href="/likeRanking">
-          <div css={linkLikeBox}>
-            いいねランキング
-            <FontAwesomeIcon icon={faCrown} />
-          </div>
-        </Link>
         <Link href="/">
           <div css={productSearchBox}>
             商品検索
