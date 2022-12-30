@@ -19,12 +19,6 @@ const TopImage = () => {
         <div className="topBoxIn__icon">
           <Image src={coffeeTop} layout="fill" css={topImg} alt="coffeeIcon" />
         </div>
-        <Link href="/feeling">
-          <div css={linkBox}>
-            今の気分で選ぶ
-            <FontAwesomeIcon icon={faMugHot} />
-          </div>
-        </Link>
         <Link href="/likeRanking">
           <div css={linkLikeBox}>
             いいねランキング

@@ -30,6 +30,11 @@ const Feeling = memo(() => {
           今の気分で飲みたいコーヒーを探します。
         </p>
         <div css={imgMainBox}>
+          <h4 className="imgMainBox__text">
+            Feeling
+            <br />
+            気分で探す
+          </h4>
           <div css={imgBox}>
             <Image src={topFeeling} layout="responsive" alt="topImage" />
           </div>
@@ -109,6 +114,20 @@ const feelingBox = css`
 const imgMainBox = css`
   position: relative;
 
+  .imgMainBox__text {
+    writing-mode: vertical-rl;
+    position: absolute;
+    top: 60px;
+    left: 128px;
+    font-size: 24px;
+    line-height: 1.5em;
+
+    @media screen and (max-width: 768px) {
+      margin: 60px auto;
+      position: unset;
+    }
+  }
+
   .feelingBox__explanation {
     padding: 30px;
     background-color: #7b5544;
@@ -129,13 +148,14 @@ const imgMainBox = css`
     }
 
     @media screen and (max-width: 768px) {
+      top: 340px;
       left: 0;
       width: 300px;
       height: 200px;
     }
 
     @media screen and (max-width: 425px) {
-      top: 150px;
+      top: 320px;
       width: 250px;
       height: 180px;
     }
