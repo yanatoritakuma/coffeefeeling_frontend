@@ -2,7 +2,8 @@ import { css } from "@emotion/react";
 import { memo, ReactNode, useEffect, useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
-import logo from "../../public/logo.png";
+import logo from "../../public/coffee.png";
+import logoActive from "../../public/coffeeTopIcon.png";
 import Link from "next/link";
 import { useQueryUser } from "../../hooks/useQueryUser";
 import { useLogout } from "../../hooks/useLogout";
@@ -31,14 +32,31 @@ export const Layout = memo((props: Props) => {
 
   const [hamFlag, setHamFlag] = useState(false);
 
+  const [yScrollAmount, setYScrollAmount] = useState(false);
+
+  const toggleVisibility = () => {
+    window.scrollY > 200 ? setYScrollAmount(true) : setYScrollAmount(false);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
   return (
-    <div>
+    <div css={headerMainBox}>
       <Head>
         <title>CoffeeFeeling</title>
-        <link rel="shortcut icon" href="/favicon.png" />
+        <link rel="shortcut icon" href="/coffee.png" />
       </Head>
-      <header css={headerBox}>
-        <Image src={logo} alt="ロゴ" width={60} height={60} />
+      <header css={headerBox} className={yScrollAmount ? "active" : "inactive"}>
+        <div css={logoBox}>
+          {!yScrollAmount ? (
+            <Image src={logoActive} alt="ロゴ" layout="fill" />
+          ) : (
+            <Image src={logo} alt="ロゴ" layout="fill" />
+          )}
+        </div>
         <div css={linkBox}>
           <Link href="/">トップページ</Link>
           {!user?.id && (
@@ -57,47 +75,77 @@ export const Layout = memo((props: Props) => {
             <XIcon className="menuIcon" onClick={() => setHamFlag(false)} />
           )}
         </div>
-        {hamFlag && (
-          <div css={spMenu} onClick={() => setHamFlag(false)}>
-            <Link href="/">トップページ</Link>
-            {!user?.id && (
-              <Link href="/login">
-                <div css={linkIconBox}>
-                  <LoginIcon className="login" />
-                  ログイン
-                </div>
-              </Link>
-            )}
-            {user?.id && (
-              <>
-                <div css={linkIconBox} onClick={logout}>
-                  <LogoutIcon className="logout" />
-                  ログアウト
-                </div>
-              </>
-            )}
-            {user?.id && <Link href="/myPage">マイページ</Link>}
-            {user?.id && <Link href="/register">登録</Link>}
-          </div>
-        )}
+
+        <div
+          className={hamFlag ? "spMenu" : "spMenu closeSpMenu"}
+          onClick={() => setHamFlag(false)}
+        >
+          <Link href="/">トップページ</Link>
+          {!user?.id && (
+            <Link href="/login">
+              <div css={linkIconBox}>
+                <LoginIcon className="login" />
+                ログイン
+              </div>
+            </Link>
+          )}
+          {user?.id && (
+            <>
+              <div css={linkIconBox} onClick={logout}>
+                <LogoutIcon className="logout" />
+                ログアウト
+              </div>
+            </>
+          )}
+          {user?.id && <Link href="/myPage">マイページ</Link>}
+          {user?.id && <Link href="/register">登録</Link>}
+        </div>
       </header>
       <main>{children}</main>
     </div>
   );
 });
 
+const headerMainBox = css`
+  .active {
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    box-shadow: 2px 2px 2px #333;
+    transition: 0.3s;
+
+    a {
+      color: #333;
+    }
+  }
+
+  .inactive {
+    transition: 0.3s;
+
+    a,
+    svg {
+      color: #fff;
+    }
+  }
+`;
+
 const headerBox = css`
   margin: 0 auto;
-  padding: 12px;
-  max-width: 1200px;
+  padding: 6px 16px;
+  width: 96%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  -ms-transform: translate(-50%, 0%);
+  -webkit-transform: translate(-50%, 0%);
+  transform: translate(-50%, 0%);
+  z-index: 10;
 
   a {
     margin: 0 10px;
     text-decoration: none;
-    color: #333;
   }
 
   img {
@@ -110,9 +158,50 @@ const headerBox = css`
   }
 
   .logout {
-    width: 10%;
-    max-width: 30px;
+    width: 30px;
   }
+
+  .spMenu {
+    margin: 0 calc(50% - 50vw);
+    padding: 12px;
+    display: none;
+    position: fixed;
+    z-index: 999;
+    top: 80px;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 1;
+    transition: 0.3s;
+    background: #2f2f2f;
+
+    a {
+      margin: 12px auto;
+      display: block;
+      font-size: 18px;
+      width: fit-content;
+      color: #fff;
+    }
+
+    @media screen and (max-width: 768px) {
+      display: block;
+    }
+  }
+
+  .closeSpMenu {
+    position: fixed;
+    top: 80px;
+    left: -800px;
+    opacity: 1;
+    transition: 0.3s;
+  }
+`;
+
+const logoBox = css`
+  position: relative;
+  width: 60px;
+  height: 60px;
+  text-align: center;
 `;
 
 const linkBox = css`
@@ -122,6 +211,10 @@ const linkBox = css`
 
   @media screen and (max-width: 768px) {
     display: none;
+  }
+
+  svg {
+    cursor: pointer;
   }
 `;
 
@@ -140,30 +233,14 @@ const hamBtn = css`
   }
 `;
 
-const spMenu = css`
-  background: #2f2f2f;
-  padding: 12px;
-  position: fixed;
-  z-index: 999;
-  top: 80px;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-
-  a {
-    margin: 12px auto;
-    display: block;
-    font-size: 18px;
-    width: fit-content;
-    color: #fff;
-  }
-`;
-
 const linkIconBox = css`
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #fff;
+  cursor: pointer;
+  width: fit-content;
 
   svg {
     margin-right: 6px;

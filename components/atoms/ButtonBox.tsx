@@ -4,7 +4,7 @@ import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
 type Props = {
-  children?: string;
+  children?: any;
   onClick?: (value?: any) => void;
   upload?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -21,11 +21,7 @@ export const ButtonBox = memo((props: Props) => {
           {children}
         </Button>
       ) : (
-        <IconButton
-          color="primary"
-          aria-label="upload picture"
-          component="label"
-        >
+        <IconButton color="primary" aria-label="upload picture" component="label">
           <input hidden accept="image/*" type="file" onChange={onChange} />
           <PhotoCamera />
         </IconButton>

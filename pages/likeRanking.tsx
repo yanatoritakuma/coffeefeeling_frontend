@@ -64,10 +64,11 @@ const LikeRanking = () => {
   return (
     <div css={likeRankingMainBox}>
       <div css={likeRankingBox}>
-        <h2>
+        <h2>LikeRanking</h2>
+        <h3 className="likeRankingBox__h3">
           いいねランキング TOP10
           <FontAwesomeIcon icon={faCrown} />
-        </h2>
+        </h3>
         <CoffeeLikeRankingDetail
           coffeeLikes={coffeeLikeBest}
           rankName="1位"
@@ -97,7 +98,7 @@ const LikeRanking = () => {
 export default LikeRanking;
 
 const likeRankingMainBox = css`
-  background-color: #f7f6f5;
+  background-color: #c1bebd;
   width: 100%;
   height: auto;
   min-height: 100vh;
@@ -136,6 +137,14 @@ const likeRankingBox = css`
   }
 
   h2 {
+    margin-top: 120px;
+    font-size: 60px;
+    font-family: "Kalam", cursive;
+    color: #fcc800;
+    text-align: center;
+  }
+
+  .likeRankingBox__h3 {
     display: flex;
     justify-content: center;
     align-items: center;

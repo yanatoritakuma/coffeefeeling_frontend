@@ -3,7 +3,6 @@ import axios from "axios";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Coffee } from "@prisma/client";
 import { EditedCoffee } from "../types/form";
-import { TCoffeeUser } from "../types/coffee";
 
 export const useMutateCoffee = () => {
   const queryClient = useQueryClient();
@@ -11,10 +10,7 @@ export const useMutateCoffee = () => {
 
   const createCoffeeMutation = useMutation(
     async (coffee: Omit<EditedCoffee, "id">) => {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/coffee`,
-        coffee
-      );
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/coffee`, coffee);
       return res.data;
     },
     {
@@ -42,15 +38,11 @@ export const useMutateCoffee = () => {
     },
     {
       onSuccess: (res, variables) => {
-        const previousCoffees = queryClient.getQueryData<Coffee[]>([
-          "userCoffees",
-        ]);
+        const previousCoffees = queryClient.getQueryData<Coffee[]>(["userCoffees"]);
         if (previousCoffees) {
           queryClient.setQueryData(
             ["userCoffees"],
-            previousCoffees.map((coffee) =>
-              coffee.id === res.id ? res : coffee
-            )
+            previousCoffees.map((coffee) => (coffee.id === res.id ? res : coffee))
           );
         }
       },
@@ -68,9 +60,7 @@ export const useMutateCoffee = () => {
     },
     {
       onSuccess: (_, variables) => {
-        const previousCoffees = queryClient.getQueryData<Coffee[]>([
-          "userCoffees",
-        ]);
+        const previousCoffees = queryClient.getQueryData<Coffee[]>(["userCoffees"]);
         if (previousCoffees) {
           queryClient.setQueryData(
             ["userCoffees"],

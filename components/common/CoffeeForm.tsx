@@ -7,7 +7,6 @@ import { ButtonBox } from "../atoms/ButtonBox";
 import { SliderBox } from "../atoms/SliderBox";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import Image from "next/image";
-import firebase, { storage } from "../../firebase/initFirebase";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import NoImage from "../../public/noimage.png";
@@ -42,9 +41,7 @@ export const CoffeeForm = memo((props: Props) => {
   const { createCoffeeMutation, updateCoffeeMutation } = useMutateCoffee();
   const dispatch: AppDispatch = useDispatch();
 
-  const editCoffeeStore = useSelector(
-    (state: RootState) => state.editCoffee.editCoffee
-  );
+  const editCoffeeStore = useSelector((state: RootState) => state.editCoffee.editCoffee);
 
   // アップロード画像hooks
   const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
@@ -119,11 +116,7 @@ export const CoffeeForm = memo((props: Props) => {
           place: coffeeState.place,
         });
         // 既に登録済みの画像を削除
-        deleteImg(
-          editCoffeeStore.image,
-          "coffeeImages",
-          editCoffeeStore.userId
-        );
+        deleteImg(editCoffeeStore.image, "coffeeImages", editCoffeeStore.userId);
       }
     }
     setCoffeeState({
@@ -164,23 +157,12 @@ export const CoffeeForm = memo((props: Props) => {
   const onClickCoffeeRegistration = (e: React.FormEvent<HTMLFormElement>) => {
     const ret = window.confirm("この内容で登録しますか？");
     // バリデーション
-    if (
-      coffeeState.name === "" ||
-      coffeeState.category === "" ||
-      coffeeState.place === ""
-    ) {
+    if (coffeeState.name === "" || coffeeState.category === "" || coffeeState.place === "") {
       return alert("名前、カテゴリー、場所は必須です。");
     }
 
     if (ret) {
-      onClickRegistration(
-        e,
-        photoUrl,
-        dbRegistration,
-        setPhotoUrl,
-        setPreviewUrl,
-        user
-      );
+      onClickRegistration(e, photoUrl, dbRegistration, setPhotoUrl, setPreviewUrl, user);
 
       dispatch(setUpdateFlag(true));
       alert("登録完了しました。");
@@ -194,9 +176,7 @@ export const CoffeeForm = memo((props: Props) => {
         <div css={textBox}>
           <TextBox
             value={coffeeState.name}
-            onChange={(e) =>
-              setCoffeeState({ ...coffeeState, name: e.target.value })
-            }
+            onChange={(e) => setCoffeeState({ ...coffeeState, name: e.target.value })}
             label="商品名"
             fullWidth
           />
@@ -206,19 +186,12 @@ export const CoffeeForm = memo((props: Props) => {
         </div>
         {previewUrl !== "" || !editType ? (
           <div style={{ textAlign: "center" }}>
-            {previewUrl ? (
-              <Image src={previewUrl} alt="画像" width={400} height={340} />
-            ) : null}
+            {previewUrl ? <Image src={previewUrl} alt="画像" width={400} height={340} /> : null}
           </div>
         ) : (
           <div style={{ textAlign: "center" }}>
             {editCoffeeStore.image ? (
-              <Image
-                src={editCoffeeStore.image}
-                alt="画像"
-                width={400}
-                height={340}
-              />
+              <Image src={editCoffeeStore.image} alt="画像" width={400} height={340} />
             ) : (
               <Image src={NoImage} alt="画像なし" width={400} height={340} />
             )}
@@ -316,6 +289,7 @@ const coffeeFormMainBox = css`
   width: 100%;
   height: 100vh;
   position: relative;
+  z-index: 1;
 `;
 
 const coffeeFormBox = (width: string) => css`
@@ -334,7 +308,7 @@ const coffeeFormBox = (width: string) => css`
   background-color: #fff;
   border-radius: 10px;
   overflow-y: auto;
-  height: 90%;
+  height: 80%;
 
   h3 {
     text-align: center;
