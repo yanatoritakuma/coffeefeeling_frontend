@@ -75,29 +75,31 @@ export const Layout = memo((props: Props) => {
             <XIcon className="menuIcon" onClick={() => setHamFlag(false)} />
           )}
         </div>
-        {hamFlag && (
-          <div css={spMenu} onClick={() => setHamFlag(false)}>
-            <Link href="/">トップページ</Link>
-            {!user?.id && (
-              <Link href="/login">
-                <div css={linkIconBox}>
-                  <LoginIcon className="login" />
-                  ログイン
-                </div>
-              </Link>
-            )}
-            {user?.id && (
-              <>
-                <div css={linkIconBox} onClick={logout}>
-                  <LogoutIcon className="logout" />
-                  ログアウト
-                </div>
-              </>
-            )}
-            {user?.id && <Link href="/myPage">マイページ</Link>}
-            {user?.id && <Link href="/register">登録</Link>}
-          </div>
-        )}
+
+        <div
+          className={hamFlag ? "spMenu" : "spMenu closeSpMenu"}
+          onClick={() => setHamFlag(false)}
+        >
+          <Link href="/">トップページ</Link>
+          {!user?.id && (
+            <Link href="/login">
+              <div css={linkIconBox}>
+                <LoginIcon className="login" />
+                ログイン
+              </div>
+            </Link>
+          )}
+          {user?.id && (
+            <>
+              <div css={linkIconBox} onClick={logout}>
+                <LogoutIcon className="logout" />
+                ログアウト
+              </div>
+            </>
+          )}
+          {user?.id && <Link href="/myPage">マイページ</Link>}
+          {user?.id && <Link href="/register">登録</Link>}
+        </div>
       </header>
       <main>{children}</main>
     </div>
@@ -156,8 +158,42 @@ const headerBox = css`
   }
 
   .logout {
-    width: 10%;
-    max-width: 30px;
+    width: 30px;
+  }
+
+  .spMenu {
+    margin: 0 calc(50% - 50vw);
+    padding: 12px;
+    display: none;
+    position: fixed;
+    z-index: 999;
+    top: 80px;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 1;
+    transition: 0.3s;
+    background: #2f2f2f;
+
+    a {
+      margin: 12px auto;
+      display: block;
+      font-size: 18px;
+      width: fit-content;
+      color: #fff;
+    }
+
+    @media screen and (max-width: 768px) {
+      display: block;
+    }
+  }
+
+  .closeSpMenu {
+    position: fixed;
+    top: 80px;
+    left: -800px;
+    opacity: 1;
+    transition: 0.3s;
   }
 `;
 
@@ -197,30 +233,14 @@ const hamBtn = css`
   }
 `;
 
-const spMenu = css`
-  background: #2f2f2f;
-  padding: 12px;
-  position: fixed;
-  z-index: 999;
-  top: 80px;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-
-  a {
-    margin: 12px auto;
-    display: block;
-    font-size: 18px;
-    width: fit-content;
-    color: #fff;
-  }
-`;
-
 const linkIconBox = css`
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #fff;
+  cursor: pointer;
+  width: fit-content;
 
   svg {
     margin-right: 6px;
