@@ -66,7 +66,7 @@ const Feeling = () => {
     <section css={feelingMainBox}>
       <div css={feelingBox}>
         <Image src={FormImg} priority layout="fill" css={feelingImg} alt="feelingImg" />
-        <h2>今の気分で選ぼう</h2>
+        <h2>Feeling</h2>
         <div css={selectBox}>
           <SelectBox
             value={selectCoffee.category}
@@ -179,7 +179,10 @@ const feelingBox = css`
   max-width: 1200px;
 
   h2 {
-    margin-top: 120px;
+    margin-top: 90px;
+    font-size: 60px;
+    color: #fff;
+    font-family: "Kalam", cursive;
     text-align: center;
   }
 `;

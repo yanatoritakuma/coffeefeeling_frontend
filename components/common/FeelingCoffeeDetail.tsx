@@ -35,16 +35,10 @@ const FeelingCoffeeDetail = memo((props: Props) => {
   const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("bestCoffee");
   const [bestAllCoffee, setBestAllCoffee] = useState<TCoffee[] | undefined>();
 
-  const loginUserStore = useSelector(
-    (state: RootState) => state.loginUser.user
-  );
+  const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
 
   // 投稿Coffee削除
-  const onClickDelete = (
-    coffeeId: number,
-    coffeeImage: string | null,
-    userId: number
-  ) => {
+  const onClickDelete = (coffeeId: number, coffeeImage: string | null, userId: number) => {
     const ret = window.confirm("削除しますか？");
 
     if (ret) {
@@ -109,19 +103,19 @@ const FeelingCoffeeDetail = memo((props: Props) => {
           className={switchCoffeeFlag === "bestCoffee" ? "selectedList" : ""}
           onClick={() => setSwitchCoffeeFlag("bestCoffee")}
         >
-          ベストコーヒー
+          Bset
         </li>
         <li
           className={switchCoffeeFlag === "bitterBest" ? "selectedList" : ""}
           onClick={() => setSwitchCoffeeFlag("bitterBest")}
         >
-          苦味ベストコーヒー
+          苦味Bset
         </li>
         <li
           className={switchCoffeeFlag === "acidityBest" ? "selectedList" : ""}
           onClick={() => setSwitchCoffeeFlag("acidityBest")}
         >
-          酸味ベストコーヒー
+          酸味Bset
         </li>
       </ul>
       {switchCoffee()?.length !== 0 ? (
@@ -157,12 +151,7 @@ const FeelingCoffeeDetail = memo((props: Props) => {
             {coffee.image !== null ? (
               <img css={imgCoffee} src={coffee.image} alt="画像" />
             ) : (
-              <Image
-                src={NoImage}
-                css={noImg}
-                layout="responsive"
-                alt="画像なし"
-              />
+              <Image src={NoImage} css={noImg} layout="responsive" alt="画像なし" />
             )}
             <div css={explanationBox}>
               <span className="explanationBox__text">商品名</span>
@@ -189,10 +178,7 @@ const FeelingCoffeeDetail = memo((props: Props) => {
               </div>
               <div css={evaluationBox}>
                 <Tooltip title="酸味" placement="top">
-                  <FontAwesomeIcon
-                    icon={faFaceGrinTongue}
-                    className="acidityIcon"
-                  />
+                  <FontAwesomeIcon icon={faFaceGrinTongue} className="acidityIcon" />
                 </Tooltip>
                 {coffee.acidity}
               </div>
@@ -205,21 +191,14 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                     setTransmission(true);
                   }}
                   style={
-                    likeColor(coffee.like_user_id)
-                      ? { color: "#e73562" }
-                      : { color: "#bcc7d7" }
+                    likeColor(coffee.like_user_id) ? { color: "#e73562" } : { color: "#bcc7d7" }
                   }
                 />
-                {coffee.like_user_id[0] !== null
-                  ? coffee.like_user_id.length
-                  : 0}
+                {coffee.like_user_id[0] !== null ? coffee.like_user_id.length : 0}
               </div>
             </div>
             {(() => {
-              if (
-                loginUserStore?.admin ||
-                coffee.userId === loginUserStore?.id
-              ) {
+              if (loginUserStore?.admin || coffee.userId === loginUserStore?.id) {
                 return (
                   <div css={btnBox}>
                     <ButtonBox
@@ -231,9 +210,7 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                       編集
                     </ButtonBox>
                     <ButtonBox
-                      onClick={() =>
-                        onClickDelete(coffee.id, coffee.image, coffee.userId)
-                      }
+                      onClick={() => onClickDelete(coffee.id, coffee.image, coffee.userId)}
                     >
                       削除
                     </ButtonBox>

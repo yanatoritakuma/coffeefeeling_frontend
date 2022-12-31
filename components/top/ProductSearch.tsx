@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -18,47 +18,60 @@ const ProductSearch = memo(() => {
   const router = useRouter();
   const imageArray = [productSearch1, productSearch2, productSearch3];
 
+  const [scrollAmount, setScrollAmount] = useState(0);
+
+  const toggleVisibility = () => {
+    setScrollAmount(window.scrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
   return (
     <div css={productSearchBox}>
-      <h2>Search</h2>
-      <p className="productSearchBox__topText">
-        商品名、カテゴリー、値段、購入場所から
-        <br />
-        コーヒーの検索ができます。
-      </p>
-      <div className="productSearchBox__textBox">
-        <h4>
-          Search
+      <div className={scrollAmount > 2800 ? "view" : "hidden"}>
+        <h2>Search</h2>
+        <p className="productSearchBox__topText">
+          商品名、カテゴリー、値段、購入場所から
           <br />
-          コーヒーを検索
-        </h4>
+          コーヒーの検索ができます。
+        </p>
+        <div className="productSearchBox__textBox">
+          <h4>
+            Search
+            <br />
+            コーヒーを検索
+          </h4>
+        </div>
+        <Swiper
+          className="productSearchBox__swiperBox"
+          spaceBetween={30}
+          centeredSlides={true}
+          loop={true}
+          autoplay={{
+            delay: 2500,
+            disableOnInteraction: false,
+          }}
+          pagination={{
+            clickable: true,
+          }}
+          modules={[Autoplay, Pagination, Navigation]}
+        >
+          {imageArray.map((img, index) => (
+            <SwiperSlide key={index}>
+              <div css={imgBox}>
+                <Image src={img} layout="fill" alt="topImage" />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        <ButtonBox onClick={() => router.push("/productSearch")}>
+          検索する
+          <FontAwesomeIcon icon={faMagnifyingGlass} />
+        </ButtonBox>
       </div>
-      <Swiper
-        className="productSearchBox__swiperBox"
-        spaceBetween={30}
-        centeredSlides={true}
-        loop={true}
-        autoplay={{
-          delay: 2500,
-          disableOnInteraction: false,
-        }}
-        pagination={{
-          clickable: true,
-        }}
-        modules={[Autoplay, Pagination, Navigation]}
-      >
-        {imageArray.map((img, index) => (
-          <SwiperSlide key={index}>
-            <div css={imgBox}>
-              <Image src={img} layout="fill" alt="topImage" />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-      <ButtonBox onClick={() => router.push("/")}>
-        検索する
-        <FontAwesomeIcon icon={faMagnifyingGlass} />
-      </ButtonBox>
     </div>
   );
 });
@@ -155,6 +168,16 @@ const productSearchBox = css`
     svg {
       width: 30px;
     }
+  }
+
+  .view {
+    opacity: 1;
+    transition: 0.3s;
+  }
+
+  .hidden {
+    opacity: 0;
+    transition: 0.3s;
   }
 `;
 
