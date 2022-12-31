@@ -1,11 +1,8 @@
 import React from "react";
 import { css } from "@emotion/react";
-import Link from "next/link";
 import Image from "next/image";
 import TopImg from "../../public/coffeeTop.jpg";
 import coffeeTop from "../../public/coffeeTopIcon.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 const TopImage = () => {
   return (
@@ -17,12 +14,6 @@ const TopImage = () => {
         <div className="topBoxIn__icon">
           <Image src={coffeeTop} layout="fill" css={topImg} alt="coffeeIcon" />
         </div>
-        <Link href="/">
-          <div css={productSearchBox}>
-            商品検索
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </div>
-        </Link>
       </div>
     </section>
   );
@@ -87,105 +78,5 @@ const topBoxIn = css`
     -ms-transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-  }
-`;
-
-const linkBox = css`
-  position: absolute;
-  top: 74%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 32px;
-  width: fit-content;
-  min-width: 190px;
-  cursor: pointer;
-
-  a {
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-  }
-
-  @media screen and (max-width: 768px) {
-    font-size: 20px;
-  }
-
-  svg {
-    margin-left: 12px;
-    width: 50px;
-
-    @media screen and (max-width: 768px) {
-      width: 30px;
-    }
-  }
-`;
-
-const linkLikeBox = css`
-  position: absolute;
-  top: 80%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 32px;
-  width: fit-content;
-  min-width: 230px;
-  cursor: pointer;
-
-  a {
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-  }
-
-  svg {
-    margin: 6px 12px 12px 12px;
-    width: 40px;
-  }
-
-  @media screen and (max-width: 768px) {
-    font-size: 20px;
-  }
-`;
-
-const productSearchBox = css`
-  position: absolute;
-  top: 86%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 32px;
-  width: fit-content;
-  min-width: 230px;
-  cursor: pointer;
-
-  a {
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-  }
-
-  svg {
-    margin: 6px 12px 12px 12px;
-    width: 40px;
-  }
-
-  @media screen and (max-width: 768px) {
-    font-size: 20px;
   }
 `;

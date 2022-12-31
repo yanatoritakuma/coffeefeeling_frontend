@@ -82,7 +82,7 @@ const feelingBox = css`
     padding: 20px;
     display: flex;
     align-items: center;
-    width: fit-content;
+    width: 260px;
     font-size: 18px;
     background-color: #7b5544;
 
