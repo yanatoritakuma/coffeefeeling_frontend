@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import { Coffee } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
 import { TBestCoffee } from "../types/coffee";
@@ -33,8 +32,7 @@ export const useQueryFeelingCoffees = (feeling?: TFeeling) => {
     queryKey: ["feelingCoffees"],
     queryFn: getFeelingCoffees,
     onError: (err: any) => {
-      if (err.response.status === 401 || err.response.status === 403)
-        router.push("/");
+      if (err.response.status === 401 || err.response.status === 403) router.push("/");
     },
   });
 };

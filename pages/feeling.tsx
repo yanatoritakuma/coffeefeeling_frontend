@@ -20,34 +20,7 @@ const Feeling = () => {
     place: "コンビニ",
   });
 
-  const feelingReq = {
-    category: selectCoffee.category,
-    bitter: selectCoffee.bitter,
-    acidity: selectCoffee.acidity,
-    price: selectCoffee.price,
-    place: selectCoffee.place,
-  };
-
   const [searchFlag, setSearchFlag] = useState(false);
-
-  const categoryUrl = () => {
-    switch (selectCoffee.category) {
-      case "ブラック":
-        return "black";
-      case "カフェラテ":
-        return "latte";
-      case "エスプレッソ":
-        return "espresso";
-      case "カフェモカ":
-        return "mocha";
-      case "カフェオレ":
-        return "cafeAuLait";
-      case "カプチーノ":
-        return "cappuccino";
-      default:
-        break;
-    }
-  };
 
   const onClickSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,7 +31,7 @@ const Feeling = () => {
     if (searchFlag) {
       setSearchFlag(false);
 
-      router.push({ pathname: `/feeling/feelNow`, query: feelingReq });
+      router.push({ pathname: `/feeling/feelNow`, query: selectCoffee });
     }
   }, [searchFlag]);
 

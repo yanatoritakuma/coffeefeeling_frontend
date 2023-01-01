@@ -3,14 +3,21 @@ import { css } from "@emotion/react";
 import { TextBox } from "../components/atoms/TextBox";
 import { SelectBox } from "../components/atoms/SelectBox";
 import { ButtonBox } from "../components/atoms/ButtonBox";
+import { useRouter } from "next/router";
 
-const ProductSearch = () => {
+const CoffeeSearch = () => {
+  const router = useRouter();
+
   const [searchState, setSearchState] = useState({
     name: "",
-    category: "",
-    price: 100,
-    place: "",
+    category: "指定なし",
+    price: "指定なし",
+    place: "指定なし",
   });
+
+  const onClickSearch = () => {
+    router.push({ pathname: `/coffeeSearch/searchResults`, query: searchState });
+  };
 
   return (
     <div css={productSearchBox}>
@@ -44,6 +51,7 @@ const ProductSearch = () => {
               }
               label="カテゴリー"
               menuItems={[
+                "指定なし",
                 "ブラック",
                 "カフェラテ",
                 "エスプレッソ",
@@ -55,15 +63,15 @@ const ProductSearch = () => {
           </div>
           <div className="searchBox__inputBox">
             <SelectBox
-              value={String(searchState.price)}
+              value={searchState.price}
               onChange={(e) =>
                 setSearchState({
                   ...searchState,
-                  price: Number(e.target.value),
+                  price: e.target.value,
                 })
               }
               label="値段"
-              menuItems={["100", "300", "500", "700", "1000"]}
+              menuItems={["指定なし", "100", "300", "500", "700", "1000"]}
             />
           </div>
           <div className="searchBox__inputBox">
@@ -76,17 +84,17 @@ const ProductSearch = () => {
                 })
               }
               label="場所"
-              menuItems={["コンビニ", "店舗"]}
+              menuItems={["指定なし", "コンビニ", "店舗"]}
             />
           </div>
-          <ButtonBox>検索</ButtonBox>
+          <ButtonBox onClick={() => onClickSearch()}>検索</ButtonBox>
         </div>
       </div>
     </div>
   );
 };
 
-export default ProductSearch;
+export default CoffeeSearch;
 
 const productSearchBox = css`
   background-color: #ed7600;
@@ -103,9 +111,14 @@ const productSearchBox = css`
     }
 
     .productSearchBox__text {
+      padding: 12px;
       text-align: center;
       color: #fff;
       font-size: 20px;
+
+      @media screen and (max-width: 768px) {
+        font-size: 16px;
+      }
     }
   }
 `;
@@ -113,7 +126,9 @@ const productSearchBox = css`
 const searchBox = css`
   margin: 30px auto;
   padding: 20px;
-  width: 60%;
+  width: 90%;
+  max-width: 800px;
+  min-width: 300px;
   background-color: #fff;
   border-radius: 10px;
 
@@ -126,5 +141,10 @@ const searchBox = css`
     display: block;
     font-size: 18px;
     width: 200px;
+    background-color: #ed7600;
+
+    &:hover {
+      background-color: #ed7600;
+    }
   }
 `;

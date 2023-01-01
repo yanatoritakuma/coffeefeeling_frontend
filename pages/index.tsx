@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import TopImage from "../components/top/TopImage";
 import Feeling from "../components/top/Feeling";
 import LikeRanking from "../components/top/LikeRanking";
-import ProductSearch from "../components/top/ProductSearch";
+import CoffeeSearch from "../components/top/CoffeeSearch";
 
 const Home: NextPage = () => {
   return (
@@ -10,7 +10,7 @@ const Home: NextPage = () => {
       <TopImage />
       <Feeling />
       <LikeRanking />
-      <ProductSearch />
+      <CoffeeSearch />
     </main>
   );
 };

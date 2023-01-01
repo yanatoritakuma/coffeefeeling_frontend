@@ -67,7 +67,7 @@ const ProductSearch = memo(() => {
             </SwiperSlide>
           ))}
         </Swiper>
-        <ButtonBox onClick={() => router.push("/productSearch")}>
+        <ButtonBox onClick={() => router.push("/coffeeSearch")}>
           検索する
           <FontAwesomeIcon icon={faMagnifyingGlass} />
         </ButtonBox>
