@@ -103,19 +103,19 @@ const FeelingCoffeeDetail = memo((props: Props) => {
           className={switchCoffeeFlag === "bestCoffee" ? "selectedList" : ""}
           onClick={() => setSwitchCoffeeFlag("bestCoffee")}
         >
-          Bset
+          Best
         </li>
         <li
           className={switchCoffeeFlag === "bitterBest" ? "selectedList" : ""}
           onClick={() => setSwitchCoffeeFlag("bitterBest")}
         >
-          苦味Bset
+          苦味Best
         </li>
         <li
           className={switchCoffeeFlag === "acidityBest" ? "selectedList" : ""}
           onClick={() => setSwitchCoffeeFlag("acidityBest")}
         >
-          酸味Bset
+          酸味Best
         </li>
       </ul>
       {switchCoffee()?.length !== 0 ? (

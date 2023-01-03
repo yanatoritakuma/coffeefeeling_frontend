@@ -16,6 +16,14 @@ const CoffeeSearch = () => {
   });
 
   const onClickSearch = () => {
+    if (
+      searchState.name === "" &&
+      searchState.category === "指定なし" &&
+      searchState.price === "指定なし" &&
+      searchState.place === "指定なし"
+    ) {
+      return alert("1つ以上の検索条件が必須です。");
+    }
     router.push({ pathname: `/coffeeSearch/searchResults`, query: searchState });
   };
 

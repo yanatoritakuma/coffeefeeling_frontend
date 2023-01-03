@@ -36,8 +36,6 @@ const MyPage = () => {
     status: userCoffeesStatus,
   } = useQueryGetUserCoffee(skipPostPage, takePostPage);
 
-  console.log(userCoffeesStatus);
-
   // ログインユーザーがいいねしたコーヒー
   const {
     data: loginUserLikesCoffee,
