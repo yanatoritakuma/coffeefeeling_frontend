@@ -33,7 +33,9 @@ const SearchResults = () => {
     <div css={searchResultsMainBox}>
       <div css={searchResultsBox}>
         <h2>SearchResults</h2>
-        <CoffeeDetail coffees={data} setTransmission={setTransmission} />
+        <div css={coffeeDetailBox}>
+          <CoffeeDetail coffees={data} setTransmission={setTransmission} />
+        </div>
       </div>
       {status === "loading" && (
         <div className="fileter">
@@ -76,4 +78,9 @@ const searchResultsBox = css`
       font-size: 48px;
     }
   }
+`;
+
+const coffeeDetailBox = css`
+  margin: 0 auto;
+  max-width: 800px;
 `;

@@ -45,19 +45,9 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
             <div key={coffee.id} css={rankingBox}>
               <div className="rankingBox__userBox">
                 {coffee.user?.image !== null ? (
-                  <Image
-                    src={coffee.user?.image}
-                    width={80}
-                    height={80}
-                    alt="ユーザーアイコン"
-                  />
+                  <Image src={coffee.user?.image} width={80} height={80} alt="ユーザーアイコン" />
                 ) : (
-                  <Image
-                    src={UserImg}
-                    width={80}
-                    height={80}
-                    alt="ユーザーアイコン"
-                  />
+                  <Image src={UserImg} width={80} height={80} alt="ユーザーアイコン" />
                 )}
                 <h5>{coffee.user.name}</h5>
               </div>
@@ -65,21 +55,25 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
               <div className="rankingBox__box">
                 <div className="rankingBox__boxIn">
                   {coffee.image !== null ? (
-                    <Image
-                      src={coffee.image}
-                      width={300}
-                      height={300}
-                      layout="responsive"
-                      alt="画像"
-                    />
+                    <div css={imgBox}>
+                      <Image
+                        src={coffee.image}
+                        width={140}
+                        height={100}
+                        layout="responsive"
+                        alt="イメージ画像"
+                      />
+                    </div>
                   ) : (
-                    <Image
-                      src={NoImage}
-                      width={300}
-                      height={300}
-                      layout="responsive"
-                      alt="画像なし"
-                    />
+                    <div css={imgBox}>
+                      <Image
+                        src={NoImage}
+                        width={140}
+                        height={100}
+                        layout="responsive"
+                        alt="画像なし"
+                      />
+                    </div>
                   )}
                 </div>
                 <div className="rankingBox__boxIn">
@@ -102,19 +96,13 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
                   <div css={evaluationMainBox}>
                     <div css={evaluationBox}>
                       <Tooltip title="苦さ" placement="top">
-                        <FontAwesomeIcon
-                          icon={faFaceFrown}
-                          className="bitterIcon"
-                        />
+                        <FontAwesomeIcon icon={faFaceFrown} className="bitterIcon" />
                       </Tooltip>
                       {coffee.bitter}
                     </div>
                     <div css={evaluationBox}>
                       <Tooltip title="酸味" placement="top">
-                        <FontAwesomeIcon
-                          icon={faFaceGrinTongue}
-                          className="acidityIcon"
-                        />
+                        <FontAwesomeIcon icon={faFaceGrinTongue} className="acidityIcon" />
                       </Tooltip>
                       {coffee.acidity}
                     </div>
@@ -256,5 +244,13 @@ const evaluationBox = css`
       width: 18px;
       height: 18px;
     }
+  }
+`;
+
+const imgBox = css`
+  text-align: center;
+
+  img {
+    object-fit: contain;
   }
 `;
