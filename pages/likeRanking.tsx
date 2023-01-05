@@ -49,11 +49,16 @@ const LikeRanking = () => {
     }
   });
 
-  // 3位のコーヒー
-  const thirdCoffee = bestCoffeeExcept?.filter((coffee) => {
+  // 3位タイのコーヒー
+  const thirdCoffeeTie = bestCoffeeExcept?.filter((coffee) => {
     if (secondCoffee !== undefined) {
       return coffee.likes.length !== secondCoffee[0]?.likes.length;
     }
+  });
+
+  // 3位のコーヒー
+  const thirdCoffee = thirdCoffeeTie?.filter((coffee) => {
+    return coffee.likes.length === thirdCoffeeTie[0].likes.length;
   });
 
   useEffect(() => {
