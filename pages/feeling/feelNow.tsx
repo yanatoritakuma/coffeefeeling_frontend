@@ -121,6 +121,7 @@ const feelNowBox = css`
   background-color: #d3cbc6;
   width: 100%;
   height: 100%;
+  min-height: 100vh;
 
   h2 {
     margin-top: 120px;

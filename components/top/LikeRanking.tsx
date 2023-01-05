@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 const LikeRanking = () => {
   const router = useRouter();
   const [scrollAmount, setScrollAmount] = useState(0);
-  console.log(scrollAmount);
+
   const toggleVisibility = () => {
     setScrollAmount(window.scrollY);
   };
