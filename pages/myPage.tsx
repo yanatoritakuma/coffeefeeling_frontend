@@ -36,15 +36,12 @@ const MyPage = () => {
     status: userCoffeesStatus,
   } = useQueryGetUserCoffee(skipPostPage, takePostPage);
 
-  console.log(userCoffeesStatus);
-
   // ログインユーザーがいいねしたコーヒー
   const {
     data: loginUserLikesCoffee,
     refetch: refetchLoginUserLikesCoffee,
     status: loginUserLikesCoffeeStatus,
   } = useQueryLoginUserLikesCoffee(skipLikePage, takeLikePage);
-  console.log(loginUserLikesCoffeeStatus);
 
   // ログインユーザーがいいね済みを取得
   const { data: getUserLiked, refetch: refetchGetUserLiked } = useQueryGetUserLiked();
@@ -242,6 +239,7 @@ const myPageMainBox = css`
   padding: 30px 10px;
   width: 100%;
   height: 100%;
+  min-height: 100vh;
   background-color: #abced8;
 
   h2 {

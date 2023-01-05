@@ -97,25 +97,25 @@ const FeelingCoffeeDetail = memo((props: Props) => {
   }, [switchCoffeeFlag]);
 
   return (
-    <div>
+    <div css={feelingCoffeeDetailBox}>
       <ul css={listBox}>
         <li
           className={switchCoffeeFlag === "bestCoffee" ? "selectedList" : ""}
           onClick={() => setSwitchCoffeeFlag("bestCoffee")}
         >
-          Bset
+          Best
         </li>
         <li
           className={switchCoffeeFlag === "bitterBest" ? "selectedList" : ""}
           onClick={() => setSwitchCoffeeFlag("bitterBest")}
         >
-          苦味Bset
+          苦味Best
         </li>
         <li
           className={switchCoffeeFlag === "acidityBest" ? "selectedList" : ""}
           onClick={() => setSwitchCoffeeFlag("acidityBest")}
         >
-          酸味Bset
+          酸味Best
         </li>
       </ul>
       {switchCoffee()?.length !== 0 ? (
@@ -149,7 +149,15 @@ const FeelingCoffeeDetail = memo((props: Props) => {
               </div>
             )}
             {coffee.image !== null ? (
-              <img css={imgCoffee} src={coffee.image} alt="画像" />
+              <div css={imgBox}>
+                <Image
+                  src={coffee.image}
+                  width={120}
+                  height={60}
+                  layout="responsive"
+                  alt="イメージ画像"
+                />
+              </div>
             ) : (
               <Image src={NoImage} css={noImg} layout="responsive" alt="画像なし" />
             )}
@@ -231,6 +239,12 @@ const FeelingCoffeeDetail = memo((props: Props) => {
 
 export default FeelingCoffeeDetail;
 
+const feelingCoffeeDetailBox = css`
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+`;
+
 const productBox = css`
   margin: 24px auto;
   padding: 12px;
@@ -276,12 +290,12 @@ const explanationBox = css`
   }
 `;
 
-const imgCoffee = css`
-  margin: 0 auto;
-  display: block;
-  width: 100%;
-  max-width: 600px;
-`;
+// const imgCoffee = css`
+//   margin: 0 auto;
+//   display: block;
+//   width: 100%;
+//   max-width: 600px;
+// `;
 
 const noImg = css`
   margin: 0 auto;
@@ -439,5 +453,13 @@ const userBox = css`
     @media screen and (max-width: 768px) {
       font-size: 16px;
     }
+  }
+`;
+
+const imgBox = css`
+  text-align: center;
+
+  img {
+    object-fit: contain;
   }
 `;

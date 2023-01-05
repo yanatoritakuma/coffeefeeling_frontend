@@ -185,11 +185,11 @@ export const CoffeeForm = memo((props: Props) => {
           <ButtonBox upload onChange={onChangeImageHandler} />
         </div>
         {previewUrl !== "" || !editType ? (
-          <div style={{ textAlign: "center" }}>
+          <div css={imgBox}>
             {previewUrl ? <Image src={previewUrl} alt="画像" width={400} height={340} /> : null}
           </div>
         ) : (
-          <div style={{ textAlign: "center" }}>
+          <div css={imgBox}>
             {editCoffeeStore.image ? (
               <Image src={editCoffeeStore.image} alt="画像" width={400} height={340} />
             ) : (
@@ -342,5 +342,13 @@ const btnBox = css`
     padding: 12px;
     width: 80%;
     font-size: 16px;
+  }
+`;
+
+const imgBox = css`
+  text-align: center;
+
+  img {
+    object-fit: contain;
   }
 `;

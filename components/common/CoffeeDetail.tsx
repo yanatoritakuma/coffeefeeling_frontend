@@ -87,9 +87,20 @@ const CoffeeDetail = memo((props: Props) => {
             </div>
           )}
           {coffee.image !== null ? (
-            <img css={imgCoffee} src={coffee.image} alt="画像" />
+            <div css={imgBox}>
+              <Image
+                src={coffee.image}
+                css={noImg}
+                layout="responsive"
+                width={140}
+                height={100}
+                alt="イメージ画像"
+              />
+            </div>
           ) : (
-            <Image src={NoImage} css={noImg} layout="responsive" alt="画像なし" />
+            <div css={imgBox}>
+              <Image src={NoImage} css={noImg} layout="responsive" alt="画像なし" />
+            </div>
           )}
           <div css={explanationBox}>
             <span className="explanationBox__text">商品名</span>
@@ -315,5 +326,12 @@ const userBox = css`
     @media screen and (max-width: 768px) {
       font-size: 16px;
     }
+  }
+`;
+const imgBox = css`
+  text-align: center;
+
+  img {
+    object-fit: contain;
   }
 `;

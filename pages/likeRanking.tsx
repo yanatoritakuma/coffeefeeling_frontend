@@ -34,26 +34,31 @@ const LikeRanking = () => {
 
   // 1位のコーヒー
   const coffeeLikeBest = data?.filter((coffee) => {
-    return coffee.likes.length === data[0].likes.length;
+    return coffee.likes.length === data[0]?.likes.length;
   });
 
   // 1位を除くTOP10のコーヒー
   const bestCoffeeExcept = data?.filter((coffee) => {
-    return coffee.likes.length !== data[0].likes.length;
+    return coffee.likes.length !== data[0]?.likes.length;
   });
 
   // 2位のコーヒー
   const secondCoffee = data?.filter((coffee) => {
     if (bestCoffeeExcept !== undefined) {
-      return coffee.likes.length === bestCoffeeExcept[0].likes.length;
+      return coffee.likes.length === bestCoffeeExcept[0]?.likes.length;
+    }
+  });
+
+  // 3位タイのコーヒー
+  const thirdCoffeeTie = bestCoffeeExcept?.filter((coffee) => {
+    if (secondCoffee !== undefined) {
+      return coffee.likes.length !== secondCoffee[0]?.likes.length;
     }
   });
 
   // 3位のコーヒー
-  const thirdCoffee = bestCoffeeExcept?.filter((coffee) => {
-    if (secondCoffee !== undefined) {
-      return coffee.likes.length !== secondCoffee[0].likes.length;
-    }
+  const thirdCoffee = thirdCoffeeTie?.filter((coffee) => {
+    return coffee.likes.length === thirdCoffeeTie[0].likes.length;
   });
 
   useEffect(() => {

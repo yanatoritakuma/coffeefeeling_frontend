@@ -19,6 +19,7 @@ export const PaginationBox = memo((props: Props) => {
         onChange={(e, page) => setNowPage(page)}
         variant="outlined"
         color="primary"
+        siblingCount={0}
       />
     </Stack>
   );
