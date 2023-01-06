@@ -69,6 +69,7 @@ const SearchResults = () => {
         {data?.length !== 0 ? (
           <>
             <div css={coffeeDetailBox}>
+              <p className="coffeeDetailBox__text">検索結果{data?.length}件です。</p>
               <CoffeeDetail coffees={openPageData} setTransmission={setTransmission} />
             </div>
             <div css={paginationBox}>
@@ -143,6 +144,12 @@ const searchResultsBox = css`
 const coffeeDetailBox = css`
   margin: 0 auto;
   max-width: 800px;
+
+  .coffeeDetailBox__text {
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+  }
 `;
 
 const paginationBox = css`
