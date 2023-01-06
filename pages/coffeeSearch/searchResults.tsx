@@ -5,13 +5,14 @@ import CoffeeDetail from "../../components/common/CoffeeDetail";
 import { useQueryCoffeeSearch } from "../../hooks/useQueryCoffeeSearch";
 import { CircularProgress } from "@mui/material";
 import { PaginationBox } from "../../components/common/PaginationBox";
+import TimeOut from "../../components/dialog/TimeOut";
 
 const SearchResults = () => {
   const router = useRouter();
-
   const [transmission, setTransmission] = useState(false);
-
   const [nowPage, setNowPage] = useState(1);
+  const [timeOut, setTimeOut] = useState(false);
+  const [timeOutDailog, setTimeOutDailog] = useState(false);
 
   const coffeeSearchReq = {
     name: String(router.query.name),
@@ -44,6 +45,23 @@ const SearchResults = () => {
     setTransmission(false);
   }, [transmission]);
 
+  // APIタイムアウト処理
+  useEffect(() => {
+    if (status === "success") {
+      setTimeOut(false);
+    } else if (status === "loading") {
+      setTimeout(() => {
+        setTimeOut(true);
+      }, 20000);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (timeOut && status === "loading") {
+      setTimeOutDailog(true);
+    }
+  }, [timeOut]);
+
   return (
     <div css={searchResultsMainBox}>
       <div css={searchResultsBox}>
@@ -70,6 +88,7 @@ const SearchResults = () => {
           <CircularProgress size="6rem" />
         </div>
       )}
+      <TimeOut open={timeOutDailog} />
     </div>
   );
 };
