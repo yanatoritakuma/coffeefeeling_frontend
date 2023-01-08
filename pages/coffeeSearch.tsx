@@ -107,7 +107,7 @@ export default CoffeeSearch;
 const productSearchBox = css`
   background-color: #ed7600;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
 
   .productSearchBox__box {
     padding: 120px 0;
