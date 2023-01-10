@@ -17,6 +17,7 @@ import CoffeeEdit from "../dialog/CoffeeEdit";
 import likeFeature from "../../utils/likeFeature";
 import { TCoffeeUser, TUserId } from "../../types/coffee";
 import UserImg from "../../public/user.png";
+import ImageEnlargement from "./ImageEnlargement";
 
 type Props = {
   coffees?: TCoffeeUser[];
@@ -31,6 +32,8 @@ const CoffeeDetail = memo((props: Props) => {
   const { deleteCoffeeMutation } = useMutateCoffee();
 
   const [editFlag, setEditFlag] = useState(false);
+  // 拡大したいコーヒー
+  const [selectImgEnlargement, setSelectImgEnlargement] = useState("");
 
   const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
 
@@ -61,7 +64,10 @@ const CoffeeDetail = memo((props: Props) => {
         <div key={coffee.id} css={productBox}>
           {coffee.user?.image !== null ? (
             <div css={userBox}>
-              <div className="userBox__img">
+              <div
+                className="userBox__img"
+                onClick={() => setSelectImgEnlargement(String(coffee.user?.image))}
+              >
                 <Image
                   src={coffee.user?.image}
                   width={50}
@@ -74,7 +80,7 @@ const CoffeeDetail = memo((props: Props) => {
             </div>
           ) : (
             <div css={userBox}>
-              <div className="userBox__img">
+              <div className="userBox__img" onClick={() => setSelectImgEnlargement("noUserImg")}>
                 <Image
                   src={UserImg}
                   width={50}
@@ -87,7 +93,7 @@ const CoffeeDetail = memo((props: Props) => {
             </div>
           )}
           {coffee.image !== null ? (
-            <div css={imgBox}>
+            <div css={imgBox} onClick={() => setSelectImgEnlargement(String(coffee.image))}>
               <Image
                 src={coffee.image}
                 css={noImg}
@@ -98,7 +104,7 @@ const CoffeeDetail = memo((props: Props) => {
               />
             </div>
           ) : (
-            <div css={imgBox}>
+            <div css={imgBox} onClick={() => setSelectImgEnlargement("noCoffeeImg")}>
               <Image src={NoImage} css={noImg} layout="responsive" alt="画像なし" />
             </div>
           )}
@@ -168,6 +174,12 @@ const CoffeeDetail = memo((props: Props) => {
         </div>
       ))}
       <CoffeeEdit open={editFlag} onClose={() => setEditFlag(false)} />
+      {selectImgEnlargement !== "" && (
+        <ImageEnlargement
+          selectImgEnlargement={selectImgEnlargement}
+          setSelectImgEnlargement={setSelectImgEnlargement}
+        />
+      )}
     </div>
   );
 });
