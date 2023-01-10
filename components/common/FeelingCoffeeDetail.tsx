@@ -37,7 +37,6 @@ const FeelingCoffeeDetail = memo((props: Props) => {
   const [bestAllCoffee, setBestAllCoffee] = useState<TCoffee[] | undefined>();
   // 拡大したいコーヒー
   const [selectImgEnlargement, setSelectImgEnlargement] = useState("");
-  console.log(selectImgEnlargement);
 
   const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
 
