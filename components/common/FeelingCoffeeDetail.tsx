@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
@@ -17,6 +17,7 @@ import CoffeeEdit from "../dialog/CoffeeEdit";
 import likeFeature from "../../utils/likeFeature";
 import { TBestCoffee, TCoffee } from "../../types/coffee";
 import UserImg from "../../public/user.png";
+import ImageEnlargement from "./ImageEnlargement";
 
 type Props = {
   bestCoffee: TBestCoffee | undefined;
@@ -34,6 +35,9 @@ const FeelingCoffeeDetail = memo((props: Props) => {
   const [editFlag, setEditFlag] = useState(false);
   const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("bestCoffee");
   const [bestAllCoffee, setBestAllCoffee] = useState<TCoffee[] | undefined>();
+  // 拡大したいコーヒー
+  const [selectImgEnlargement, setSelectImgEnlargement] = useState("");
+  console.log(selectImgEnlargement);
 
   const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
 
@@ -123,7 +127,10 @@ const FeelingCoffeeDetail = memo((props: Props) => {
           <div key={coffee.id} css={productBox}>
             {coffee.user_image !== null ? (
               <div css={userBox}>
-                <div className="userBox__img">
+                <div
+                  className="userBox__img"
+                  onClick={() => setSelectImgEnlargement(coffee.user_image)}
+                >
                   <Image
                     src={coffee.user_image}
                     width={50}
@@ -136,7 +143,7 @@ const FeelingCoffeeDetail = memo((props: Props) => {
               </div>
             ) : (
               <div css={userBox}>
-                <div className="userBox__img">
+                <div className="userBox__img" onClick={() => setSelectImgEnlargement("noUserImg")}>
                   <Image
                     src={UserImg}
                     width={50}
@@ -149,7 +156,7 @@ const FeelingCoffeeDetail = memo((props: Props) => {
               </div>
             )}
             {coffee.image !== null ? (
-              <div css={imgBox}>
+              <div css={imgBox} onClick={() => setSelectImgEnlargement(String(coffee.image))}>
                 <Image
                   src={coffee.image}
                   width={120}
@@ -159,7 +166,9 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                 />
               </div>
             ) : (
-              <Image src={NoImage} css={noImg} layout="responsive" alt="画像なし" />
+              <div onClick={() => setSelectImgEnlargement("noCoffeeImg")}>
+                <Image src={NoImage} css={noImg} layout="responsive" alt="画像なし" />
+              </div>
             )}
             <div css={explanationBox}>
               <span className="explanationBox__text">商品名</span>
@@ -233,6 +242,12 @@ const FeelingCoffeeDetail = memo((props: Props) => {
       )}
 
       <CoffeeEdit open={editFlag} onClose={() => setEditFlag(false)} />
+      {selectImgEnlargement !== "" && (
+        <ImageEnlargement
+          selectImgEnlargement={selectImgEnlargement}
+          setSelectImgEnlargement={setSelectImgEnlargement}
+        />
+      )}
     </div>
   );
 });
@@ -289,13 +304,6 @@ const explanationBox = css`
     font-size: 16px;
   }
 `;
-
-// const imgCoffee = css`
-//   margin: 0 auto;
-//   display: block;
-//   width: 100%;
-//   max-width: 600px;
-// `;
 
 const noImg = css`
   margin: 0 auto;
