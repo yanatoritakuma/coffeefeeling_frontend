@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import UserImg from "../../public/user.png";
@@ -10,6 +10,7 @@ import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { TCoffeeUser, TUserId } from "../../types/coffee";
+import ImageEnlargement from "./ImageEnlargement";
 
 type Props = {
   coffeeLikes: TCoffeeUser[] | undefined;
@@ -29,6 +30,9 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
     return likesId;
   };
 
+  // 拡大したいコーヒー
+  const [selectImgEnlargement, setSelectImgEnlargement] = useState("");
+
   return (
     <div>
       {coffeeLikes !== undefined && (
@@ -45,9 +49,21 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
             <div key={coffee.id} css={rankingBox}>
               <div className="rankingBox__userBox">
                 {coffee.user?.image !== null ? (
-                  <Image src={coffee.user?.image} width={80} height={80} alt="ユーザーアイコン" />
+                  <Image
+                    src={coffee.user?.image}
+                    width={80}
+                    height={80}
+                    alt="ユーザーアイコン"
+                    onClick={() => setSelectImgEnlargement(String(coffee.user?.image))}
+                  />
                 ) : (
-                  <Image src={UserImg} width={80} height={80} alt="ユーザーアイコン" />
+                  <Image
+                    src={UserImg}
+                    width={80}
+                    height={80}
+                    alt="ユーザーアイコン"
+                    onClick={() => setSelectImgEnlargement("noUserImg")}
+                  />
                 )}
                 <h5>{coffee.user.name}</h5>
               </div>
@@ -55,7 +71,7 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
               <div className="rankingBox__box">
                 <div className="rankingBox__boxIn">
                   {coffee.image !== null ? (
-                    <div css={imgBox}>
+                    <div css={imgBox} onClick={() => setSelectImgEnlargement(String(coffee.image))}>
                       <Image
                         src={coffee.image}
                         width={140}
@@ -65,7 +81,7 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
                       />
                     </div>
                   ) : (
-                    <div css={imgBox}>
+                    <div css={imgBox} onClick={() => setSelectImgEnlargement("noCoffeeImg")}>
                       <Image
                         src={NoImage}
                         width={140}
@@ -128,6 +144,12 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
             </div>
           ))}
         </div>
+      )}
+      {selectImgEnlargement !== "" && (
+        <ImageEnlargement
+          selectImgEnlargement={selectImgEnlargement}
+          setSelectImgEnlargement={setSelectImgEnlargement}
+        />
       )}
     </div>
   );
