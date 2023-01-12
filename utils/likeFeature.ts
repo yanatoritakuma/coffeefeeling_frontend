@@ -17,10 +17,6 @@ const likeFeature = () => {
       return id === loginUserStore.id;
     });
 
-    if (loginUserStore?.id === undefined) {
-      return alert("ログインしているユーザーしかいいねはできません");
-    }
-
     if (likedUser.length > 0) {
       deleteLikeMutation.mutate(coffeeId);
     } else {
