@@ -14,7 +14,7 @@ import { setEditCoffee, setUpdateFlag } from "../../redux/editCoffeeSlice";
 import { deleteImgStorage } from "../../utils/deleteImgStorage";
 import { useMutateCoffee } from "../../hooks/useMutateCoffee";
 import CoffeeEdit from "../dialog/CoffeeEdit";
-import likeFeature from "../../utils/likeFeature";
+import likeFeature, { TInitLikes } from "../../utils/likeFeature";
 import { TBestCoffee, TCoffee } from "../../types/coffee";
 import UserImg from "../../public/user.png";
 import ImageEnlargement from "./ImageEnlargement";
@@ -28,17 +28,23 @@ const FeelingCoffeeDetail = memo((props: Props) => {
   const { bestCoffee, setTransmission } = props;
 
   const dispatch: AppDispatch = useDispatch();
-  const { onClickLike, likeColor } = likeFeature();
+  const { onClickLike, likeColor, initLikeArray } = likeFeature();
+
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
   const [editFlag, setEditFlag] = useState(false);
-  const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("bestCoffee");
+  const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("");
   const [bestAllCoffee, setBestAllCoffee] = useState<TCoffee[] | undefined>();
   // 拡大したいコーヒー
   const [selectImgEnlargement, setSelectImgEnlargement] = useState("");
 
   const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
+
+  // 初期表示するコーヒーをbestに設定
+  useEffect(() => {
+    setSwitchCoffeeFlag("bestCoffee");
+  }, []);
 
   // 投稿Coffee削除
   const onClickDelete = (coffeeId: number, coffeeImage: string | null, userId: number) => {
@@ -95,8 +101,11 @@ const FeelingCoffeeDetail = memo((props: Props) => {
     }
   };
 
+  // 表示するコーヒーの切り替え
   useEffect(() => {
     switchCoffee();
+    // いいねの初期状態を格納
+    initLikeArray(switchCoffee());
   }, [switchCoffeeFlag]);
 
   return (

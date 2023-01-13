@@ -1,11 +1,23 @@
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useMutateLike } from "../hooks/useMutateLike";
 import { RootState } from "../redux/store";
+import { TCoffee } from "../types/coffee";
+
+export type TInitLikes = {
+  coffeeId: number;
+  likeUseIds: number[];
+  likedFlag: boolean;
+};
 
 const likeFeature = () => {
   const { createLikeMutation, deleteLikeMutation } = useMutateLike();
 
   const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
+
+  // 初期状態のいいね
+  const [initLikes, setInitLikes] = useState<TInitLikes[] | null>([]);
+  console.log("initLikes", initLikes);
 
   // いいねクリックの処理
   const onClickLike = (likesUserIds: number[], coffeeId: number) => {
@@ -33,7 +45,23 @@ const likeFeature = () => {
     return likeFlag;
   };
 
-  return { onClickLike, likeColor };
+  // いいねの初期状態を格納
+  const initLikeArray = (coffees: TCoffee[] | undefined) => {
+    const newArray: TInitLikes[] | null = [];
+    coffees?.map((coffee) => {
+      const initLikeArray = {
+        coffeeId: coffee.id,
+        likeUseIds: coffee.like_user_id,
+        likedFlag: coffee.like_user_id.indexOf(loginUserStore.id) !== -1 ? true : false,
+      };
+
+      newArray.push(initLikeArray);
+    });
+
+    setInitLikes(newArray);
+  };
+
+  return { onClickLike, likeColor, initLikeArray };
 };
 
 export default likeFeature;
