@@ -43,8 +43,11 @@ const FeelingCoffeeDetail = memo((props: Props) => {
 
   // 初期表示するコーヒーをbestに設定
   const initDisplayCoffee = () => setSwitchCoffeeFlag("bestCoffee");
-  // キャッシュ？の影響で時間差で呼ばないとバグが発生する
-  setTimeout(initDisplayCoffee, 1000);
+
+  useEffect(() => {
+    // キャッシュ？の影響で時間差で呼ばないとバグが発生する
+    setTimeout(initDisplayCoffee, 1000);
+  }, []);
 
   // 投稿Coffee削除
   const onClickDelete = (coffeeId: number, coffeeImage: string | null, userId: number) => {
