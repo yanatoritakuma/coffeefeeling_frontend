@@ -28,7 +28,7 @@ const FeelingCoffeeDetail = memo((props: Props) => {
   const { bestCoffee, setTransmission } = props;
 
   const dispatch: AppDispatch = useDispatch();
-  const { onClickLike, likeColor, initLikeArray } = likeFeature();
+  const { onClickLike, likeColor, initLikeArray, likeColor2, onClickDisplayLike } = likeFeature();
 
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
@@ -215,11 +215,12 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                   icon={faHeart}
                   className="heartIcon"
                   onClick={() => {
-                    onClickLike(coffee.like_user_id, coffee.id);
+                    // onClickLike(coffee.like_user_id, coffee.id);
+                    onClickDisplayLike(coffee.id);
                     setTransmission(true);
                   }}
                   style={
-                    likeColor(coffee.like_user_id) ? { color: "#e73562" } : { color: "#bcc7d7" }
+                    likeColor2(coffee.id)?.likedFlag ? { color: "#e73562" } : { color: "#bcc7d7" }
                   }
                 />
                 {coffee.like_user_id[0] !== null ? coffee.like_user_id.length : 0}

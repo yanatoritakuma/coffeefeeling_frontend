@@ -16,7 +16,7 @@ const likeFeature = () => {
   const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
 
   // 初期状態のいいね
-  const [initLikes, setInitLikes] = useState<TInitLikes[] | null>([]);
+  const [initLikes, setInitLikes] = useState<TInitLikes[]>([]);
   console.log("initLikes", initLikes);
 
   // いいねクリックの処理
@@ -38,7 +38,7 @@ const likeFeature = () => {
     }
   };
 
-  // いいね済みの商品の色変更処理
+  // いいね済みの商品の色変更処理（最終的にlikeColor2を使用するので削除する）
   const likeColor = (likesUserIds: number[]) => {
     const likeFlag = likesUserIds?.indexOf(loginUserStore?.id) === -1 ? false : true;
 
@@ -61,7 +61,33 @@ const likeFeature = () => {
     setInitLikes(newArray);
   };
 
-  return { onClickLike, likeColor, initLikeArray };
+  // いいねの色
+  const likeColor2 = (coffeeId: number) => {
+    const displayLikeArray = initLikes?.filter((like) => {
+      return like.coffeeId === coffeeId && like.likedFlag;
+    });
+
+    return displayLikeArray[0];
+  };
+
+  // フロント完結のいいね処理
+  const onClickDisplayLike = (coffeeId: number) => {
+    const newArray = [...initLikes];
+
+    const displayLikeArray = newArray.filter((like) => {
+      return like.coffeeId === coffeeId;
+    });
+
+    displayLikeArray[0].likedFlag = !displayLikeArray[0].likedFlag;
+
+    setInitLikes(displayLikeArray);
+
+    setTimeout(() => {
+      console.log("いいね処理終了");
+    }, 5000);
+  };
+
+  return { onClickLike, likeColor, initLikeArray, likeColor2, onClickDisplayLike, initLikes };
 };
 
 export default likeFeature;
