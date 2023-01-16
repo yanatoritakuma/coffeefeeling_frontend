@@ -215,7 +215,6 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                   icon={faHeart}
                   className="heartIcon"
                   onClick={() => {
-                    // onClickLike(coffee.like_user_id, coffee.id);
                     onClickDisplayLike(coffee.id);
                     setTransmission(true);
                   }}

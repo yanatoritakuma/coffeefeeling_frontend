@@ -52,7 +52,7 @@ const likeFeature = () => {
       const initLikeArray = {
         coffeeId: coffee.id,
         likeUseIds: coffee.like_user_id,
-        likedFlag: coffee.like_user_id.indexOf(loginUserStore.id) !== -1 ? true : false,
+        likedFlag: coffee.like_user_id.indexOf(loginUserStore?.id) !== -1 ? true : false,
       };
 
       newArray.push(initLikeArray);
@@ -70,8 +70,23 @@ const likeFeature = () => {
     return displayLikeArray[0];
   };
 
+  // いいねAPI処理
+  const likeProcessing = (coffeeId: number, likeFlag: boolean) => {
+    if (!likeFlag) {
+      deleteLikeMutation.mutate(coffeeId);
+    } else {
+      createLikeMutation.mutate({
+        coffeeId: coffeeId,
+      });
+    }
+  };
+
   // フロント完結のいいね処理
   const onClickDisplayLike = (coffeeId: number) => {
+    if (loginUserStore === undefined) {
+      return alert("ログインしていないユーザーはいいねできません。");
+    }
+
     const newArray = [...initLikes];
 
     const displayLikeArray = newArray.filter((like) => {
@@ -82,9 +97,9 @@ const likeFeature = () => {
 
     setInitLikes(displayLikeArray);
 
-    setTimeout(() => {
-      console.log("いいね処理終了");
-    }, 5000);
+    const likeFlag = displayLikeArray[0].likedFlag;
+
+    likeProcessing(coffeeId, likeFlag);
   };
 
   return { onClickLike, likeColor, initLikeArray, likeColor2, onClickDisplayLike, initLikes };
