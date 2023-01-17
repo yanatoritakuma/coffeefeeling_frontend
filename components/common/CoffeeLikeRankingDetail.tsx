@@ -5,12 +5,15 @@ import UserImg from "../../public/user.png";
 import NoImage from "../../public/noimage.png";
 import likeFeature from "../../utils/likeFeature";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tooltip } from "@mui/material";
+import { CircularProgress, Tooltip } from "@mui/material";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { TCoffeeUser, TUserId } from "../../types/coffee";
 import ImageEnlargement from "./ImageEnlargement";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { setLikeId } from "../../redux/clickLikeSlice";
 
 type Props = {
   coffeeLikes: TCoffeeUser[] | undefined;
@@ -20,7 +23,9 @@ type Props = {
 
 const CoffeeLikeRankingDetail = memo((props: Props) => {
   const { coffeeLikes, rankName, setTransmission } = props;
+  const dispatch: AppDispatch = useDispatch();
   const { onClickLike, likeColor } = likeFeature();
+  const clickLikeStore = useSelector((state: RootState) => state.clickLike.coffeeId);
 
   const likeUserIds = (userIds: TUserId[]) => {
     const likesId = userIds.map((user) => {
@@ -122,22 +127,27 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
                       </Tooltip>
                       {coffee.acidity}
                     </div>
-                    <div css={evaluationBox}>
-                      <FontAwesomeIcon
-                        icon={faHeart}
-                        className="heartIcon"
-                        onClick={() => {
-                          onClickLike(likeUserIds(coffee.likes), coffee.id);
-                          setTransmission(true);
-                        }}
-                        style={
-                          likeColor(likeUserIds(coffee.likes))
-                            ? { color: "#e73562" }
-                            : { color: "#bcc7d7" }
-                        }
-                      />
-                      {coffee.likes.length}
-                    </div>
+                    {clickLikeStore !== coffee.id ? (
+                      <div css={evaluationBox}>
+                        <FontAwesomeIcon
+                          icon={faHeart}
+                          className="heartIcon"
+                          onClick={() => {
+                            onClickLike(likeUserIds(coffee.likes), coffee.id);
+                            dispatch(setLikeId(coffee.id));
+                            setTransmission(true);
+                          }}
+                          style={
+                            likeColor(likeUserIds(coffee.likes))
+                              ? { color: "#e73562" }
+                              : { color: "#bcc7d7" }
+                          }
+                        />
+                        {coffee.likes.length}
+                      </div>
+                    ) : (
+                      <CircularProgress size="2rem" />
+                    )}
                   </div>
                 </div>
               </div>
@@ -222,6 +232,7 @@ const explanationBox = css`
 
 const evaluationMainBox = css`
   display: flex;
+  align-items: center;
   width: 100%;
 `;
 
