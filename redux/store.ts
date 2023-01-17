@@ -1,15 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
-import {
-  useSelector as rawUseSelector,
-  TypedUseSelectorHook,
-} from "react-redux";
+import { useSelector as rawUseSelector, TypedUseSelectorHook } from "react-redux";
 import loginUserSlice from "./loginUserSlice";
 import editCoffeeSlice from "./editCoffeeSlice";
+import clickLikeSlice from "./clickLikeSlice";
 
 export const store = configureStore({
   reducer: {
     loginUser: loginUserSlice,
     editCoffee: editCoffeeSlice,
+    clickLike: clickLikeSlice,
   },
 });
 
