@@ -16,9 +16,13 @@ import { PaginationBox } from "../components/common/PaginationBox";
 import { useQueryLoginUserLikesCoffee } from "../hooks/useQueryLoginUserLikesCoffee";
 import { useQueryGetUserLiked } from "../hooks/useQueryGetUserLiked";
 import { CircularProgress } from "@mui/material";
+import { AppDispatch } from "../redux/store";
+import { useDispatch } from "react-redux";
+import { setLikeId } from "../redux/clickLikeSlice";
 
 const MyPage = () => {
   const { data: user } = useQueryUser();
+  const dispatch: AppDispatch = useDispatch();
 
   // 現在投稿のページ
   const [nowPostPage, setPostNowPage] = useState(1);
@@ -110,6 +114,7 @@ const MyPage = () => {
     refetchUserCoffees();
     refetchLoginUserLikesCoffee();
     refetchGetUserLiked();
+    dispatch(setLikeId(null));
   };
 
   useEffect(() => {

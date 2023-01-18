@@ -13,23 +13,16 @@ export const useMutateLike = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const loginUserStore = useSelector(
-    (state: RootState) => state.loginUser.user
-  );
+  const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
 
   const createLikeMutation = useMutation(
     async (Req: Req) => {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/likes`,
-        Req
-      );
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/likes`, Req);
       return res.data;
     },
     {
       onSuccess: (res) => {
-        const previousTodos = queryClient.getQueryData<Likes[]>([
-          "coffeeIdLikes",
-        ]);
+        const previousTodos = queryClient.getQueryData<Likes[]>(["coffeeIdLikes"]);
         if (previousTodos) {
           queryClient.setQueryData(["coffeeIdLikes"], [res, ...previousTodos]);
         }
@@ -44,22 +37,16 @@ export const useMutateLike = () => {
 
   const deleteLikeMutation = useMutation(
     async (coffeeId: number) => {
-      await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/likes/${coffeeId}`
-      );
+      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/likes/${coffeeId}`);
     },
     {
       onSuccess: (_, variables) => {
-        const previousLikes = queryClient.getQueryData<Likes[]>([
-          "coffeeIdLikes",
-        ]);
+        const previousLikes = queryClient.getQueryData<Likes[]>(["coffeeIdLikes"]);
         if (previousLikes) {
           queryClient.setQueryData(
             ["coffeeIdLikes"],
             previousLikes.filter(
-              (like) =>
-                like.coffeeId !== variables ||
-                like.userId !== loginUserStore?.id
+              (like) => like.coffeeId !== variables || like.userId !== loginUserStore?.id
             )
           );
         }

@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef, useState } from "react";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
-import { Tooltip } from "@mui/material";
+import { CircularProgress, Tooltip } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonBox } from "../atoms/ButtonBox";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
@@ -18,6 +18,7 @@ import likeFeature from "../../utils/likeFeature";
 import { TBestCoffee, TCoffee } from "../../types/coffee";
 import UserImg from "../../public/user.png";
 import ImageEnlargement from "./ImageEnlargement";
+import { setLikeId } from "../../redux/clickLikeSlice";
 
 type Props = {
   bestCoffee: TBestCoffee | undefined;
@@ -39,6 +40,8 @@ const FeelingCoffeeDetail = memo((props: Props) => {
   const [selectImgEnlargement, setSelectImgEnlargement] = useState("");
 
   const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
+
+  const clickLikeStore = useSelector((state: RootState) => state.clickLike.coffeeId);
 
   // 投稿Coffee削除
   const onClickDelete = (coffeeId: number, coffeeImage: string | null, userId: number) => {
@@ -198,20 +201,27 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                 </Tooltip>
                 {coffee.acidity}
               </div>
-              <div css={evaluationBox}>
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  className="heartIcon"
-                  onClick={() => {
-                    onClickLike(coffee.like_user_id, coffee.id);
-                    setTransmission(true);
-                  }}
-                  style={
-                    likeColor(coffee.like_user_id) ? { color: "#e73562" } : { color: "#bcc7d7" }
-                  }
-                />
-                {coffee.like_user_id[0] !== null ? coffee.like_user_id.length : 0}
-              </div>
+              {clickLikeStore !== coffee.id ? (
+                <div css={evaluationBox}>
+                  <FontAwesomeIcon
+                    icon={faHeart}
+                    className="heartIcon"
+                    onClick={() => {
+                      onClickLike(coffee.like_user_id, coffee.id);
+                      if (loginUserStore !== undefined) {
+                        dispatch(setLikeId(coffee.id));
+                      }
+                      setTransmission(true);
+                    }}
+                    style={
+                      likeColor(coffee.like_user_id) ? { color: "#e73562" } : { color: "#bcc7d7" }
+                    }
+                  />
+                  {coffee.like_user_id[0] !== null ? coffee.like_user_id.length : 0}
+                </div>
+              ) : (
+                <CircularProgress size="2rem" />
+              )}
             </div>
             {(() => {
               if (loginUserStore?.admin || coffee.userId === loginUserStore?.id) {

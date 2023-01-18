@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useQueryFeelingCoffees } from "../../hooks/useQueryFeelingCoffees";
-import { RootState } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import FeelingCoffeeDetail from "../../components/common/FeelingCoffeeDetail";
 import { CircularProgress } from "@mui/material";
 import TimeOut from "../../components/dialog/TimeOut";
+import { setLikeId } from "../../redux/clickLikeSlice";
 
 const feelNow = () => {
   const router = useRouter();
+  const dispatch: AppDispatch = useDispatch();
 
   const editCoffeeUpdateFlag = useSelector((state: RootState) => state.editCoffee.updateFlag);
 
@@ -52,6 +54,7 @@ const feelNow = () => {
 
   const refetchSetTime = () => {
     refetch();
+    dispatch(setLikeId(null));
   };
 
   // 編集後にAPI再取得

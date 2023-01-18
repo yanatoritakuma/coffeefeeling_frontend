@@ -6,8 +6,12 @@ import CoffeeLikeRankingDetail from "../components/common/CoffeeLikeRankingDetai
 import { CircularProgress } from "@mui/material";
 import TimeOut from "../components/dialog/TimeOut";
 import { useQueryLikeRankingCoffees } from "../hooks/useQueryLikeRankingCoffees";
+import { AppDispatch } from "../redux/store";
+import { useDispatch } from "react-redux";
+import { setLikeId } from "../redux/clickLikeSlice";
 
 const LikeRanking = () => {
+  const dispatch: AppDispatch = useDispatch();
   const { status, data, refetch } = useQueryLikeRankingCoffees();
   const [loadingFlag, setLoadingFlag] = useState(true);
   const [timeOut, setTimeOut] = useState(false);
@@ -61,8 +65,13 @@ const LikeRanking = () => {
     return coffee.likes.length === thirdCoffeeTie[0].likes.length;
   });
 
+  const refetchSetTime = () => {
+    refetch();
+    dispatch(setLikeId(null));
+  };
+
   useEffect(() => {
-    setTimeout(refetch, 1000);
+    setTimeout(refetchSetTime, 1000);
     setTransmission(false);
   }, [transmission]);
 
