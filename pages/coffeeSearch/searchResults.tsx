@@ -6,9 +6,13 @@ import { useQueryCoffeeSearch } from "../../hooks/useQueryCoffeeSearch";
 import { CircularProgress } from "@mui/material";
 import { PaginationBox } from "../../components/common/PaginationBox";
 import TimeOut from "../../components/dialog/TimeOut";
+import { AppDispatch } from "../../redux/store";
+import { useDispatch } from "react-redux";
+import { setLikeId } from "../../redux/clickLikeSlice";
 
 const SearchResults = () => {
   const router = useRouter();
+  const dispatch: AppDispatch = useDispatch();
   const [transmission, setTransmission] = useState(false);
   const [nowPage, setNowPage] = useState(1);
   const [timeOut, setTimeOut] = useState(false);
@@ -38,6 +42,7 @@ const SearchResults = () => {
   // いいねした場合APIを叩く
   const refetchSetTime = () => {
     refetch();
+    dispatch(setLikeId(null));
   };
 
   useEffect(() => {
