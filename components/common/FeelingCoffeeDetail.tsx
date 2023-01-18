@@ -208,7 +208,9 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                     className="heartIcon"
                     onClick={() => {
                       onClickLike(coffee.like_user_id, coffee.id);
-                      dispatch(setLikeId(coffee.id));
+                      if (loginUserStore !== undefined) {
+                        dispatch(setLikeId(coffee.id));
+                      }
                       setTransmission(true);
                     }}
                     style={

@@ -26,6 +26,7 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
   const dispatch: AppDispatch = useDispatch();
   const { onClickLike, likeColor } = likeFeature();
   const clickLikeStore = useSelector((state: RootState) => state.clickLike.coffeeId);
+  const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
 
   const likeUserIds = (userIds: TUserId[]) => {
     const likesId = userIds.map((user) => {
@@ -134,7 +135,9 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
                           className="heartIcon"
                           onClick={() => {
                             onClickLike(likeUserIds(coffee.likes), coffee.id);
-                            dispatch(setLikeId(coffee.id));
+                            if (loginUserStore !== undefined) {
+                              dispatch(setLikeId(coffee.id));
+                            }
                             setTransmission(true);
                           }}
                           style={
