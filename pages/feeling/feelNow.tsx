@@ -60,7 +60,7 @@ const feelNow = () => {
   // 編集後にAPI再取得
   useEffect(() => {
     if (editCoffeeUpdateFlag) {
-      setTimeout(refetchSetTime, 1000);
+      setTimeout(refetchSetTime, 2000);
     }
   }, [editCoffeeUpdateFlag]);
 

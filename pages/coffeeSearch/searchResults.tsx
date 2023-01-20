@@ -6,13 +6,15 @@ import { useQueryCoffeeSearch } from "../../hooks/useQueryCoffeeSearch";
 import { CircularProgress } from "@mui/material";
 import { PaginationBox } from "../../components/common/PaginationBox";
 import TimeOut from "../../components/dialog/TimeOut";
-import { AppDispatch } from "../../redux/store";
-import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { setLikeId } from "../../redux/clickLikeSlice";
 
 const SearchResults = () => {
   const router = useRouter();
   const dispatch: AppDispatch = useDispatch();
+  const editCoffeeStore = useSelector((state: RootState) => state.editCoffee);
+
   const [transmission, setTransmission] = useState(false);
   const [nowPage, setNowPage] = useState(1);
   const [timeOut, setTimeOut] = useState(false);
@@ -46,9 +48,9 @@ const SearchResults = () => {
   };
 
   useEffect(() => {
-    setTimeout(refetchSetTime, 1000);
+    setTimeout(refetchSetTime, 2000);
     setTransmission(false);
-  }, [transmission]);
+  }, [transmission, editCoffeeStore.updateFlag]);
 
   // APIタイムアウト処理
   useEffect(() => {
