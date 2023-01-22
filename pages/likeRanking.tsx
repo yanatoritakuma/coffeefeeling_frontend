@@ -156,6 +156,10 @@ const likeRankingBox = css`
     font-family: "Kalam", cursive;
     color: #fcc800;
     text-align: center;
+
+    @media screen and (max-width: 425px) {
+      font-size: 46px;
+    }
   }
 
   .likeRankingBox__h3 {

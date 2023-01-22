@@ -160,7 +160,9 @@ const CoffeeDetail = memo((props: Props) => {
                 {coffee.likes?.length}
               </div>
             ) : (
-              <CircularProgress size="2rem" />
+              <div css={circularProgressBox}>
+                <CircularProgress size="2rem" />
+              </div>
             )}
           </div>
           {(() => {
@@ -264,7 +266,7 @@ const evaluationMainBox = css`
   }
   @media screen and (max-width: 1024px) {
     width: 32%;
-    min-width: 180px;
+    min-width: 200px;
   }
 `;
 
@@ -272,6 +274,7 @@ const evaluationBox = css`
   margin: 12px 0;
   display: flex;
   align-items: center;
+  width: 33%;
 
   .bitterIcon {
     margin: 0 12px;
@@ -309,6 +312,11 @@ const evaluationBox = css`
       height: 18px;
     }
   }
+`;
+
+const circularProgressBox = css`
+  width: 33%;
+  text-align: center;
 `;
 
 const btnBox = css`
