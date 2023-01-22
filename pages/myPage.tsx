@@ -16,8 +16,8 @@ import { PaginationBox } from "../components/common/PaginationBox";
 import { useQueryLoginUserLikesCoffee } from "../hooks/useQueryLoginUserLikesCoffee";
 import { useQueryGetUserLiked } from "../hooks/useQueryGetUserLiked";
 import { CircularProgress } from "@mui/material";
-import { AppDispatch } from "../redux/store";
-import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { setLikeId } from "../redux/clickLikeSlice";
 
 const MyPage = () => {
@@ -49,6 +49,8 @@ const MyPage = () => {
 
   // ログインユーザーがいいね済みを取得
   const { data: getUserLiked, refetch: refetchGetUserLiked } = useQueryGetUserLiked();
+
+  const editCoffeeStore = useSelector((state: RootState) => state.editCoffee);
 
   //投稿した全ページ数
   const paginationPostCount =
@@ -120,7 +122,7 @@ const MyPage = () => {
   useEffect(() => {
     setTimeout(refetchSetTime, 1000);
     setTransmission(false);
-  }, [transmission, tabValue]);
+  }, [transmission, tabValue, editCoffeeStore.updateFlag]);
 
   return (
     <section css={myPageMainBox}>
@@ -337,6 +339,7 @@ const tabListBox = css`
     text-align: center;
     border: 1px solid #333;
     border-bottom: none;
+    cursor: pointer;
   }
 
   svg {

@@ -149,7 +149,9 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
                         {coffee.likes.length}
                       </div>
                     ) : (
-                      <CircularProgress size="2rem" />
+                      <div css={circularProgressBox}>
+                        <CircularProgress size="2rem" />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -281,6 +283,11 @@ const evaluationBox = css`
       height: 18px;
     }
   }
+`;
+
+const circularProgressBox = css`
+  width: 33%;
+  text-align: center;
 `;
 
 const imgBox = css`
