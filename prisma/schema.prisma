@@ -8,8 +8,8 @@ datasource db {
 }
 
 model Coffee {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
   updatedAt DateTime
   name      String
   image     String?
@@ -19,20 +19,22 @@ model Coffee {
   price     Int?
   place     String?
   userId    Int
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Comments  Comments[]
   Likes     Likes[]
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
-  createdAt      DateTime @default(now())
+  id             Int        @id @default(autoincrement())
+  createdAt      DateTime   @default(now())
   updatedAt      DateTime
-  email          String   @unique
+  email          String     @unique
   hashedPassword String
   name           String?
   image          String?
   admin          Boolean?
   Coffee         Coffee[]
+  Comments       Comments[]
   Likes          Likes[]
 }
 
@@ -42,6 +44,17 @@ model Likes {
   updatedAt DateTime
   userId    Int
   coffeeId  Int
+  Coffee    Coffee   @relation(fields: [coffeeId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Comments {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  userId    Int
+  coffeeId  Int
+  text      String?
   Coffee    Coffee   @relation(fields: [coffeeId], references: [id], onDelete: Cascade)
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
