@@ -6,6 +6,7 @@ import { CircularProgress, Tooltip } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonBox } from "../atoms/ButtonBox";
 import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
+import { faComment } from "@fortawesome/free-solid-svg-icons";
 import { faFaceGrinTongue } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,6 +20,7 @@ import { TBestCoffee, TCoffee } from "../../types/coffee";
 import UserImg from "../../public/user.png";
 import ImageEnlargement from "./ImageEnlargement";
 import { setLikeId } from "../../redux/clickLikeSlice";
+import CommentList from "./CommentList";
 
 type Props = {
   bestCoffee: TBestCoffee | undefined;
@@ -36,8 +38,22 @@ const FeelingCoffeeDetail = memo((props: Props) => {
   const [editFlag, setEditFlag] = useState(false);
   const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("bestCoffee");
   const [bestAllCoffee, setBestAllCoffee] = useState<TCoffee[] | undefined>();
+  const [commentListFlag, setCommentListFlag] = useState(false);
   // 拡大したいコーヒー
   const [selectImgEnlargement, setSelectImgEnlargement] = useState("");
+
+  const commentListRef = useRef<any>();
+
+  useEffect(() => {
+    document.addEventListener("mousedown", commentListOutside);
+    return () => document.removeEventListener("mousedown", commentListOutside);
+  }, []);
+
+  const commentListOutside = (e: any) => {
+    if (!commentListRef.current?.contains(e.target)) {
+      setCommentListFlag(false);
+    }
+  };
 
   const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
 
@@ -224,6 +240,13 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                   <CircularProgress size="2rem" />
                 </div>
               )}
+              <div css={evaluationBox}>
+                <FontAwesomeIcon
+                  icon={faComment}
+                  className="commentIcon"
+                  onClick={() => setCommentListFlag(true)}
+                />
+              </div>
             </div>
             {(() => {
               if (loginUserStore?.admin || coffee.userId === loginUserStore?.id) {
@@ -259,6 +282,15 @@ const FeelingCoffeeDetail = memo((props: Props) => {
           setSelectImgEnlargement={setSelectImgEnlargement}
         />
       )}
+
+      {commentListFlag && (
+        <>
+          <div css={commentListBox} ref={commentListRef}>
+            <CommentList />
+          </div>
+          <div className="fileter"></div>
+        </>
+      )}
     </div>
   );
 });
@@ -269,6 +301,20 @@ const feelingCoffeeDetailBox = css`
   margin: 0 auto;
   width: 100%;
   max-width: 1200px;
+
+  .fileter {
+    background-color: #333;
+    opacity: 0.7;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 500;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const productBox = css`
@@ -327,9 +373,8 @@ const evaluationMainBox = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
   width: 60%;
-  max-width: 300px;
+  max-width: 400px;
 
   @media screen and (max-width: 1024px) {
     width: 100%;
@@ -373,6 +418,19 @@ const evaluationBox = css`
   .heartIcon {
     margin: 0 12px;
     color: #e73562;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+
+    @media screen and (max-width: 1024px) {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .commentIcon {
+    margin: 0 12px;
+    color: #aaa;
     width: 24px;
     height: 24px;
     cursor: pointer;
@@ -487,4 +545,15 @@ const imgBox = css`
   img {
     object-fit: contain;
   }
+`;
+
+const commentListBox = css`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 501;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  width: 100%;
 `;
