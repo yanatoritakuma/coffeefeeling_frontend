@@ -502,7 +502,7 @@ const listBox = css`
     padding: 12px;
     font-size: 20px;
     opacity: 0.7;
-    width: 30%;
+    width: 33.3%;
     text-align: center;
     border-right: 1px solid #aaa;
     cursor: pointer;
