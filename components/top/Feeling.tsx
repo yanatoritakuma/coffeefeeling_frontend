@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import topFeeling from "../../public/topFeeling.jpg";

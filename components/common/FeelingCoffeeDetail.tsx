@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import NoImage from "../../public/noimage.png";
@@ -20,7 +20,7 @@ import { TBestCoffee, TCoffee } from "../../types/coffee";
 import UserImg from "../../public/user.png";
 import ImageEnlargement from "./ImageEnlargement";
 import { setLikeId } from "../../redux/clickLikeSlice";
-import CommentList from "./CommentList";
+import CommentList from "../dialog/CommentList";
 
 type Props = {
   bestCoffee: TBestCoffee | undefined;
@@ -35,25 +35,14 @@ const FeelingCoffeeDetail = memo((props: Props) => {
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
-  const [editFlag, setEditFlag] = useState(false);
+  const [dialogFlag, setDialogFlag] = useState({
+    editFlag: false,
+    commentListFlag: false,
+    selectImg: "",
+  });
+
   const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("bestCoffee");
   const [bestAllCoffee, setBestAllCoffee] = useState<TCoffee[] | undefined>();
-  const [commentListFlag, setCommentListFlag] = useState(false);
-  // 拡大したいコーヒー
-  const [selectImgEnlargement, setSelectImgEnlargement] = useState("");
-
-  const commentListRef = useRef<any>();
-
-  useEffect(() => {
-    document.addEventListener("mousedown", commentListOutside);
-    return () => document.removeEventListener("mousedown", commentListOutside);
-  }, []);
-
-  const commentListOutside = (e: any) => {
-    if (!commentListRef.current?.contains(e.target)) {
-      setCommentListFlag(false);
-    }
-  };
 
   const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
 
@@ -147,7 +136,12 @@ const FeelingCoffeeDetail = memo((props: Props) => {
               <div css={userBox}>
                 <div
                   className="userBox__img"
-                  onClick={() => setSelectImgEnlargement(coffee.user_image)}
+                  onClick={() =>
+                    setDialogFlag({
+                      ...dialogFlag,
+                      selectImg: coffee.user_image,
+                    })
+                  }
                 >
                   <Image
                     src={coffee.user_image}
@@ -161,7 +155,15 @@ const FeelingCoffeeDetail = memo((props: Props) => {
               </div>
             ) : (
               <div css={userBox}>
-                <div className="userBox__img" onClick={() => setSelectImgEnlargement("noUserImg")}>
+                <div
+                  className="userBox__img"
+                  onClick={() =>
+                    setDialogFlag({
+                      ...dialogFlag,
+                      selectImg: "noUserImg",
+                    })
+                  }
+                >
                   <Image
                     src={UserImg}
                     width={50}
@@ -174,7 +176,15 @@ const FeelingCoffeeDetail = memo((props: Props) => {
               </div>
             )}
             {coffee.image !== null ? (
-              <div css={imgBox} onClick={() => setSelectImgEnlargement(String(coffee.image))}>
+              <div
+                css={imgBox}
+                onClick={() =>
+                  setDialogFlag({
+                    ...dialogFlag,
+                    selectImg: String(coffee.image),
+                  })
+                }
+              >
                 <Image
                   src={coffee.image}
                   width={120}
@@ -184,7 +194,14 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                 />
               </div>
             ) : (
-              <div onClick={() => setSelectImgEnlargement("noCoffeeImg")}>
+              <div
+                onClick={() =>
+                  setDialogFlag({
+                    ...dialogFlag,
+                    selectImg: "noCoffeeImg",
+                  })
+                }
+              >
                 <Image src={NoImage} css={noImg} layout="responsive" alt="画像なし" />
               </div>
             )}
@@ -244,7 +261,12 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                 <FontAwesomeIcon
                   icon={faComment}
                   className="commentIcon"
-                  onClick={() => setCommentListFlag(true)}
+                  onClick={() =>
+                    setDialogFlag({
+                      ...dialogFlag,
+                      commentListFlag: true,
+                    })
+                  }
                 />
               </div>
             </div>
@@ -254,7 +276,10 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                   <div css={btnBox}>
                     <ButtonBox
                       onClick={() => {
-                        setEditFlag(true);
+                        setDialogFlag({
+                          ...dialogFlag,
+                          editFlag: true,
+                        });
                         dispatch(setEditCoffee(coffee));
                       }}
                     >
@@ -275,22 +300,36 @@ const FeelingCoffeeDetail = memo((props: Props) => {
         <h3 style={{ textAlign: "center" }}>ヒットしませんでした</h3>
       )}
 
-      <CoffeeEdit open={editFlag} onClose={() => setEditFlag(false)} />
-      {selectImgEnlargement !== "" && (
-        <ImageEnlargement
-          selectImgEnlargement={selectImgEnlargement}
-          setSelectImgEnlargement={setSelectImgEnlargement}
-        />
-      )}
+      <CoffeeEdit
+        open={dialogFlag.editFlag}
+        onClose={() =>
+          setDialogFlag({
+            ...dialogFlag,
+            editFlag: false,
+          })
+        }
+      />
 
-      {commentListFlag && (
-        <>
-          <div css={commentListBox} ref={commentListRef}>
-            <CommentList />
-          </div>
-          <div className="fileter"></div>
-        </>
-      )}
+      <ImageEnlargement
+        selectImg={dialogFlag.selectImg}
+        open={dialogFlag.selectImg !== "" ? true : false}
+        onClose={() =>
+          setDialogFlag({
+            ...dialogFlag,
+            selectImg: "",
+          })
+        }
+      />
+
+      <CommentList
+        open={dialogFlag.commentListFlag}
+        onClose={() =>
+          setDialogFlag({
+            ...dialogFlag,
+            commentListFlag: false,
+          })
+        }
+      />
     </div>
   );
 });
@@ -301,20 +340,6 @@ const feelingCoffeeDetailBox = css`
   margin: 0 auto;
   width: 100%;
   max-width: 1200px;
-
-  .fileter {
-    background-color: #333;
-    opacity: 0.7;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 500;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
 `;
 
 const productBox = css`
@@ -545,15 +570,4 @@ const imgBox = css`
   img {
     object-fit: contain;
   }
-`;
-
-const commentListBox = css`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 501;
-  transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  width: 100%;
 `;

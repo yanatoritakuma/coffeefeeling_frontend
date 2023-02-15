@@ -32,9 +32,14 @@ const CoffeeDetail = memo((props: Props) => {
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
-  const [editFlag, setEditFlag] = useState(false);
+  const [dialogFlag, setDialogFlag] = useState({
+    editFlag: false,
+    commentListFlag: false,
+    selectImg: "",
+  });
+
   // 拡大したいコーヒー
-  const [selectImgEnlargement, setSelectImgEnlargement] = useState("");
+  // const [selectImgEnlargement, setSelectImgEnlargement] = useState("");
 
   const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
   const clickLikeStore = useSelector((state: RootState) => state.clickLike.coffeeId);
@@ -68,7 +73,12 @@ const CoffeeDetail = memo((props: Props) => {
             <div css={userBox}>
               <div
                 className="userBox__img"
-                onClick={() => setSelectImgEnlargement(String(coffee.user?.image))}
+                onClick={() =>
+                  setDialogFlag({
+                    ...dialogFlag,
+                    selectImg: String(coffee.user?.image),
+                  })
+                }
               >
                 <Image
                   src={coffee.user?.image}
@@ -82,7 +92,15 @@ const CoffeeDetail = memo((props: Props) => {
             </div>
           ) : (
             <div css={userBox}>
-              <div className="userBox__img" onClick={() => setSelectImgEnlargement("noUserImg")}>
+              <div
+                className="userBox__img"
+                onClick={() =>
+                  setDialogFlag({
+                    ...dialogFlag,
+                    selectImg: "noUserImg",
+                  })
+                }
+              >
                 <Image
                   src={UserImg}
                   width={50}
@@ -95,7 +113,15 @@ const CoffeeDetail = memo((props: Props) => {
             </div>
           )}
           {coffee.image !== null ? (
-            <div css={imgBox} onClick={() => setSelectImgEnlargement(String(coffee.image))}>
+            <div
+              css={imgBox}
+              onClick={() =>
+                setDialogFlag({
+                  ...dialogFlag,
+                  selectImg: String(coffee.image),
+                })
+              }
+            >
               <Image
                 src={coffee.image}
                 css={noImg}
@@ -106,7 +132,15 @@ const CoffeeDetail = memo((props: Props) => {
               />
             </div>
           ) : (
-            <div css={imgBox} onClick={() => setSelectImgEnlargement("noCoffeeImg")}>
+            <div
+              css={imgBox}
+              onClick={() =>
+                setDialogFlag({
+                  ...dialogFlag,
+                  selectImg: "noCoffeeImg",
+                })
+              }
+            >
               <Image src={NoImage} css={noImg} layout="responsive" alt="画像なし" />
             </div>
           )}
@@ -171,7 +205,10 @@ const CoffeeDetail = memo((props: Props) => {
                 <div css={btnBox}>
                   <ButtonBox
                     onClick={() => {
-                      setEditFlag(true);
+                      setDialogFlag({
+                        ...dialogFlag,
+                        editFlag: true,
+                      });
                       dispatch(setEditCoffee(coffee));
                     }}
                   >
@@ -186,13 +223,25 @@ const CoffeeDetail = memo((props: Props) => {
           })()}
         </div>
       ))}
-      <CoffeeEdit open={editFlag} onClose={() => setEditFlag(false)} />
-      {selectImgEnlargement !== "" && (
-        <ImageEnlargement
-          selectImgEnlargement={selectImgEnlargement}
-          setSelectImgEnlargement={setSelectImgEnlargement}
-        />
-      )}
+      <CoffeeEdit
+        open={dialogFlag.editFlag}
+        onClose={() =>
+          setDialogFlag({
+            ...dialogFlag,
+            editFlag: false,
+          })
+        }
+      />
+      <ImageEnlargement
+        selectImg={dialogFlag.selectImg}
+        open={dialogFlag.selectImg !== "" ? true : false}
+        onClose={() =>
+          setDialogFlag({
+            ...dialogFlag,
+            selectImg: "",
+          })
+        }
+      />
     </div>
   );
 });
