@@ -16,18 +16,12 @@ type Props = {
   label: string;
   type?: boolean;
   fullWidth?: boolean;
+  multiline?: boolean;
+  rows?: number;
 };
 
 export const TextBox = memo((props: Props) => {
-  const { value, onChange, label, type, fullWidth } = props;
-
-  const [values, setValues] = useState<any>({
-    amount: "",
-    password: "",
-    weight: "",
-    weightRange: "",
-    showPassword: false,
-  });
+  const { value, onChange, label, type, fullWidth, multiline, rows } = props;
 
   const [displayPs, setDisplayPs] = useState(false);
 
@@ -49,6 +43,8 @@ export const TextBox = memo((props: Props) => {
             label={label}
             variant="outlined"
             fullWidth={fullWidth}
+            multiline={multiline}
+            rows={rows}
           />
         </Box>
       ) : (
@@ -78,7 +74,7 @@ export const TextBox = memo((props: Props) => {
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
                   >
-                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                    {displayPs ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               }

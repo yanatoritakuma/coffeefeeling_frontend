@@ -39,6 +39,7 @@ const FeelingCoffeeDetail = memo((props: Props) => {
     editFlag: false,
     commentListFlag: false,
     selectImg: "",
+    coffeeId: -1,
   });
 
   const [switchCoffeeFlag, setSwitchCoffeeFlag] = useState("bestCoffee");
@@ -265,6 +266,7 @@ const FeelingCoffeeDetail = memo((props: Props) => {
                     setDialogFlag({
                       ...dialogFlag,
                       commentListFlag: true,
+                      coffeeId: coffee.id,
                     })
                   }
                 />
@@ -329,6 +331,7 @@ const FeelingCoffeeDetail = memo((props: Props) => {
             commentListFlag: false,
           })
         }
+        coffeeId={dialogFlag.coffeeId}
       />
     </div>
   );
@@ -455,7 +458,7 @@ const evaluationBox = css`
 
   .commentIcon {
     margin: 0 12px;
-    color: #aaa;
+    color: #007aff;
     width: 24px;
     height: 24px;
     cursor: pointer;
