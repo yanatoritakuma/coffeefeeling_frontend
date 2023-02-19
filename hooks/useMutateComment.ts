@@ -32,5 +32,27 @@ export const useMutateComment = () => {
     }
   );
 
-  return { createCommentsMutation };
+  const deleteCommentsMutation = useMutation(
+    async (id: number) => {
+      const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/comments/${id}`);
+    },
+    {
+      onSuccess: (_, variables) => {
+        const previousComments = queryClient.getQueryData<Comments[]>(["comments"]);
+        if (previousComments) {
+          queryClient.setQueryData(
+            ["comments"],
+            previousComments.filter((comment) => comment.id !== variables)
+          );
+        }
+      },
+      onError: (err: any) => {
+        if (err.response.status === 401 || err.response.status === 403) {
+          router.push("/");
+        }
+      },
+    }
+  );
+
+  return { createCommentsMutation, deleteCommentsMutation };
 };

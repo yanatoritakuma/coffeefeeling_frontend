@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 type TUser = {
   user: {
+    id: number;
     name: string;
     image: string;
   };

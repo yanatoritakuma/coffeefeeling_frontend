@@ -19,17 +19,15 @@ const CommentList = memo((props: Props) => {
   const { open, onClose, coffeeId } = props;
   const { data: user } = useQueryUser();
 
-  const { createCommentsMutation } = useMutateComment();
+  const { createCommentsMutation, deleteCommentsMutation } = useMutateComment();
 
   const { data: commentList, refetch } = useQueryComment(coffeeId);
-  console.log("commentList", commentList);
 
   const [commentState, setCommentState] = useState("");
-  const [commentFlag, setCommentFlag] = useState(false);
 
   useEffect(() => {
     refetch();
-  }, [coffeeId]);
+  }, [coffeeId, commentList]);
 
   const handleClose = () => {
     onClose();
@@ -40,6 +38,10 @@ const CommentList = memo((props: Props) => {
       createCommentsMutation.mutate({ text: commentState, coffeeId: id });
       setCommentState("");
     }
+  };
+
+  const onClickDeleteComment = (id: number) => {
+    deleteCommentsMutation.mutate(id);
   };
 
   return (
@@ -60,21 +62,27 @@ const CommentList = memo((props: Props) => {
           </>
         )}
         <div className="commentBox__listBox">
-          {commentList?.map((comment) => (
-            <div key={comment.id} className="commentBox__list">
-              <div className="commentBox__nameBox">
-                <div className="commentBox__imgBox">
-                  {comment.user?.image !== undefined ? (
-                    <Image src={comment.user.image} layout="fill" />
-                  ) : (
-                    <Image src={NoImage} layout="fill" />
+          {commentList?.map(
+            (comment) =>
+              comment.user?.name !== undefined && (
+                <div key={comment.id} className="commentBox__list">
+                  <div className="commentBox__nameBox">
+                    <div className="commentBox__imgBox">
+                      {comment.user?.image !== undefined ? (
+                        <Image src={comment.user.image} layout="fill" />
+                      ) : (
+                        <Image src={NoImage} layout="fill" />
+                      )}
+                    </div>
+                    <span className="commentBox__name">{comment.user?.name}</span>
+                  </div>
+                  <p>{comment.text}</p>
+                  {comment.user?.id === user?.id && (
+                    <ButtonBox onClick={() => onClickDeleteComment(comment.id)}>削除</ButtonBox>
                   )}
                 </div>
-                <span className="commentBox__name">{comment.user?.name}</span>
-              </div>
-              <p>{comment.text}</p>
-            </div>
-          ))}
+              )
+          )}
         </div>
       </div>
     </Dialog>
