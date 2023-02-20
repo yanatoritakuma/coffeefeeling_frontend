@@ -75,32 +75,32 @@ const feelNow = () => {
         <>
           <h2>今の気分</h2>
           <div css={feelNowListBox}>
-            <p>
+            <span className="feelNowListBox__labelBox">
               <span className="feelNowListBox__label">カテゴリー</span>：
               <span className="feelNowListBox__text">{router.query.category}</span>
-            </p>
-            <p>
+            </span>
+            <span className="feelNowListBox__labelBox">
               <span className="feelNowListBox__label">
                 苦味
                 <FontAwesomeIcon icon={faFaceFrown} className="bitterIcon" />
               </span>
               ：<span className="feelNowListBox__text">{router.query.bitter}</span>
-            </p>
-            <p>
+            </span>
+            <span className="feelNowListBox__labelBox">
               <span className="feelNowListBox__label">
                 酸味
                 <FontAwesomeIcon icon={faFaceGrinTongue} className="acidityIcon" />
               </span>
               ：<span className="feelNowListBox__text">{router.query.acidity}</span>
-            </p>
-            <p>
+            </span>
+            <span className="feelNowListBox__labelBox">
               <span className="feelNowListBox__label">値段</span>：
               <span className="feelNowListBox__text">{router.query.price}</span>
-            </p>
-            <p>
+            </span>
+            <span className="feelNowListBox__labelBox">
               <span className="feelNowListBox__label">場所</span>：
               <span className="feelNowListBox__text">{router.query.place}</span>
-            </p>
+            </span>
           </div>
           <FeelingCoffeeDetail bestCoffee={data} setTransmission={setTransmission} />
         </>
@@ -148,7 +148,11 @@ const feelNowBox = css`
 `;
 
 const feelNowListBox = css`
-  p {
+  margin: 0 auto;
+  width: fit-content;
+
+  .feelNowListBox__labelBox {
+    margin: 20px 0;
     font-size: 20px;
     display: flex;
     justify-content: center;

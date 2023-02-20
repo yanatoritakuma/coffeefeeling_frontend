@@ -1,11 +1,11 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import { css } from "@emotion/react";
 import Image from "next/image";
-import FormImg from "../public/feeling.jpg";
-import { SelectBox } from "../components/atoms/SelectBox";
+import FormImg from "../../public/feeling.jpg";
+import { SelectBox } from "../../components/atoms/SelectBox";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { SliderBox } from "../components/atoms/SliderBox";
-import { ButtonBox } from "../components/atoms/ButtonBox";
+import { SliderBox } from "../../components/atoms/SliderBox";
+import { ButtonBox } from "../../components/atoms/ButtonBox";
 import { useRouter } from "next/router";
 
 const Feeling = () => {

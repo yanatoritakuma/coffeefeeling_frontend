@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { css } from "@emotion/react";
-import { TextBox } from "../components/atoms/TextBox";
-import { SelectBox } from "../components/atoms/SelectBox";
-import { ButtonBox } from "../components/atoms/ButtonBox";
+import { TextBox } from "../../components/atoms/TextBox";
+import { SelectBox } from "../../components/atoms/SelectBox";
+import { ButtonBox } from "../../components/atoms/ButtonBox";
 import { useRouter } from "next/router";
 
 const CoffeeSearch = () => {

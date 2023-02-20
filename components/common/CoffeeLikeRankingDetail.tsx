@@ -160,12 +160,11 @@ const CoffeeLikeRankingDetail = memo((props: Props) => {
           ))}
         </div>
       )}
-      {selectImgEnlargement !== "" && (
-        <ImageEnlargement
-          selectImgEnlargement={selectImgEnlargement}
-          setSelectImgEnlargement={setSelectImgEnlargement}
-        />
-      )}
+      <ImageEnlargement
+        open={selectImgEnlargement !== "" ? true : false}
+        onClose={() => setSelectImgEnlargement("")}
+        selectImg={selectImgEnlargement}
+      />
     </div>
   );
 });

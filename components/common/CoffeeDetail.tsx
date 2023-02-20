@@ -19,6 +19,8 @@ import { TCoffeeUser, TUserId } from "../../types/coffee";
 import UserImg from "../../public/user.png";
 import ImageEnlargement from "./ImageEnlargement";
 import { setLikeId } from "../../redux/clickLikeSlice";
+import CommentList from "../dialog/CommentList";
+import { faComment } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   coffees?: TCoffeeUser[];
@@ -32,9 +34,12 @@ const CoffeeDetail = memo((props: Props) => {
   const { deleteImg } = deleteImgStorage();
   const { deleteCoffeeMutation } = useMutateCoffee();
 
-  const [editFlag, setEditFlag] = useState(false);
-  // 拡大したいコーヒー
-  const [selectImgEnlargement, setSelectImgEnlargement] = useState("");
+  const [dialogFlag, setDialogFlag] = useState({
+    editFlag: false,
+    commentListFlag: false,
+    selectImg: "",
+    coffeeId: -1,
+  });
 
   const loginUserStore = useSelector((state: RootState) => state.loginUser.user);
   const clickLikeStore = useSelector((state: RootState) => state.clickLike.coffeeId);
@@ -68,7 +73,12 @@ const CoffeeDetail = memo((props: Props) => {
             <div css={userBox}>
               <div
                 className="userBox__img"
-                onClick={() => setSelectImgEnlargement(String(coffee.user?.image))}
+                onClick={() =>
+                  setDialogFlag({
+                    ...dialogFlag,
+                    selectImg: String(coffee.user?.image),
+                  })
+                }
               >
                 <Image
                   src={coffee.user?.image}
@@ -82,7 +92,15 @@ const CoffeeDetail = memo((props: Props) => {
             </div>
           ) : (
             <div css={userBox}>
-              <div className="userBox__img" onClick={() => setSelectImgEnlargement("noUserImg")}>
+              <div
+                className="userBox__img"
+                onClick={() =>
+                  setDialogFlag({
+                    ...dialogFlag,
+                    selectImg: "noUserImg",
+                  })
+                }
+              >
                 <Image
                   src={UserImg}
                   width={50}
@@ -95,7 +113,15 @@ const CoffeeDetail = memo((props: Props) => {
             </div>
           )}
           {coffee.image !== null ? (
-            <div css={imgBox} onClick={() => setSelectImgEnlargement(String(coffee.image))}>
+            <div
+              css={imgBox}
+              onClick={() =>
+                setDialogFlag({
+                  ...dialogFlag,
+                  selectImg: String(coffee.image),
+                })
+              }
+            >
               <Image
                 src={coffee.image}
                 css={noImg}
@@ -106,7 +132,15 @@ const CoffeeDetail = memo((props: Props) => {
               />
             </div>
           ) : (
-            <div css={imgBox} onClick={() => setSelectImgEnlargement("noCoffeeImg")}>
+            <div
+              css={imgBox}
+              onClick={() =>
+                setDialogFlag({
+                  ...dialogFlag,
+                  selectImg: "noCoffeeImg",
+                })
+              }
+            >
               <Image src={NoImage} css={noImg} layout="responsive" alt="画像なし" />
             </div>
           )}
@@ -164,6 +198,19 @@ const CoffeeDetail = memo((props: Props) => {
                 <CircularProgress size="2rem" />
               </div>
             )}
+            <div css={evaluationBox}>
+              <FontAwesomeIcon
+                icon={faComment}
+                className="commentIcon"
+                onClick={() =>
+                  setDialogFlag({
+                    ...dialogFlag,
+                    commentListFlag: true,
+                    coffeeId: coffee.id,
+                  })
+                }
+              />
+            </div>
           </div>
           {(() => {
             if (loginUserStore?.admin || coffee.userId === loginUserStore?.id) {
@@ -171,7 +218,10 @@ const CoffeeDetail = memo((props: Props) => {
                 <div css={btnBox}>
                   <ButtonBox
                     onClick={() => {
-                      setEditFlag(true);
+                      setDialogFlag({
+                        ...dialogFlag,
+                        editFlag: true,
+                      });
                       dispatch(setEditCoffee(coffee));
                     }}
                   >
@@ -186,13 +236,35 @@ const CoffeeDetail = memo((props: Props) => {
           })()}
         </div>
       ))}
-      <CoffeeEdit open={editFlag} onClose={() => setEditFlag(false)} />
-      {selectImgEnlargement !== "" && (
-        <ImageEnlargement
-          selectImgEnlargement={selectImgEnlargement}
-          setSelectImgEnlargement={setSelectImgEnlargement}
-        />
-      )}
+      <CoffeeEdit
+        open={dialogFlag.editFlag}
+        onClose={() =>
+          setDialogFlag({
+            ...dialogFlag,
+            editFlag: false,
+          })
+        }
+      />
+      <ImageEnlargement
+        selectImg={dialogFlag.selectImg}
+        open={dialogFlag.selectImg !== "" ? true : false}
+        onClose={() =>
+          setDialogFlag({
+            ...dialogFlag,
+            selectImg: "",
+          })
+        }
+      />
+      <CommentList
+        open={dialogFlag.commentListFlag}
+        onClose={() =>
+          setDialogFlag({
+            ...dialogFlag,
+            commentListFlag: false,
+          })
+        }
+        coffeeId={dialogFlag.coffeeId}
+      />
     </div>
   );
 });
@@ -206,7 +278,10 @@ const productBox = css`
   border-radius: 4px;
   background-color: #fff;
   width: 80%;
-  min-width: 260px;
+
+  @media screen and (max-width: 425px) {
+    width: 100%;
+  }
 
   h4 {
     font-size: 18px;
@@ -257,9 +332,8 @@ const evaluationMainBox = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
   width: 60%;
-  max-width: 300px;
+  max-width: 400px;
 
   @media screen and (max-width: 1024px) {
     width: 100%;
@@ -303,6 +377,19 @@ const evaluationBox = css`
   .heartIcon {
     margin: 0 12px;
     color: #e73562;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+
+    @media screen and (max-width: 1024px) {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .commentIcon {
+    margin: 0 12px;
+    color: #007aff;
     width: 24px;
     height: 24px;
     cursor: pointer;
