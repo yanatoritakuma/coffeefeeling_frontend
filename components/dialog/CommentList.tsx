@@ -17,7 +17,7 @@ type Props = {
 
 const CommentList = memo((props: Props) => {
   const { open, onClose, coffeeId } = props;
-  console.log(coffeeId);
+
   const { data: user } = useQueryUser();
 
   const { createCommentsMutation, deleteCommentsMutation } = useMutateComment();

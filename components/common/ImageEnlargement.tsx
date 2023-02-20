@@ -34,6 +34,8 @@ const ImageEnlargement = memo((props: Props) => {
                 <Image src={NoImage} layout="fill" objectFit="contain" alt="選択された画像" />
               </div>
             );
+          case "":
+            return;
           default:
             return (
               <div className="imageEnlargementBox__imgBox">
