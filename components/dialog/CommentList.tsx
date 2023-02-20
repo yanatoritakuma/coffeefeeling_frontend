@@ -17,6 +17,7 @@ type Props = {
 
 const CommentList = memo((props: Props) => {
   const { open, onClose, coffeeId } = props;
+  console.log(coffeeId);
   const { data: user } = useQueryUser();
 
   const { createCommentsMutation, deleteCommentsMutation } = useMutateComment();
@@ -102,7 +103,6 @@ const commentBox = css`
 
   .commentBox__listBox {
     margin: 20px 0;
-    padding: 0 20px;
     height: 50vh;
     overflow-y: scroll;
   }
@@ -122,6 +122,13 @@ const commentBox = css`
   .commentBox__name {
     font-size: 18px;
     font-weight: bold;
+    display: block;
+    width: 100%;
+    max-width: 100px;
+
+    @media screen and (max-width: 425px) {
+      font-size: 16px;
+    }
   }
 
   .commentBox__imgBox {
@@ -130,8 +137,14 @@ const commentBox = css`
     width: 80px;
     height: 80px;
 
+    @media screen and (max-width: 425px) {
+      width: 60px;
+      height: 60px;
+    }
+
     img {
       border-radius: 50%;
+      object-fit: cover;
     }
   }
 
